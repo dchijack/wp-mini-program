@@ -8,6 +8,10 @@
 
 > 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 支持微信小程序和 QQ 小程序 )
 
+## 安装指南
+
+[点击这里](https://github.com/dchijack/wp-mini-program/wiki/Guide)
+
 ## 更新日志
 
 2019.07.22 Ver 1.0.4
