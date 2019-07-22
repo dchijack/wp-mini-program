@@ -1,0 +1,201 @@
+
+.postbox-container .postbox {
+	background:#fff!important;
+}
+#section .miniprogram-group {
+	padding:10px;
+}
+#section .regular-color {
+	line-height: 28px;
+}
+.mu-mar {
+    margin-right:10px;
+}
+.desc {
+    margin-left:10px;
+}
+/* Admin Options Styles */
+#section {
+    max-width:840px;
+    background:#f1f1f1;
+}
+#section h3 {
+	cursor: default;
+	background-color: #f1f1f1;
+	border-bottom: 1px solid #f1f1f1;
+	padding: 12px 10px;
+	margin: 0;
+}
+#section p {
+	margin-bottom:0;
+	padding-bottom:10px;
+}
+#section .section {
+	padding:10px 10px 0;
+}
+#section .miniprogram-group {
+	padding-bottom:40px;
+}
+#section input.checkbox, #section input.radio {
+	float:left;
+	clear:both;
+}
+#section td > input[type=checkbox], #section td > input[type=radio] {
+	margin-right:5px;
+	margin-bottom:3px;
+}
+
+#section .miniprogram-group table th label {
+    padding: 0 10px;
+}
+#section .hide {
+	display:none;
+}
+/* Bottom Section */
+#section-submit {
+	padding: 7px 10px;
+	border-top: 1px solid #f1f1f1;
+	background-color: #f1f1f1;
+}
+#section .button-primary {
+    margin-left:20px;
+    margin-right:20px;
+}
+#section .section:after {
+	content: "";
+	display: table;
+}
+#section .section:after {
+	clear: both;
+}
+.manage-wrap {
+    margin-top:23px;
+    padding: 10px;
+    overflow: hidden;
+}
+.term-upload-field {
+    width:75%!important;
+}
+/*post-meta*/
+.inside h3 {
+	cursor: default;
+	background-color: #f1f1f1;
+	border-bottom: 1px solid #f1f1f1;
+	padding: 12px 10px;
+	margin: 0;
+}
+.inside p {
+	margin-bottom:0;
+	padding-bottom:10px;
+}
+.inside .section {
+	padding:10px 10px 0;
+}
+.inside .miniprogram-group {
+	padding-bottom:40px;
+}
+.inside input.checkbox, .inside input.radio {
+	float:left;
+	clear:both;
+}
+.inside td > input[type=checkbox], .inside td > input[type=radio] {
+	margin-right:5px;
+	margin-bottom:3px;
+}
+.inside td > input[type=text] {
+	margin-right:10px
+}
+.inside td > select {
+	margin-right:10px;
+}
+.inside .hide {
+	display:none;
+}
+/* Bottom Section */
+.inside-submit {
+	padding: 7px 10px;
+	border-top: 1px solid #f1f1f1;
+	background-color: #f1f1f1;
+}
+.inside .button-primary {
+	margin-left:40px;
+}
+.inside .section:after {
+	content: "";
+	display: table;
+}
+.inside .section:after {
+	clear: both;
+}
+#scroll-bar {
+    float: right;
+    position: fixed;
+    right: 10px;
+    bottom: 150px;
+    z-index: 9999;
+}
+.scroll-down, .scroll-up {
+    background: #fff;
+    margin: 0 0 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+#scroll-bar a {
+    color: #999;
+    text-decoration: none;
+    line-height: 35px;
+    padding: 0 10px;
+    display: block;
+}
+#applets_dashboard_widget .main {
+    padding: 0 12px;
+}
+#applets_dashboard_widget ul {
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+}
+#applets_dashboard_widget li {
+    width: 50%;
+    float: left;
+    margin-bottom: 10px;
+}
+#applets_dashboard_widget .post-count a:before, #applets_dashboard_widget .post-count span:before {
+    content: "\f348";
+}
+#applets_dashboard_widget li a:before, #applets_dashboard_widget li span:before {
+    color: #82878c;
+    font: normal 20px/1 dashicons;
+    display: inline-block;
+    padding: 0 10px 0 0;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-decoration: none!important;
+    vertical-align: top;
+}
+#applets_dashboard_widget .page-count a:before, #applets_dashboard_widget .page-count span:before {
+    content: "\f463";
+}
+#applets_dashboard_widget li a:before, #applets_dashboard_widget li > span:before {
+    content: "\f159";
+    padding: 0 5px 0 0;
+}
+#applets_dashboard_widget .main p {
+    margin-top: 15px;
+}
+#applets_dashboard_widget #applets-version .button {
+    float: right;
+    position: relative;
+    top: -5px;
+    margin-left: 5px;
+}
+#applets_dashboard_course .inside{
+	margin:0; padding:0;
+}
+a.course-post {border-bottom:1px solid #eee; margin: 0 !important; padding:6px 0; display: block; }
+a.course-post:last-child{border-bottom: 0;}
+a.course-post p{display: table-row; }
+a.course-post img{display: table-cell; width:50px; height: 50px; margin:5px 12px; }
+a.course-post span{display: table-cell; height: 50px; vertical-align: middle;}

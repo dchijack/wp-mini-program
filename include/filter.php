@@ -1,0 +1,333 @@
+<?php
+/*
+ * WordPress Utils Class For Router
+ */
+ 
+if ( !defined( 'ABSPATH' ) ) exit;
+
+add_filter( 'post_thumbnail', function($post_id) {
+	$thumbnails = get_post_meta($post_id, 'thumbnail', true); // 获取自定义缩略图
+	if(!empty($thumbnails)) {
+		return $thumbnails;
+	} else if(has_post_thumbnail($post_id)) {
+		$thumbnail_id = get_post_thumbnail_id($post_id); // 获取特色图像 ID
+		if($thumbnail_id) {
+			$attachment = wp_get_attachment_image_src($thumbnail_id, 'full');
+			$thumbnails = $attachment[0];
+			return $thumbnails;
+		} else {
+			$thumbnail_code = get_the_post_thumbnail( $post_id, 'full' ); // 获取特色图像 HTML 代码
+			$thumbnail_src = '/src=\"(.*?)\"/';
+            if (preg_match($thumbnail_src, $thumbnail_code, $thumbnail)) {
+				$thumbnails = $thumbnail[1];
+				return $thumbnails;
+            } else {
+				$thumbnails = wp_miniprogram_option('thumbnail'); // 指定默认链接
+				return $thumbnails;
+			}
+		}
+	} else {
+		$post = get_post($post_id);
+		$post_content = $post->post_content;
+			
+		preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', do_shortcode($post_content), $matches);
+		if( $matches && isset($matches[1]) && isset($matches[1][0]) ){     
+			$thumbnails = $matches[1][0];
+		}
+			
+		if(!empty($thumbnails)) {
+			return $thumbnails;
+		} else {
+			$thumbnails = wp_miniprogram_option('thumbnail'); // 指定默认链接
+			return $thumbnails;
+		}
+			
+	}
+});
+
+add_filter( 'post_images', function($post_id) {
+	if($post_id){
+		$the_post       	= get_post($post_id);
+		$post_content   	= $the_post->post_content;
+	} 
+	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', do_shortcode($post_content), $matches);
+	$images = array();
+	if($matches && isset($matches[1])) {
+		$_images=$matches[1]; 
+		for($i=0; $i<count($matches[1]);$i++) {
+			$image_url['id'] = $i;
+			$image_url['link'] = $matches[1][$i];
+			$images[] = $image_url;
+		}
+	}
+	return $images;
+});
+
+add_filter( 'tencent_video', function($url) {
+	if( filter_var($url, FILTER_VALIDATE_URL) ) { 
+		if(preg_match('#https://v.qq.com/x/page/(.*?).html#i',$url, $m)) {
+			$vids = $m[1];
+		} else if(preg_match('#https://v.qq.com/x/cover/.*/(.*?).html#i',$url, $m)) {
+			$vids = $m[1];
+		} else {
+			$vids = $url;
+		}
+	} else {
+		$vids = $url;
+	}
+	if($vids) {
+		if(strlen($vids) > 20) {
+			return $url;
+		}
+		$url = 'http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
+		
+		$response = file_get_contents($url);
+		$response = substr($response,13,-1);
+		$response = json_decode($response,true);
+
+		$res	= $response['vl']['vi'][0];
+		$p0		= $res['ul']['ui'][0]['url'];
+		$p1		= $res['fn'];
+		$p2		= $res['fvkey'];
+		//$ti		= $res['ti'];
+
+		$mp4	= $p0.$p1.'?vkey='.$p2;
+		
+		return $mp4;
+	}
+});
+
+add_filter( 'share_video', function($url) {
+	$domain = parse_url($url);
+	$host = $domain["host"];
+	if(strpos($host, 'v.qq.com') !== false) {
+		$video =  apply_filters( 'tencent_video', $url );
+	} else if(strpos($host, 'weibo') !== false) {
+		$data = array (); 
+		$data = http_build_query($data); 
+		$header = array ( 
+			'http' => array ( 
+				'method' => 'POST', 
+				'header'=> "Content-type: application/x-www-form-urlencoded\r\n" . 
+									"Content-Length: " . strlen($data) . "\r\n", 
+				'content' => $data
+			) 
+		); 
+		$context = stream_context_create($header); 
+		$html = @file_get_contents($url,'',$context);
+		$title = '/\"text\"\:\ "(.*?)\"\,/';
+		$images = '/\"url\"\: \"(.*?)\"\,/';
+		$videos = '/\"mp4_hd_mp4\"\: \"(.*?)\"/';
+		$mvideo = '/\"mp4_720_mp4\"\: \"(.*?)\"\,/';
+		$_data['source'] = "weibo";
+		if(preg_match($title, $html, $m)) { 
+			$_data['title'] = wp_delete_html_code($m[1]);
+			$_data['content'] = wp_delete_html_code($m[1]);
+		} 
+		if(preg_match_all($images, $html, $m)) { 
+			$_data['image'] = $m[1];
+		} 
+		if(preg_match_all($videos, $html, $m)) {
+			if($m[1][0]) {
+				$video = $m[1][0];
+			} else {
+				if(preg_match_all($mvideo, $html, $mv)) {
+					$video = $mv[1][0];
+				}
+			}
+		}
+	}
+	if($video) {
+		return $video;
+	} else {
+		return $url;
+	}
+});
+
+add_filter( 'the_video_content', function($content) {
+	preg_match("/https\:\/\/m\.weibo\.cn\/(.*?)\/(.*?)\'/",$content,$weibo);
+    preg_match("/https\:\/\/m\.weibo\.cn\/(.*?)\/(.*?)\"/",$content,$sina);
+	preg_match("/https\:\/\/v\.qq\.com\/x\/page\/(.*?)\.html/",$content, $qvideo);
+	preg_match("/https\:\/\/v\.qq\.com\/cover\/(.*?)\/(.*?)\.html/",$content, $tencent);
+	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', do_shortcode($content), $matches);
+	$thumbnails = "";
+	if( $matches && isset($matches[1]) && isset($matches[1][0]) ){     
+		$thumbnails = 'poster="'.$thumbnails.'" ';
+	}
+	if($weibo || $sina) {
+		$video_id = $weibo?$weibo[2]:$sina[2];
+		$url = 'https://m.weibo.cn/status/'.$video_id;
+		$video = apply_filters( 'share_video', $url );
+		if($video) {
+			$content = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);
+			return $content;
+		} else {
+			return $content;
+		}
+	} else if($qvideo || $tencent) {
+		$url = $qvideo?$qvideo[0]:$tencent[0];
+		$video = apply_filters( 'share_video', $url );
+		if($video) {
+			$contents = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);
+			return $contents;
+		} else {
+			return $content;
+		  }
+	} else {
+		return $content;
+	}
+});
+
+add_filter( 'mp_commented', function( $post_id, $user_id, $type ) {
+	$user = get_user_by('ID',$user_id);
+	if(!$user) {
+		return false;
+	}
+	$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id,'count' => true, 'status' => 'approve');
+	$count = get_comments($args);
+	return $count ? true : false;
+}, 10, 3 );
+
+add_filter( 'comment_type_count', function( $post_id, $type ) {
+	$args = array('post_id'=> $post_id,'type__in'=>array( $type ),'count' => true, 'status'=>'approve');
+	$counts = get_comments($args);
+	if(!update_post_meta($post_id, $type.'s', $counts)) {
+		add_post_meta($post_id, $type.'s', 0, true);
+	}
+	return $counts?$counts:0;
+}, 10, 2 );
+
+add_filter( 'comment_type_list', function( $post_id, $type ) {
+	$args = array('post_id'=> $post_id,'type__in'=>array( $type ), 'status'=>'approve');
+	$comments = get_comments($args);
+	$authors = array();
+	foreach ( $comments as $comment ) {
+		$_data = array();
+		$user_id = $comment->user_id;
+		$author_avatar = get_user_meta( $user_id, 'avatar', true );
+		$_data["id"] = $user_id;
+		$_data["name"] = get_the_author_meta('nickname',$user_id);
+		if ($author_avatar) {
+			$_data["avatar"] = $author_avatar;
+		} else {
+			$_data["avatar"] = get_avatar_url($user_id);
+		}
+		$authors[] = $_data;
+	}
+	return $authors;
+}, 10, 2 );
+
+add_filter( 'rest_posts', function( $posts, $access_token ) {
+	$data = array();
+	foreach ( $posts as $post ) {
+		$_data = array();
+		$post_id = $post->ID;
+		$post_date = $post->post_date;
+		$author_id = $post->post_author;
+		$post_type = $post->post_type;
+		$post_format = get_post_format( $post_id );
+		$author_avatar = get_user_meta( $author_id, 'avatar', true );
+		$taxonomies = get_object_taxonomies( $post_type );
+		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
+		$post_title = $post->post_title;
+		$post_excerpt = $post->post_excerpt;
+		$post_content = $post->post_content;
+		$session = isset($request['access_token'])?$request['access_token']:'';
+		if( $session ) {
+			$access_token = base64_decode( $session );
+			$users = MP_Auth::login( $access_token );
+			if ( $users ) {
+				$user_id = $users->ID;
+			} else {
+				$user_id = 0;
+			}
+		} else {
+			$user_id = 0;
+		}
+		$_data["id"]  = $post_id;
+		$_data["date"] = $post_date;
+		$_data["format"] = $post_format?$post_format:'standard'; 
+		$_data["type"] = $post_type;
+		$_data["meta"]["thumbnail"] = $thumbnail;
+		$_data["meta"]["views"] = (int)get_post_meta( $post_id, "views" ,true );
+		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
+		$_data["isfav"] = apply_filters( 'mp_commented', $post_id, $user_id, 'fav' );
+		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+		$_data["islike"] = apply_filters( 'mp_commented', $post_id, $user_id, 'like' );
+		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+		$_data["author"]["id"] = $author_id;
+		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
+		if ($author_avatar) {
+			$_data["author"]["avatar"] = $author_avatar;
+		} else {
+			$_data["author"]["avatar"] = get_avatar_url($author_id);
+		}
+		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
+		if ($taxonomies) {
+			foreach ( $taxonomies as $taxonomy ){
+				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
+				foreach($terms as $term) {
+					$tax = array();
+					$tax["id"] = $term->term_id;
+					$tax["name"] = $term->name;
+					$tax["description"] = $term->description;
+					$tax["cover"] = get_term_meta($term->term_id,'cover',true);
+					if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
+					$_data[$taxonomy][] = $tax;
+				}
+			}
+		}
+		$_data["title"]["rendered"]  = html_entity_decode($post_title);
+		if ($post_excerpt) {
+			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( $post_excerpt, 100, '...' ));
+		} else {
+			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( $post_content, 100, '...' ));
+		}
+		if ( wp_miniprogram_option("post_content") ) { 
+			$_data["content"]["rendered"] = apply_filters( 'the_content', $post_content );
+		 }
+		if ( wp_miniprogram_option("post_picture") ) {
+			$_data["pictures"] = apply_filters( 'post_images', $post_id );
+		}
+		$data[] = $_data;
+	}
+	return $data;
+}, 10, 2 );
+
+add_filter( 'reply_comments', function( $post_id,$reply,$parent ) {
+	$args = array(
+		'post_id' => $post_id,
+		'type__in' => array('comment'),
+		'status' => 'approve',
+		'parent' => $parent,
+		'number' => 10,
+		"orderby" => 'comment_date',
+		"order" => 'DESC'
+	);
+	$comments = get_comments($args);
+	$data = array();
+	foreach ($comments as $comment) {
+		$comment_id = $comment->comment_ID;
+		$user_id = $comment->user_id;
+		$user_name = $comment->comment_author;
+		$date = $comment->comment_date;
+		$content = $comment->comment_content;
+		$parent = $comment->comment_parent;
+		$avatar = get_user_meta($user_id, 'avatar', true);
+		$_data["id"] = $comment_id;
+		$_data["author"]["id"] = $user_id;
+		$_data["author"]["name"] = ucfirst($user_name);
+		if ($avatar) {
+			$_data["author"]["avatar"] = $avatar;
+		} else {
+			$_data["author"]["avatar"] = get_avatar_url($user_id);
+		}
+		$_data["date"] = datetime_before($date);
+		$_data["content"] = $content;
+		$_data["parent"] = $parent;
+		$_data["reply_to"] = ucfirst($reply);
+		$_data["reply"] = apply_filters( 'reply_comments', $post_id, $user_name, $comment_id );
+		$data[] =$_data;
+	}	
+	return $data;
+}, 10, 3 );
