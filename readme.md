@@ -8,9 +8,15 @@
 
 > 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 支持微信小程序和 QQ 小程序 )
 
+## 插件下载
+
+1.可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
+
+2.可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
+
 ## 安装指南
 
-[点击这里](https://github.com/dchijack/wp-mini-program/wiki/Guide)
+注意：不能直接下载安装，具体安装指南[点击这里](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
 ## 更新日志
 
