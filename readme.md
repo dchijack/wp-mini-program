@@ -4,6 +4,9 @@
 
 > 技术支持：https://www.imahui.com
 
+# WordPress Travel Mini Program
+
+> 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 支持微信小程序和 QQ 小程序 )
 
 ## 更新日志
 
