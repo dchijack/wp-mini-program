@@ -55,7 +55,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	}
 	$_data["id"]  = $post_id;
 	$_data["date"] = $post_date;
-	//unset($_data['author']);
+	unset($_data['author']);
 	$_data["author"]["id"] = $author_id;
 	$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
 	if ($author_avatar) {
