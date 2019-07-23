@@ -20,7 +20,7 @@
 
 1.关注 WordPressTalk 公众号回复：9527 下载的是插件安装包，可以直接上传网站后台的插件安装启用
 
-2.通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择目录里的 wp-mini-program 进行上传安装，具体安装指南[点击这里](https://github.com/dchijack/wp-mini-program/wiki/Guide)
+2.通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择目录里的 wp-mini-program 进行上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
 ## 更新日志
 
