@@ -50,7 +50,7 @@
 
 ## 微信公众号
 
-> 欢迎关注 WordPressTalk 微信公众号，后期将在发布开源小程序
+> 欢迎关注 WordPressTalk 微信公众号
 
 ![微信公众号二维码](https://github.com/dchijack/WP-REST-API/blob/master/qrcode.jpg)
 
