@@ -10,9 +10,11 @@
 
 ## 插件下载
 
-1.可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
+1. 关注 WordPressTalk 公众号，回复：**9527** 直接获取插件安装包
 
-2.可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
+2. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
+
+3. 可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
 
 ## 安装指南
 
