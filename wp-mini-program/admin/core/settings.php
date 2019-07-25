@@ -9,7 +9,7 @@
 	}
 ?>
 <div class="wrap">
-	<h2 class="nav-tab-wrapper wp-clearfix">
+	<h2 class="mp-nav-tab-wrapper wp-clearfix">
 		<?php miniprogram_options_nav_menu(); ?>
 	</h2>
 	

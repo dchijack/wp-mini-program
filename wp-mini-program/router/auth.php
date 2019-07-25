@@ -49,6 +49,15 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			)
 		));
 
+		register_rest_route( $this->namespace, $this->resource_name.'baidu/login', array(
+			array(
+				'methods'             	=> WP_REST_Server::CREATABLE,
+				'callback'            	=> array( $this, 'wp_baidu_user_auth_login' ),
+				'permission_callback' 	=> array( $this, 'wp_login_permissions_check' ),
+				'args'                	=> $this->wp_user_login_collection_params(),
+			)
+		));
+
 	}
 	
 	/**
@@ -230,6 +239,111 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			"expired_in" => $expire
 			
 		);
+		$response = rest_ensure_response( $user );
+		return $response;
+
+	}
+
+	public function wp_baidu_user_auth_login( $request ) {
+
+		date_default_timezone_set(get_option('timezone_string'));
+
+		$iv = isset($request['iv'])?$request['iv']:'';
+		$code = isset($request['code'])?$request['code']:'';
+		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
+		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
+			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 500 ) );
+		}
+
+		$appkey 		= wp_miniprogram_option('bd_appkey');
+		$appsecret 		= wp_miniprogram_option('bd_secret');
+		$role 			= wp_miniprogram_option('use_role');
+		$expire 		= date('Y-m-d H:i:s',time()+7200);
+		$user_pass 		= wp_generate_password(16,false);
+
+		$args = array(
+			'client_id' => $appkey,
+			'sk' => $appsecret,
+			'code' => $code
+		);
+		$url = 'https://spapi.baidu.com/oauth/jscode2sessionkey';
+		$urls = add_query_arg($args,$url);
+		$bd_session = wp_remote_request( $urls, array( 'method' => 'POST' ) );
+		$bd_session = wp_remote_retrieve_body($bd_session);
+
+		$session = json_decode( $bd_session, true );
+		$openId = $session['openid'];
+		$session_key = $session['session_key'];
+
+		$user_id = 0;
+		$decrypt_data = MP_Auth::decrypt(urldecode($encryptedData), urldecode($iv), $appkey, $session_key);
+		$user_data = json_decode( $decrypt_data, true );
+
+		if( !username_exists($openId) ) {
+			$userdata = array(
+                'user_login' 			=> $openId,
+				'nickname' 				=> $user_data['nickname'],
+				'first_name'			=> $user_data['nickname'],
+				'user_nicename' 		=> $openId,
+				'display_name' 			=> $user_data['nickname'],
+				'user_email' 			=> date('Ymdhms').'@qq.com',
+				'role' 					=> $role,
+				'user_pass' 			=> $user_pass,
+				'gender'				=> $user_data['sex'],
+				'openid'				=> $openId,
+				'avatar' 				=> $user_data['headimgurl'],
+				'expire_in'				=> $expire
+            );
+			$user_id = wp_insert_user( $userdata );			
+			if ( is_wp_error( $user_id ) ) {
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+			}
+			add_user_meta( $user_id, 'session_key', $session_key);
+			add_user_meta( $user_id, 'platform', 'baidu');
+		} else {
+			$user = get_user_by( 'login', $openId );
+			$userdata = array(
+                'ID'            		=> $user->ID,
+				'nickname' 				=> $user_data['nickname'],
+				'first_name'			=> $user_data['nickname'],
+				'user_nicename'			=> $openId,
+				'display_name' 			=> $user_data['nickname'],
+				'user_email' 			=> $user->user_email,
+				'gender'				=> $user_data['sex'],
+				'openid'				=> $openId,
+				'avatar' 				=> $user_data['headimgurl'],
+				'expire_in'				=> $expire
+            );
+			$user_id = wp_update_user($userdata);
+			if(is_wp_error($user_id)) {
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+			}
+			update_user_meta( $user_id, 'session_key', $session_key );
+			update_user_meta( $user_id, 'platform', 'baidu');
+		}
+
+		wp_set_current_user( $user_id, $openId );
+		wp_set_auth_cookie( $user_id, true );
+
+		$current_user = get_user_by( 'ID', $user_id );
+		$roles = ( array )$current_user->roles;
+		
+		$user = array(
+			"user"	=> array(
+				"userId"		=> $user_id,
+				"nickName"		=> $user_data["nickname"],
+				"openId"		=> $openId,
+				"avatarUrl" 	=> $user_data["headimgurl"],
+				"gender"		=> $user_data["sex"],
+				"role"			=> $roles[0],
+				'platform'		=> 'baidu',
+				"description"	=> $current_user->description
+			),
+			"access_token" => base64_encode( $session['session_key'] ),
+			"expired_in" => $expire
+			
+		);
+
 		$response = rest_ensure_response( $user );
 		return $response;
 

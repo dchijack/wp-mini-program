@@ -24,7 +24,7 @@ function miniprogram_options_nav_menu() {
 	$menu = '';
 	if($options) {
 		foreach ( $options as $key => $option ) {
-			$menu .= '<a id="'.$key. '-tab" class="nav-tab ' .$key.'-tab" title="' . esc_attr( $option['title'] ) . '" href="#'.$key.'">' . esc_html( $option['title'] ) . '</a>';
+			$menu .= '<a id="'.$key. '-tab" class="mp-nav-tab ' .$key.'-tab" title="' . esc_attr( $option['title'] ) . '" href="#'.$key.'">' . esc_html( $option['title'] ) . '</a>';
 		}
 		echo $menu;
 	}

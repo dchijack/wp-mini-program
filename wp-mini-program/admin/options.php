@@ -8,7 +8,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 	
 	$options = array(
 		'basic-setting'=>[
-			'title'=>'微信授权',
+			'title'=>'小程序授权',
 			'summary'=>'<p>WordPress + 微信小程序用户授权设置</p>',
 			'fields'=> [
 				'appid'			=>['title'=>'微信小程序 AppId','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'微信小程序 AppId 需要到微信小程序后台获取'],
@@ -16,7 +16,10 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'qq_applets'	=>['title'=>'腾讯 QQ 小程序','type'=>'checkbox','description'=>'是否开启腾讯 QQ 小程序授权设置'],
 				'qq_appid'		=>['title'=>'QQ 小程序 AppID','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'QQ 小程序 AppID 需要到 QQ 小程序后台获取'],
 				'qq_secret'		=>['title'=>'QQ 小程序 AppSecret ','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'QQ 小程序 AppSecret 需要到 QQ 小程序后台获取'],
-				'use_role'		=>['title'=>'微信用户组','type'=>'select','options'=>['subscriber'=>'订阅组','contributor'=>'投稿组','wechat'=>'小程序','author'=>'作者组','editor'=>'编辑组']],
+				'bd_applets'	=>['title'=>'百度智能小程序','type'=>'checkbox','description'=>'是否开启百度智能小程序授权设置'],
+				'bd_appkey'		=>['title'=>'百度小程序 AppKey','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'百度小程序 AppKey 需要到百度智能小程序后台获取'],
+				'bd_secret'		=>['title'=>'百度小程序 AppSecret ','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'百度小程序 AppSecret 需要到百度智能小程序后台获取'],
+				'use_role'		=>['title'=>'小程序用户组','type'=>'select','options'=>['subscriber'=>'订阅组','contributor'=>'投稿组','wechat'=>'小程序','author'=>'作者组','editor'=>'编辑组']],
 			],
 		],
 		'general-setting'=>[

@@ -5,36 +5,36 @@
 
 jQuery(document).ready(function($) {
 	// Loads tabbed sections if they exist
-	if ( $('.nav-tab-wrapper').length > 0 ) {
+	if ( $('.mp-nav-tab-wrapper').length > 0 ) {
 		miniprogram_options_tabs();
 	}
 	// Tabs
 	function miniprogram_options_tabs() {
 		var $group = $('.miniprogram-group'),
-			$navtabs = $('.nav-tab-wrapper a'),
+			$navtabs = $('.mp-nav-tab-wrapper a'),
 			is_active = '';
 		// Hides all the .group sections to start
 		$group.hide();
 		// Find if a selected tab is saved in localStorage
 		if ( typeof(localStorage) != 'undefined' ) {
-			is_active = localStorage.getItem('is_active');
+			is_active = localStorage.getItem('is_actived');
 		}
 		// If active tab is saved and exists, load it's .group
 		if ( is_active != '' && $(is_active).length ) {
 			$(is_active).fadeIn();
-			$(is_active + '-tab').addClass('nav-tab-active');
+			$(is_active + '-tab').addClass('mp-nav-tab-active');
 		} else {
 			$('.miniprogram-group:first').fadeIn();
-			$('.nav-tab-wrapper a:first').addClass('nav-tab-active');
+			$('.mp-nav-tab-wrapper a:first').addClass('mp-nav-tab-active');
 		}
 		// Bind tabs clicks
 		$navtabs.click(function(e) {
 			e.preventDefault();
 			// Remove active class from all tabs
-			$navtabs.removeClass('nav-tab-active');
-			$(this).addClass('nav-tab-active').blur();
+			$navtabs.removeClass('mp-nav-tab-active');
+			$(this).addClass('mp-nav-tab-active').blur();
 			if (typeof(localStorage) != 'undefined' ) {
-				localStorage.setItem('is_active', $(this).attr('href') );
+				localStorage.setItem('is_actived', $(this).attr('href') );
 			}
 			var selected = $(this).attr('href');
 			$group.hide();
@@ -142,6 +142,17 @@ jQuery(document).ready(function($) {
 	jQuery('#qq_applets').click(function() {
 		jQuery('#qq_appid_text').fadeToggle(400);
 		jQuery('#qq_secret_text').fadeToggle(400);
+	});
+	if (jQuery('#bd_applets:checked').val() !== undefined) {
+		jQuery('#bd_appkey_text').show();
+		jQuery('#bd_secret_text').show();
+	} else {
+		jQuery('#bd_appkey_text').hide();
+		jQuery('#bd_secret_text').hide();
+	}
+	jQuery('#bd_applets').click(function() {
+		jQuery('#bd_appkey_text').fadeToggle(400);
+		jQuery('#bd_secret_text').fadeToggle(400);
 	});
 	// 广告选择
 	function miniprogram_adsense_switch(){
