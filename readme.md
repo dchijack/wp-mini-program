@@ -22,15 +22,15 @@
 
 ## 插件截图
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-1.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-1.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-2.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-2.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-3.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-3.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-4.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-4.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-5.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-5.png)
 
 ## 更新日志
 
