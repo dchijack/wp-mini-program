@@ -154,6 +154,17 @@ jQuery(document).ready(function($) {
 		jQuery('#bd_appkey_text').fadeToggle(400);
 		jQuery('#bd_secret_text').fadeToggle(400);
 	});
+	if (jQuery('#tt_applets:checked').val() !== undefined) {
+		jQuery('#tt_appid_text').show();
+		jQuery('#tt_secret_text').show();
+	} else {
+		jQuery('#tt_appid_text').hide();
+		jQuery('#tt_secret_text').hide();
+	}
+	jQuery('#tt_applets').click(function() {
+		jQuery('#tt_appid_text').fadeToggle(400);
+		jQuery('#tt_secret_text').fadeToggle(400);
+	});
 	// 广告选择
 	function miniprogram_adsense_switch(){
 		var switcheds 	= ['i_image_upload','t_image_upload','d_image_upload','p_image_upload'];

@@ -101,6 +101,22 @@ class MP_Auth {
         );
         return $session;
     }
+
+    public static function we_miniprogram_access_token() {
+		$appid 		= wp_miniprogram_option('appid');
+        $secret 	= wp_miniprogram_option('secretkey');
+        if( $appid && $secret ) {
+            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
+            $token = wp_remote_get($url);
+            if( !is_array( $token ) || is_wp_error($token) || $token['response']['code'] != '200' ) {	
+                return false;
+            }
+            $access_token = json_decode( $token['body'], true );
+            return $access_token;
+        } else {
+            return false;
+        }
+    }
     
 	public static function login( $session ) {
 		if( $session ) {

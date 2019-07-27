@@ -178,7 +178,7 @@ add_filter( 'the_video_content', function($content) {
 	}
 });
 
-add_filter( 'mp_commented', function( $post_id, $user_id, $type ) {
+add_filter( 'miniprogram_commented', function( $post_id, $user_id, $type ) {
 	$user = get_user_by('ID',$user_id);
 	if(!$user) {
 		return false;
@@ -251,9 +251,9 @@ add_filter( 'rest_posts', function( $posts, $access_token ) {
 		$_data["meta"]["thumbnail"] = $thumbnail;
 		$_data["meta"]["views"] = (int)get_post_meta( $post_id, "views" ,true );
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
-		$_data["isfav"] = apply_filters( 'mp_commented', $post_id, $user_id, 'fav' );
+		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
-		$_data["islike"] = apply_filters( 'mp_commented', $post_id, $user_id, 'like' );
+		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
 		$_data["author"]["id"] = $author_id;
 		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);

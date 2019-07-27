@@ -6,35 +6,14 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 if(wp_miniprogram_option('approved')) {
-	add_action('comment_unapproved_to_approved', 'vpush_miniprogram_comment_reply_message');
+	add_action('comment_unapproved_to_approved', 'we_miniprogram_comment_reply_message');
 }
 
-function vpush_miniprogram_comment_reply_message( $comment ) {
+function we_miniprogram_comment_reply_message( $comment ) {
 	
 	date_default_timezone_set(get_option('timezone_string'));
-		
-	$appid 		= wp_miniprogram_option('appid');
-	$secret 	= wp_miniprogram_option('secretkey');
-		
-	$token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$secret;
 
-	$token_code = file_get_contents($token_url);
-	$token = json_decode($token_code);
-	
-	if (!$token->access_token) {
-		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
-	}
-		
-	$template_id = wp_miniprogram_option('template_id');
-
-	if( empty($template_id) ) {
-		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 400 ) );
-	}
-		
-	$url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=".$token->access_token;
-		
 	$current_id = $comment->comment_ID;
-	
 	if( $current_id === 0 ) {
 		return new WP_Error( 'error', '评论 ID 为空', array( 'status' => 400 ) );
 	}
@@ -50,6 +29,7 @@ function vpush_miniprogram_comment_reply_message( $comment ) {
 	if( $parent_id != 0 ) {
 		$parents = get_comment( $parent_id );
 		$parents_user_id = $parents->user_id;
+		$platform = get_the_author_meta( 'platform', $parents_user_id );
 		$form_id = get_comment_meta( $parents->comment_ID, 'formId', true );
 		if(is_multisite()) {
 			$touser = get_user_meta($parents_user_id, 'openid', true);
@@ -60,41 +40,52 @@ function vpush_miniprogram_comment_reply_message( $comment ) {
 			$parents_user = get_user_by( 'ID', $parents_user_id );
 			$touser = $parents_user->user_login;
 		}
-			
-		$data = array(
-			"touser"		=> $touser,
-			"page"			=> $post_path,
-			"form_id"		=> $form_id,
-			"template_id"	=> $template_id,
-			"data"			=> array(
-				"keyword1"	=> array( "value" => ucfirst($reply_name) ),
-				"keyword2"	=> array( "value" => $reply_content ),
-				"keyword3"	=> array( "value" => $reply_date )
-			)
-		);
-			
-		$header = array(
-			"Content-Type: application/json;charset=UTF-8"
-		);
-
-		$output = get_content_by_curl($url,json_encode($data),$header);
-
-		$result = json_decode($output,true);
-		$code = $result['errcode'];
-		$message = $result['errmsg'];
-		if( $code=='0' ) {
-			delete_comment_meta($parents->comment_ID, 'formId', $form_id);
-			$response = array(
-				'status'	=> 200,
-				'success' 	=> true ,
-				'message'	=> 'sent message success'
+		if( $platform == 'wechat' ) {
+			$token = MP_Auth::we_miniprogram_access_token();
+			$access_token = isset($token['access_token']) ? $token['access_token'] : '';
+			if( !$access_token ) {
+				return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
+			}
+			$template_id = wp_miniprogram_option('template_id');
+			if( empty($template_id) ) {
+				return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 400 ) );
+			}
+			$url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=".$access_token;
+			$data = array(
+				"touser"		=> $touser,
+				"page"			=> $post_path,
+				"form_id"		=> $form_id,
+				"template_id"	=> $template_id,
+				"data"			=> array(
+					"keyword1"	=> array( "value" => ucfirst($reply_name) ),
+					"keyword2"	=> array( "value" => $reply_content ),
+					"keyword3"	=> array( "value" => $reply_date )
+				)
 			);
-		} else {
-			$response = array(
-				'status'	=> 500,
-				'success' 	=> false ,
-				'message'	=> $message
+				
+			$header = array(
+				"Content-Type: application/json;charset=UTF-8"
 			);
+
+			$output = get_content_by_curl($url,json_encode($data),$header);
+
+			$result = json_decode($output,true);
+			$code = $result['errcode'];
+			$message = $result['errmsg'];
+			if( $code=='0' ) {
+				delete_comment_meta($parents->comment_ID, 'formId', $form_id);
+				$response = array(
+					'status'	=> 200,
+					'success' 	=> true ,
+					'message'	=> 'sent message success'
+				);
+			} else {
+				$response = array(
+					'status'	=> 500,
+					'success' 	=> false ,
+					'message'	=> $message
+				);
+			}
 		}
 	}
 	return $response;	

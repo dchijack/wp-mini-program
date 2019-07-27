@@ -128,8 +128,6 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		} else {
 			$qrcode 	= $qrcode_path.'qrcode-'.$post_id.'.png';
 		}
-		$appid 			= wp_miniprogram_option('appid');
-		$appsecret 		= wp_miniprogram_option('secretkey');
 		
 		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
 		if( $thumbnail ) {
@@ -149,21 +147,11 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		
 		if(!is_file($qrcode)) {
 			
-			$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$appsecret;
+			$token = MP_Auth::we_miniprogram_access_token();
 			
-			$token = wp_remote_get($url);
-			
-			if( !is_array( $token ) || is_wp_error($token) || $token['response']['code'] != '200' ) {
+			if( !isset($token['errcode']) || empty($token['errcode']) ) {
 				
-				return new WP_Error( 'error', '获取 Token 错误：' .json_encode( $token ), array( 'status' => 500 ) );
-				
-			}
-			
-			$token_data = json_decode( $token['body'], true );
-			
-			if(empty($token_data['errcode'])) {
-				
-				$access_token =$token_data['access_token'];
+				$access_token = $token['access_token'];
 				
 				if( !empty($access_token) ) {
 					
@@ -190,11 +178,21 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 						'line_color' => $color, // auth_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 						'is_hyaline' => true, // 是否需要透明底色， is_hyaline 为true时，生成透明底色的小程序码
 					);
-					$args = json_encode($data);
+
+					$args = array(
+						'body' => $data,
+						'timeout' => '5',
+						'redirection' => '5',
+						'httpversion' => '1.0',
+						'blocking' => true,
+						'headers' => array(),
+						'cookies' => array()
+					);
+
+					$response = wp_remote_post( $api, $args );
+					$content = wp_remote_retrieve_body( $response );
 					
-					$content = get_content_by_curl($api,$args);
-					
-					if($content !='error') {
+					if( $content != 'error' ) {
 						
 						//输出二维码
 						file_put_contents($qrcode,$content);

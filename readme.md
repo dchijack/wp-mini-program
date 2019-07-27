@@ -1,12 +1,10 @@
-# WordPress Mini Program API
+# WordPress Mini Program
 
-> 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据
-
-> 技术支持：https://www.imahui.com
+> 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。技术博客：https://www.imahui.com
 
 # WordPress Travel Mini Program
 
-> 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 支持微信小程序和 QQ 小程序 )
+> 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 分别有微信小程序、QQ 小程序、百度智能小程序、今日头条小程序 )
 
 ## 插件下载
 
@@ -23,6 +21,10 @@
 2. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
 ## 更新日志
+
+2019.07.28 Ver 1.0.7
+
+> 新增今日头条小程序授权验证
 
 2019.07.25 Ver 1.0.6
 

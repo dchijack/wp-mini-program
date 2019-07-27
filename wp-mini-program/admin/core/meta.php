@@ -91,12 +91,11 @@ class WP_Custom_Meta_Box {
 			foreach($metas as $keys => $meta) {
 				$fields = $meta['fields'];
 				foreach($fields as $key => $field) {
-					$val = isset($_POST[$key])?$_POST[$key]:'';
-					$data = sanitize_text_field( $val );
-					if (get_post_meta($post_id, $key, FALSE)) {
+					$data = sanitize_text_field( $_POST[$key] );
+					if ( get_post_meta($post_id, $key, FALSE) ) {
 						update_post_meta($post_id, $key, $data);
 					} else {
-						add_post_meta($post_id, $key, $data);
+						add_post_meta($post_id, $key, $data, true);
 					}
 				}
 			}

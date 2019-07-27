@@ -67,9 +67,9 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 	$_data["meta"]["views"] = $post_views;
 	$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
-	$_data["isfav"] = apply_filters( 'mp_commented', $post_id, $user_id, 'fav' );
+	$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 	$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
-	$_data["islike"] = apply_filters( 'mp_commented', $post_id, $user_id, 'like' );
+	$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
 	$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
 	if ($taxonomies) {
 		foreach ( $taxonomies as $taxonomy ){

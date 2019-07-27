@@ -262,7 +262,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			$comment_id = wp_insert_comment( $commentarr );
 			if($comment_id) {
 				if( !$approved ) {
-					$push = vpush_miniprogram_comment_reply_message( get_comment( $comment_id ) );
+					$push = we_miniprogram_comment_reply_message( get_comment( $comment_id ) );
 					$result["notice"] = $push;
 				}
 				$flag = false;

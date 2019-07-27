@@ -58,6 +58,15 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			)
 		));
 
+		register_rest_route( $this->namespace, $this->resource_name.'toutiao/login', array(
+			array(
+				'methods'             	=> WP_REST_Server::CREATABLE,
+				'callback'            	=> array( $this, 'wp_toutiao_user_auth_login' ),
+				'permission_callback' 	=> array( $this, 'wp_login_permissions_check' ),
+				'args'                	=> $this->wp_user_login_collection_params(),
+			)
+		));
+
 	}
 	
 	/**
@@ -137,9 +146,9 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		
 		$url = 'https://api.q.qq.com/sns/jscode2session';
 		
-		$urls = add_query_arg($args,$url);
+		$urls = add_query_arg( $args, $url );
 		
-		$remote = wp_remote_get($urls);
+		$remote = wp_remote_get( $urls );
 
 		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
 			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 500 ) );
@@ -150,8 +159,8 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			return new WP_Error( 'error', $session['errmsg'], array( 'status' => 500 ) );
 		}
 
-		$auth_code = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );
-		if( $auth_code != 0 ) {
+		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );
+		if( $auth != 0 ) {
 			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
 		}
 		
@@ -186,7 +195,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			if ( is_wp_error( $user_id ) ) {
 				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
 			}
-			add_user_meta( $user_id, 'session_key', $session['session_key']);
+			add_user_meta( $user_id, 'session_key', $session['session_key'] );
 			add_user_meta( $user_id, 'platform', 'tencent');
 		} else {
 			$user = get_user_by( 'login', $openId );
@@ -267,7 +276,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			'code' => $code
 		);
 		$url = 'https://spapi.baidu.com/oauth/jscode2sessionkey';
-		$urls = add_query_arg($args,$url);
+		$urls = add_query_arg( $args, $url );
 		$bd_session = wp_remote_request( $urls, array( 'method' => 'POST' ) );
 		$bd_session = wp_remote_retrieve_body($bd_session);
 
@@ -344,6 +353,130 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			
 		);
 
+		$response = rest_ensure_response( $user );
+		return $response;
+
+	}
+
+	public function wp_toutiao_user_auth_login( $request ) {
+
+		date_default_timezone_set(get_option('timezone_string'));
+
+		$iv = isset($request['iv'])?$request['iv']:'';
+		$code = isset($request['code'])?$request['code']:'';
+		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
+		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
+			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 500 ) );
+		}
+
+		$appid 			= wp_miniprogram_option('tt_appid');
+		$secret 		= wp_miniprogram_option('tt_secret');
+		$role 			= wp_miniprogram_option('use_role');
+		$expire 		= date('Y-m-d H:i:s',time()+7200);
+		$user_pass 		= wp_generate_password(16,false);
+
+		$args = array(
+			'appid' => $appid,
+			'secret' => $secret,
+			'code' => $code
+		);
+		$url = 'https://developer.toutiao.com/api/apps/jscode2session';
+		$urls = add_query_arg( $args, $url );
+		$remote = wp_remote_get( $urls );
+		$tt_session = wp_remote_retrieve_body($remote);
+
+		$session = json_decode( $tt_session, true );
+		$openId = $session['openid'];
+		$session_key = $session['session_key'];
+
+		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data );
+		if( $auth != 0 ) {
+			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
+		}
+		
+		$user_data = json_decode( $data, true );
+		
+		$user_id = 0;
+		
+		$expire = date('Y-m-d H:i:s',time()+7200);
+		$user_pass = wp_generate_password(16,false);
+		
+		if( !username_exists($openId) ) {
+			$userdata = array(
+                'user_login' 			=> $openId,
+				'nickname' 				=> $user_data['nickName'],
+				'first_name'			=> $user_data['nickName'],
+				'user_nicename' 		=> $openId,
+				'display_name' 			=> $user_data['nickName'],
+				'user_email' 			=> date('Ymdhms').'@qq.com',
+				'role' 					=> $role,
+				'user_pass' 			=> $user_pass,
+				'gender'				=> $user_data['gender'],
+				'openid'				=> $openId,
+				'city'					=> $user_data['city'],
+				'avatar' 				=> $user_data['avatarUrl'],
+				'province'				=> $user_data['province'],
+				'country'				=> $user_data['country'],
+				'language'				=> $user_data['language'],
+				'expire_in'				=> $expire
+            );
+			$user_id = wp_insert_user( $userdata );			
+			if ( is_wp_error( $user_id ) ) {
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+			}
+			add_user_meta( $user_id, 'session_key', $session_key );
+			add_user_meta( $user_id, 'platform', 'toutiao');
+		} else {
+			$user = get_user_by( 'login', $openId );
+			$userdata = array(
+                'ID'            		=> $user->ID,
+				'nickname' 				=> $user_data['nickName'],
+				'first_name'			=> $user_data['nickName'],
+				'user_nicename'			=> $openId,
+				'display_name' 			=> $user_data['nickName'],
+				'user_email' 			=> $user->user_email,
+				'gender'				=> $user_data['gender'],
+				'openid'				=> $openId,
+				'city'					=> $user_data['city'],
+				'avatar' 				=> $user_data['avatarUrl'],
+				'province'				=> $user_data['province'],
+				'country'				=> $user_data['country'],
+				'language'				=> $user_data['language'],
+				'expire_in'				=> $expire
+            );
+			$user_id = wp_update_user($userdata);
+			if(is_wp_error($user_id)) {
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+			}
+			update_user_meta( $user_id, 'session_key', $session_key );
+			update_user_meta( $user_id, 'platform', 'toutiao');
+		}
+		
+		wp_set_current_user( $user_id, $openId );
+		wp_set_auth_cookie( $user_id, true );
+		
+		$current_user = get_user_by( 'ID', $user_id );
+		$roles = ( array )$current_user->roles;
+		
+		$user = array(
+			"user"	=> array(
+				"userId"		=> $user_id,
+				"nickName"		=> $user_data["nickName"],
+				"openId"		=> $user_data["openId"],
+				"avatarUrl" 	=> $user_data["avatarUrl"],
+				"gender"		=> $user_data["gender"],
+				"city"			=> $user_data["city"],
+				"province"		=> $user_data["province"],
+				"country"		=> $user_data["country"],
+				"language"		=> $user_data["language"],
+				"role"			=> $roles[0],
+				'platform'		=> 'toutiao',
+				"description"	=> $current_user->description
+			),
+			"access_token" => base64_encode( $session_key ),
+			"expired_in" => $expire
+			
+		);
 		$response = rest_ensure_response( $user );
 		return $response;
 
