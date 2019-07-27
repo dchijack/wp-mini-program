@@ -20,6 +20,18 @@
 
 2. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
+## 插件截图
+
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-1.png)
+
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-2.png)
+
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-3.png)
+
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-4.png)
+
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/assets/screenshot-5.png)
+
 ## 更新日志
 
 2019.07.28 Ver 1.0.7
