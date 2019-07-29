@@ -11,7 +11,7 @@ include( IMAHUI_REST_API. 'admin/core/interface.php' );
 include( IMAHUI_REST_API. 'admin/core/sanitization.php' );
 add_action( 'load-post.php',     'creat_meta_box' );
 add_action( 'load-post-new.php', 'creat_meta_box' );
-add_action( 'init', 'im_creat_terms_meta_box' );
+add_action( 'init', 'creat_miniprogram_terms_meta_box' );
 add_action( 'admin_menu', function() {
 	register_miniprogram_manage_menu();
 });

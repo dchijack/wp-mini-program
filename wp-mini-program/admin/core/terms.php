@@ -5,7 +5,7 @@
  
 if ( !defined( 'ABSPATH' ) ) exit;
 
-function im_creat_terms_fields_box($taxonomy) {
+function creat_miniprogram_terms_fields_box($taxonomy) {
 	$options = apply_filters( 'term_options', $options = array() );
 	if($options) {
 		foreach($options as $key => $option) {
@@ -43,7 +43,7 @@ function im_creat_terms_fields_box($taxonomy) {
 	} 
 }
 
-function im_save_term_field_action( $term_id, $tt_id ){
+function save_miniprogram_term_field_action( $term_id, $tt_id ){
 	$options = apply_filters( 'term_options', $options = array() );
 	if($options) {
 		foreach($options as $key => $option) {
@@ -56,7 +56,7 @@ function im_save_term_field_action( $term_id, $tt_id ){
 	}
 }
 
-function im_edit_terms_fields_box( $term, $taxonomy ){
+function edit_miniprogram_terms_fields_box( $term, $taxonomy ){
     $options = apply_filters( 'term_options', $options = array() );
 	if($options) {
 		foreach($options as $key => $option) {
@@ -101,7 +101,7 @@ function im_edit_terms_fields_box( $term, $taxonomy ){
 	}
 }
 
-function im_update_term_field_action( $term_id, $tt_id ){
+function update_miniprogram_term_field_action( $term_id, $tt_id ){
 	$options = apply_filters( 'term_options', $options = array() );
 	if($options) {
 		foreach($options as $key => $option) {
@@ -113,16 +113,16 @@ function im_update_term_field_action( $term_id, $tt_id ){
 	}
 }
 
-function im_creat_terms_meta_box() {
+function creat_miniprogram_terms_meta_box() {
 	$taxs = apply_filters( 'term_options', $options = array() );
 	if($taxs) {
 		foreach($taxs as $tax) {
 			$terms = $tax['taxonomies'];
 			foreach($terms as $term) { 
-				add_action( $term.'_add_form_fields', 'im_creat_terms_fields_box' , 10, 2 );
-				add_action( $term.'_edit_form_fields', 'im_edit_terms_fields_box' , 10, 2 );
-				add_action( 'created_'.$term, 'im_save_term_field_action' , 10, 2 );
-				add_action( 'edited_'.$term,   'im_update_term_field_action' , 10, 2 );
+				add_action( $term.'_add_form_fields', 'creat_miniprogram_terms_fields_box' , 10, 2 );
+				add_action( $term.'_edit_form_fields', 'edit_miniprogram_terms_fields_box' , 10, 2 );
+				add_action( 'created_'.$term, 'save_miniprogram_term_field_action' , 10, 2 );
+				add_action( 'edited_'.$term,   'update_miniprogram_term_field_action' , 10, 2 );
 			}
 		}
 	}

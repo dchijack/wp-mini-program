@@ -80,73 +80,21 @@ add_filter( 'tencent_video', function($url) {
 			return $url;
 		}
 		$url = 'http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
-		
-		$response = file_get_contents($url);
+		$remote = wp_remote_get( $url );
+		$response = wp_remote_retrieve_body( $remote );
 		$response = substr($response,13,-1);
 		$response = json_decode($response,true);
-
 		$res	= $response['vl']['vi'][0];
 		$p0		= $res['ul']['ui'][0]['url'];
 		$p1		= $res['fn'];
 		$p2		= $res['fvkey'];
 		//$ti		= $res['ti'];
-
 		$mp4	= $p0.$p1.'?vkey='.$p2;
-		
 		return $mp4;
 	}
 });
 
-add_filter( 'share_video', function($url) {
-	$domain = parse_url($url);
-	$host = $domain["host"];
-	if(strpos($host, 'v.qq.com') !== false) {
-		$video =  apply_filters( 'tencent_video', $url );
-	} else if(strpos($host, 'weibo') !== false) {
-		$data = array (); 
-		$data = http_build_query($data); 
-		$header = array ( 
-			'http' => array ( 
-				'method' => 'POST', 
-				'header'=> "Content-type: application/x-www-form-urlencoded\r\n" . 
-									"Content-Length: " . strlen($data) . "\r\n", 
-				'content' => $data
-			) 
-		); 
-		$context = stream_context_create($header); 
-		$html = @file_get_contents($url,'',$context);
-		$title = '/\"text\"\:\ "(.*?)\"\,/';
-		$images = '/\"url\"\: \"(.*?)\"\,/';
-		$videos = '/\"mp4_hd_mp4\"\: \"(.*?)\"/';
-		$mvideo = '/\"mp4_720_mp4\"\: \"(.*?)\"\,/';
-		$_data['source'] = "weibo";
-		if(preg_match($title, $html, $m)) { 
-			$_data['title'] = wp_delete_html_code($m[1]);
-			$_data['content'] = wp_delete_html_code($m[1]);
-		} 
-		if(preg_match_all($images, $html, $m)) { 
-			$_data['image'] = $m[1];
-		} 
-		if(preg_match_all($videos, $html, $m)) {
-			if($m[1][0]) {
-				$video = $m[1][0];
-			} else {
-				if(preg_match_all($mvideo, $html, $mv)) {
-					$video = $mv[1][0];
-				}
-			}
-		}
-	}
-	if($video) {
-		return $video;
-	} else {
-		return $url;
-	}
-});
-
 add_filter( 'the_video_content', function($content) {
-	preg_match("/https\:\/\/m\.weibo\.cn\/(.*?)\/(.*?)\'/",$content,$weibo);
-    preg_match("/https\:\/\/m\.weibo\.cn\/(.*?)\/(.*?)\"/",$content,$sina);
 	preg_match("/https\:\/\/v\.qq\.com\/x\/page\/(.*?)\.html/",$content, $qvideo);
 	preg_match("/https\:\/\/v\.qq\.com\/cover\/(.*?)\/(.*?)\.html/",$content, $tencent);
 	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', do_shortcode($content), $matches);
@@ -154,19 +102,9 @@ add_filter( 'the_video_content', function($content) {
 	if( $matches && isset($matches[1]) && isset($matches[1][0]) ){     
 		$thumbnails = 'poster="'.$thumbnails.'" ';
 	}
-	if($weibo || $sina) {
-		$video_id = $weibo?$weibo[2]:$sina[2];
-		$url = 'https://m.weibo.cn/status/'.$video_id;
-		$video = apply_filters( 'share_video', $url );
-		if($video) {
-			$content = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);
-			return $content;
-		} else {
-			return $content;
-		}
-	} else if($qvideo || $tencent) {
+	if($qvideo || $tencent) {
 		$url = $qvideo?$qvideo[0]:$tencent[0];
-		$video = apply_filters( 'share_video', $url );
+		$video = apply_filters( 'tencent_video', $url );
 		if($video) {
 			$contents = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);
 			return $contents;

@@ -284,10 +284,6 @@ add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
 	}
 	$data->data['cover'] = $cover;
 	$data->data['except'] = $except;
-	$args = array( 'orderby' => 'rand', 'posts_per_page' => 3, 'tag__in' => $item->term_id, 'data_query' => array( array( 'after' => '1 year ago' ) ) );
-	$query = new WP_Query();
-	$posts = $query->query( $args );
-	$data->data['posts'] = apply_filters( 'rest_posts', $posts );
 	return $data;
 }, 10, 3 );
 
@@ -361,6 +357,8 @@ function add_miniprogam_platform_select( $user ) { ?>
 				<option value="website" <?php echo ($selected == "website")?  'selected="selected"' : ''; ?>>网站注册</option>
                 <option value="wechat" <?php echo ($selected == "wechat")?  'selected="selected"' : ''; ?>>微信小程序</option>
 				<option value="tencent" <?php echo ($selected == "tencent")?  'selected="selected"' : ''; ?>>QQ 小程序</option>
+				<option value="baidu" <?php echo ($selected == "baidu")?  'selected="selected"' : ''; ?>>百度小程序</option>
+				<option value="toutiao" <?php echo ($selected == "toutiao")?  'selected="selected"' : ''; ?>>头条小程序</option>
             </select>
             <span class="description">用户注册来源所属平台</span>
         </td>

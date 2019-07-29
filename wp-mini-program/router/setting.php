@@ -78,8 +78,8 @@ class WP_REST_Setting_Router extends WP_REST_Controller {
 	
 	public function get_wp_setting_info(  ) {
 		$data = array( 
-			'name' => wp_miniprogram_option('appname'), 
-			'description' => wp_miniprogram_option('appdesc'),
+			'name' => wp_miniprogram_option('appname')?wp_miniprogram_option('appname'):get_bloginfo('name'), 
+			'description' => wp_miniprogram_option('appdesc')?wp_miniprogram_option('appdesc'):get_bloginfo('description'),
 			'version' => wp_miniprogram_option('version')?wp_miniprogram_option('version'):get_bloginfo('version')
 		);
 		$response = rest_ensure_response( $data );

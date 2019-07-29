@@ -10,14 +10,11 @@ if(wp_miniprogram_option('approved')) {
 }
 
 function we_miniprogram_comment_reply_message( $comment ) {
-	
 	date_default_timezone_set(get_option('timezone_string'));
-
 	$current_id = $comment->comment_ID;
 	if( $current_id === 0 ) {
 		return new WP_Error( 'error', '评论 ID 为空', array( 'status' => 400 ) );
 	}
-		
 	$post_id = $comment->comment_post_ID;
 	$reply_name = $comment->comment_author;
 	$reply_date = $comment->comment_date;
@@ -25,7 +22,6 @@ function we_miniprogram_comment_reply_message( $comment ) {
 	$parent_id = $comment->comment_parent;
 	$approved = $comment->comment_approved;
 	$post_path = "/pages/detail/detail?id=".$post_id;
-		
 	if( $parent_id != 0 ) {
 		$parents = get_comment( $parent_id );
 		$parents_user_id = $parents->user_id;
@@ -62,14 +58,18 @@ function we_miniprogram_comment_reply_message( $comment ) {
 					"keyword3"	=> array( "value" => $reply_date )
 				)
 			);
-				
 			$header = array(
 				"Content-Type: application/json;charset=UTF-8"
 			);
-
-			$output = get_content_by_curl($url,json_encode($data),$header);
-
-			$result = json_decode($output,true);
+			$args = array(
+				'method'  => 'POST',
+				'body' 	  => wp_json_encode( $data ),
+				'headers' => $header,
+				'cookies' => array()
+			);
+			$remote = wp_remote_post( $url, $args );
+			$content = wp_remote_retrieve_body( $remote );
+			$result = json_decode( $content, true );
 			$code = $result['errcode'];
 			$message = $result['errmsg'];
 			if( $code=='0' ) {
