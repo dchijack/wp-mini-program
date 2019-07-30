@@ -1,4 +1,4 @@
-# WordPress Mini Program
+# WordPress Mini Program API
 
 > 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。技术博客：https://www.imahui.com
 

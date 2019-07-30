@@ -1,4 +1,4 @@
-=== WP Mini Program ===
+=== Mini Program API ===
 Contributors: 
 Donate link: 
 Tags: REST API, 小程序
@@ -23,12 +23,12 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
 == Installation ==
  
-如何安装 WP Mini Program.
+如何安装 Mini Program API.
  
 e.g.
  
-1. 下载 WP Mini Program 插件，然后上传到 WordPress 网站后台插件安装
-1. 通过 WordPress 网站后台菜单 插件 -  已安装插件 列表中，选择 WP Mini Program 的启用，即可激活
+1. 下载 Mini Program API 插件，然后上传到 WordPress 网站后台插件安装
+1. 通过 WordPress 网站后台菜单 插件 -  已安装插件 列表中，选择 Mini Program API 的启用，即可激活
  
 == Screenshots ==
  
