@@ -41,10 +41,10 @@ function imahui_applets_dashboard_widget() {
 	'高级版插件：Version '.$updates[0]["meta"]["version"].''
 	);
 	$update_ver = sprintf( ' <a href="%s" target="%s" data-title="%s">%s</a>',
-	esc_url( 'https://www.imahui.com/minapp/1735.html' ),
+	esc_url( 'https://www.imahui.com/minapp/1747.html' ),
 	"_blank",
 	esc_attr( ' Mini Program API ' ),
-	'查看开源版介绍'
+	'查看免费 WordPress 小程序详情'
 	);
 	$html = '';
 	$html .= '<div class="main">

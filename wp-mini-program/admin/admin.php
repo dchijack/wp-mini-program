@@ -36,7 +36,7 @@ if(is_admin()) {
 	add_filter( 'miniprogram_manage_menus', function( $admin_menu ) {
 		$submenu = array();
 		$submenu[] = ['page_title' => '小程序设置','menu_title' => '基本设置', 'option_name' => 'miniprogram','slug' => 'miniprogram', 'function' => 'miniprogram_options_manage_page'];
-		$submenu[] = ['page_title' => '关于艾码汇','menu_title' => '使用指南', 'option_name' => 'miniprogram','slug' => 'guide', 'function' => 'guide'];
+		$submenu[] = ['page_title' => 'Mini Program API 使用指南','menu_title' => '使用指南', 'option_name' => 'miniprogram','slug' => 'guide', 'function' => 'guide'];
 		$admin_menu = array(
 			'menu' => [
 				'page_title' => '小程序设置','menu_title' => '小程序', 'option_name' => 'miniprogram', 'function' => 'miniprogram_options_manage_page', 'icon' => 'dashicons-editor-code', 'position' => 2

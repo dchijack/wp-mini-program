@@ -22,17 +22,22 @@
 
 ## 插件截图
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-1.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-1.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-2.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-2.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-3.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-3.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-4.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-4.png)
 
-![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/wp-mini-program/assets/screenshot-5.png)
+![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-5.png)
 
 ## 更新日志
+
+2019.07.30 Ver 1.0.9
+
+> 1. 移除 GitHub 版本升级插件文件
+> 2. 更新使用指南, 增加开源小程序下载地址及相关教程
 
 2019.07.29 Ver 1.0.8
 
