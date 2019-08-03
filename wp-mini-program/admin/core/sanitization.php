@@ -93,7 +93,7 @@ function setting_sanitize_multicheck( $input, $option ) {
 		}
 		foreach( $input as $key => $value ) {
 			if ( array_key_exists( $key, $option['options'] ) && $value ) {
-				$output[$key] = '1';
+				$output[$key] = $value;
 			}
 		}
 	}

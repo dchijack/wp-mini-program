@@ -6,7 +6,7 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 // 屏蔽不常用 REST
-if(wp_miniprogram_option('rest_other')) {
+if(wp_miniprogram_option('gutenberg')) {
 	add_filter( 'rest_endpoints', function( $endpoints ) {
 		unset( $endpoints['/wp/v2/users'] );
 		unset( $endpoints['/wp/v2/users/me'] );
@@ -198,7 +198,6 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 		$_data["author"]["avatar"] = get_avatar_url($author_id);
 	}
 	$_data["author"]["description"] = get_the_author_meta('description',$author_id);
-	//unset($_data["meta"]);
 	$_data["menu"]["icon"] = get_post_meta( $post_id, "icon" ,true );
 	$_data["menu"]["title"] = get_post_meta( $post_id, "title" ,true );
 	$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
@@ -388,7 +387,7 @@ if (wp_miniprogram_option('user_manage')) {
 		$columns["openid"] = "OpenID";
 		$columns["area"] = "地区";
 		$columns["registered"] = "注册时间";
-		$columns["expire"] = "缓存有效期";
+		$columns["platform"] = "注册平台";
 		return $columns;
 
 	});
@@ -421,8 +420,19 @@ if (wp_miniprogram_option('user_manage')) {
 			$value = get_user_meta($user->ID, 'openid', true);
 		} else if ('redate' == $column_name){
 			$value = get_date_from_gmt($user->user_registered);
-		} else if ('expire' == $column_name){
-			$value = get_user_meta($user->ID, 'expire_in', true);
+		} else if ('platform' == $column_name){
+			$platform = get_user_meta($user->ID, 'platform', true);
+			if($platform == 'wechat') {
+				$value = '微信小程序';
+			} elseif($platform == 'tencent') {
+				$value = 'QQ 小程序';
+			} elseif($platform == 'baidu') {
+				$value = '百度小程序';
+			} elseif($platform == 'toutiao') {
+				$value = '头条小程序';
+			} else {
+				$value = '网站用户';
+			}
 		} else {
 			$value = "";
 		}

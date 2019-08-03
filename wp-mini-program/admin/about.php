@@ -10,7 +10,7 @@
 function guide(){ ?>
 	<div style="width:600px;">
 		<h2>Mini Program API</h2>
-		<p>WordPress Mini Program API 插件是 <a href="https://www.imahui.com/" target="_blank">艾码汇</a> 基于 WordPress Rest API 创建小程序应用 API 数据接口。</p>
+		<p>WordPress Mini Program API 插件是 <a href="https://www.imahui.com/" target="_blank">艾码汇</a> 基于 WP REST API 创建小程序 API 数据接口。</p>
 		<h3>开源小程序</h3>
 		<p>丸子开源小程序免费下载，包括微信小程序、QQ 小程序、百度智能小程序、今日头条小程序</p>
 		<p><a href="https://www.imahui.com/minapp/1747.html" target="_blank">开源小程序详情点击这里</a>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.imahui.com/minapp/1786.html" target="_blank">开源小程序教程点击这里</a></p>

@@ -117,6 +117,22 @@ class MP_Auth {
             return false;
         }
     }
+
+    public static function qq_miniprogram_access_token() {
+		$appid 		= wp_miniprogram_option('qq_appid');
+        $secret 	= wp_miniprogram_option('qq_secret');
+        if( $appid && $secret ) {
+            $url = 'https://api.q.qq.com/api/getToken?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
+            $token = wp_remote_get($url);
+            if( !is_array( $token ) || is_wp_error($token) || $token['response']['code'] != '200' ) {	
+                return false;
+            }
+            $access_token = json_decode( $token['body'], true );
+            return $access_token;
+        } else {
+            return false;
+        }
+    }
     
 	public static function login( $session ) {
 		if( $session ) {

@@ -43,3 +43,27 @@ add_filter( 'meta_options',function ($options) {
 	];
 	return $options;
 });
+
+if( wp_miniprogram_option('sticky') ) {
+	add_filter( 'views_edit-post', function ( $views ) {
+		global $current_user, $wp_query;
+		$query = array(  
+			'post_type'   => 'post',  
+			'post_status' => 'publish',
+			'meta_key'	=> 'focus'
+		);
+		$result = new WP_Query($query);
+		$class = isset($_GET['focus'])  ? ' class="current"' : '';  
+		$views[] = sprintf(__('<a href="%s" ' .$class.' aria-current="page">推荐文章 <span class="count">(%d)</span></a>', 'focus'), admin_url('edit.php?post_type=post&focus=true'), $result->found_posts); 
+		return $views; 
+	});
+	add_filter('parse_query', function ($query) {
+		global $pagenow;
+		if ( is_admin() && 'edit.php' == $pagenow && isset($_GET[ 'focus' ]) ) {
+			$query->query_vars[ 'post_type' ]    = 'post';
+			$query->query_vars[ 'post_status' ]  = 'publish';
+			$query->query_vars[ 'meta_key' ] 	 = 'focus';
+		}
+		return $query;
+	});
+}
