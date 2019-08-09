@@ -78,28 +78,32 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 		if( $type == 'index' ) {
 			$adOpen = wp_miniprogram_option('ad_i_open');
 			$adType = wp_miniprogram_option('ad_i_type');
+			$adPlatform = wp_miniprogram_option('ad_i_platform');
 			$adImage = wp_miniprogram_option('ad_i_image');
 			$adArgs = wp_miniprogram_option('ad_i_args');
 		} else if( $type == 'list' ) {
 			$adOpen = wp_miniprogram_option('ad_t_open');
 			$adType = wp_miniprogram_option('ad_t_type');
+			$adPlatform = wp_miniprogram_option('ad_t_platform');
 			$adImage = wp_miniprogram_option('ad_t_image');
 			$adArgs = wp_miniprogram_option('ad_t_args');
 		} else if( $type == 'detail' ) {
 			$adOpen = wp_miniprogram_option('ad_d_open');
 			$adType = wp_miniprogram_option('ad_d_type');
+			$adPlatform = wp_miniprogram_option('ad_d_platform');
 			$adImage = wp_miniprogram_option('ad_d_image');
 			$adArgs = wp_miniprogram_option('ad_d_args');
 		} else if( $type == 'page' ) {
 			$adOpen = wp_miniprogram_option('ad_p_open');
 			$adType = wp_miniprogram_option('ad_p_type');
+			$adPlatform = wp_miniprogram_option('ad_p_platform');
 			$adImage = wp_miniprogram_option('ad_p_image');
 			$adArgs = wp_miniprogram_option('ad_p_args');
 		}
 		wp_cache_set( $adType, array( "type"=>$adType, "thumbnail"=>$adImage, "code"=>$adArgs ), $adType.'_group',3600 );
 		$_data = wp_cache_get( $adType, $adType.'_group' );
 		if( $_data === false ) {
-			$_data = array( "type"=>$adType, "thumbnail"=>$adImage, "code"=>$adArgs );
+			$_data = array( "type"=>$adType, "platform"=>$adPlatform, "thumbnail"=>$adImage, "code"=>$adArgs );
 			wp_cache_set( $adType, $_data, $adType.'_group', 3600 );
 		}
 		if($adOpen) {

@@ -418,7 +418,7 @@ if (wp_miniprogram_option('user_manage')) {
 			if (!empty($city) && !empty($province)) { $value = $city.' • '.$province; } else { $value = $city.$province; }
 		} else if ('openid' == $column_name){
 			$value = get_user_meta($user->ID, 'openid', true);
-		} else if ('redate' == $column_name){
+		} else if ('registered' == $column_name){
 			$value = get_date_from_gmt($user->user_registered);
 		} else if ('platform' == $column_name){
 			$platform = get_user_meta($user->ID, 'platform', true);

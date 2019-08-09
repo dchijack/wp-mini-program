@@ -71,7 +71,7 @@ class WP_REST_Vote_Router extends WP_REST_Controller {
 	 */
 	public function wp_posts_vote_permissions_check( $request ) {
 		$post_id = isset($request['id'])?$request['id']:0;
-		if( $post_id == '' || $post_id == null || $post_id == 0 || empty( get_post( $post_id ) ) ) {
+		if( $post_id == '' || $post_id == null || $post_id == 0 ) {
 			return new WP_Error( 'error', '文章 ID 错误', array( 'status' => 400 ) );
 		}
 		$access_token = isset($request['access_token'])?$request['access_token']:'';

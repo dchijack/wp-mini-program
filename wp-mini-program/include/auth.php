@@ -107,11 +107,11 @@ class MP_Auth {
         $secret 	= wp_miniprogram_option('secretkey');
         if( $appid && $secret ) {
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
-            $token = wp_remote_get($url);
-            if( !is_array( $token ) || is_wp_error($token) || $token['response']['code'] != '200' ) {	
+            $body = wp_remote_get($url);
+            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
                 return false;
             }
-            $access_token = json_decode( $token['body'], true );
+            $access_token = json_decode( $body['body'], true );
             return $access_token;
         } else {
             return false;
@@ -123,11 +123,27 @@ class MP_Auth {
         $secret 	= wp_miniprogram_option('qq_secret');
         if( $appid && $secret ) {
             $url = 'https://api.q.qq.com/api/getToken?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
-            $token = wp_remote_get($url);
-            if( !is_array( $token ) || is_wp_error($token) || $token['response']['code'] != '200' ) {	
+            $body = wp_remote_get($url);
+            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
                 return false;
             }
-            $access_token = json_decode( $token['body'], true );
+            $access_token = json_decode( $body['body'], true );
+            return $access_token;
+        } else {
+            return false;
+        }
+    }
+
+    public static function bd_miniprogram_access_token( ) {
+        $appkey 		= wp_miniprogram_option('bd_appkey');
+        $secret 		= wp_miniprogram_option('bd_secret');
+        if( $appkey && $secret ) {
+            $url = 'https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id='.$appkey.'&client_secret='.$secret.'&scope=smartapp_snsapi_base';
+            $body = wp_remote_get($url);
+            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
+                return false;
+            }
+            $access_token = json_decode( $body['body'], true );
             return $access_token;
         } else {
             return false;

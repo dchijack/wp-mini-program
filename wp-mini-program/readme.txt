@@ -2,7 +2,7 @@
 Contributors: 
 Donate link: https://www.imahui.com/about.html
 Tags: rest api
-Requires at least:  4.9.5
+Requires at least:  4.9.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
 Stable tag:  1.1.0
@@ -63,12 +63,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 如何安装 Mini Program API.
 
 方法一：
+
 1. 点击插件介绍页的 Download 下载 Mini Program API 插件安装包
 2. 登录 WordPress 站点后台, 点击后台左侧菜单的插件项
 3. 依次点击 安装插件 - 上传插件 - 选择文件 - 现在安装
 4. 安装完成后, 点击启用即可
 
 方法二：
+
 1. 登录 WordPress 站点后台, 点击后台左侧菜单的插件项
 2. 然后, 点击安装插件
 3. 在右边搜索框中输入 Mini Program API 按回车键进行搜索
@@ -76,12 +78,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 安装完成后, 点击启用即可
 
 == Frequently Asked Questions ==
+
 1. 为什么 API 地址请求 404
 请检查站点是否支持伪静态，是否设置了固定链接以及 Rest API 是否被禁用
+
 2. 设置了固定链接，但仍然是 404 怎么办
 请确定你的服务器或者空间是否支持 WordPress 伪静态, 即固定链接地址不能带有 index.php 形式
  
 == Screenshots ==
+
 1. 小程序授权
 2. 常规设置
 3. 优化设置
@@ -89,6 +94,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.1 =
+
+1. 更新 QQ 评论回复通知选项显示
+2. 更新广告功能, 增加投放平台选项
+3. 更新百度评论回复通知消息模板设置显示功能
+4. 更新百度开发者服务权限 Access Token 获取
+5. 更新百度评论回复消息推送 / 审核通知消息推送
 
 = 1.1.0 =
 

@@ -49,6 +49,8 @@ function we_miniprogram_comment_reply_message( $comment ) {
 			$response = we_miniprogram_comment_notice_action( $args );
 		} else if( $platform == 'tencent' ) {
 			$response = qq_miniprogram_comment_notice_action( $args );
+		} else if( $platform == 'baidu' ) {
+			$response = bd_miniprogram_comment_notice_action( $args );
 		}
 	}
 	return $response;	
@@ -122,6 +124,60 @@ function qq_miniprogram_comment_notice_action( $contents ) {
 		"page"			=> $contents['page'],
 		"form_id"		=> $contents['form_id'],
 		"template_id"	=> $template_id,
+		"data"			=> array(
+			"keyword1"	=> array( "value" => ucfirst($contents['reply']) ),
+			"keyword2"	=> array( "value" => $contents['content'] ),
+			"keyword3"	=> array( "value" => $contents['date'] )
+		)
+	);
+	$header = array(
+		"Content-Type: application/json;charset=UTF-8"
+	);
+	$args = array(
+		'method'  => 'POST',
+		'body' 	  => wp_json_encode( $data ),
+		'headers' => $header,
+		'cookies' => array()
+	);
+	$remote = wp_remote_post( $url, $args );
+	$content = wp_remote_retrieve_body( $remote );
+	$result = json_decode( $content, true );
+	$code = $result['errcode'];
+	$message = $result['errmsg'];
+	$response = array();
+	if( $code == '0' ) {
+		delete_comment_meta($contents['id'], 'formId', $contents['formid']);
+		$response = array(
+			'status'	=> 200,
+			'success' 	=> true ,
+			'message'	=> 'sent message success'
+		);
+	} else {
+		$response = array(
+			'status'	=> 500,
+			'success' 	=> false ,
+			'message'	=> $message
+		);
+	}
+	return $response;
+}
+function bd_miniprogram_comment_notice_action( $contents ) {
+	$token = MP_Auth::bd_miniprogram_access_token();
+	$access_token = isset($token['access_token']) ? $token['access_token'] : '';
+	if( !$access_token ) {
+		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
+	}
+	$template_id = get_minapp_option('bd_reply_tpl');
+	if( empty($template_id) ) {
+		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 400 ) );
+	}
+	$url = "https://openapi.baidu.com/rest/2.0/smartapp/template/send?access_token=".$access_token;
+	$data = array(
+		"touser_openId"	=> $contents['touser'],
+		"page"			=> $contents['page'],
+		"scene_id"		=> $contents['form_id'],
+		"template_id"	=> $template_id,
+		"scene_type"	=> 1,
 		"data"			=> array(
 			"keyword1"	=> array( "value" => ucfirst($contents['reply']) ),
 			"keyword2"	=> array( "value" => $contents['content'] ),

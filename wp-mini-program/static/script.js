@@ -80,57 +80,58 @@ jQuery(document).ready(function($) {
 	if (jQuery('#ad_i_open:checked').val() !== undefined) {
 		jQuery('#ad_i_type_select').show();
 		jQuery('#ad_i_args_text').show();
+		jQuery('#ad_i_platform_mu_check').show();
 	} else {
 		jQuery('#ad_i_type_select').hide();
 		jQuery('#ad_i_args_text').hide();
+		jQuery('#ad_i_platform_mu_check').hide();
 	}
 	jQuery('#ad_i_open').click(function() {
 		jQuery('#ad_i_type_select').fadeToggle(400);
 		jQuery('#ad_i_args_text').fadeToggle(400);
+		jQuery('#ad_i_platform_mu_check').fadeToggle(400);
 	});
 	if (jQuery('#ad_t_open:checked').val() !== undefined) {
 		jQuery('#ad_t_open_checkbox').show();
 		jQuery('#ad_t_args_text').show();
+		jQuery('#ad_t_platform_mu_check').show();
 	} else {
 		jQuery('#ad_t_type_select').hide();
 		jQuery('#ad_t_args_text').hide();
+		jQuery('#ad_t_platform_mu_check').hide();
 	}
 	jQuery('#ad_t_open').click(function() {
 		jQuery('#ad_t_type_select').fadeToggle(400);
 		jQuery('#ad_t_args_text').fadeToggle(400);
+		jQuery('#ad_t_platform_mu_check').fadeToggle(400);
 	});
 	if (jQuery('#ad_d_open:checked').val() !== undefined) {
 		jQuery('#ad_d_type_select').show();
 		jQuery('#ad_d_args_text').show();
+		jQuery('#ad_d_platform_mu_check').show();
 	} else {
 		jQuery('#ad_d_type_select').hide();
 		jQuery('#ad_d_args_text').hide();
+		jQuery('#ad_d_platform_mu_check').hide();
 	}
 	jQuery('#ad_d_open').click(function() {
 		jQuery('#ad_d_type_select').fadeToggle(400);
 		jQuery('#ad_d_args_text').fadeToggle(400);
+		jQuery('#ad_d_platform_mu_check').fadeToggle(400);
 	});
 	if (jQuery('#ad_p_open:checked').val() !== undefined) {
 		jQuery('#ad_p_type_select').show();
 		jQuery('#ad_p_args_text').show();
+		jQuery('#ad_p_platform_mu_check').show();
 	} else {
 		jQuery('#ad_p_type_select').hide();
 		jQuery('#ad_p_args_text').hide();
+		jQuery('#ad_p_platform_mu_check').hide();
 	}
 	jQuery('#ad_p_open').click(function() {
 		jQuery('#ad_p_type_select').fadeToggle(400);
 		jQuery('#ad_p_args_text').fadeToggle(400);
-	});
-	if (jQuery('#ad_v_open:checked').val() !== undefined) {
-		jQuery('#ad_v_type_select').show();
-		jQuery('#ad_v_args_text').show();
-	} else {
-		jQuery('#ad_v_type_select').hide();
-		jQuery('#ad_v_args_text').hide();
-	}
-	jQuery('#ad_v_open').click(function() {
-		jQuery('#ad_v_type_select').fadeToggle(400);
-		jQuery('#ad_v_args_text').fadeToggle(400);
+		jQuery('#ad_p_platform_mu_check').fadeToggle(400);
 	});
 	if (jQuery('#qq_applets:checked').val() !== undefined) {
 		jQuery('#qq_appid_text').show();
@@ -177,7 +178,7 @@ jQuery(document).ready(function($) {
 		$.each(ads_types, function(index,ads_type){
 			var select = $('select#'+ads_type).val();
 			var image_upload = '#' + ads_type.replace(/type/, "image_upload")
-			if(select != 'wechat'){
+			if(select != 'wechat' && select != 'tencent' && select != 'baidu'){
 				$(image_upload).show();
 			}
 		});
