@@ -5,7 +5,7 @@ Tags: rest api
 Requires at least:  4.9.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag:  1.1.0
+Stable tag:  1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -94,6 +94,13 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.2 ==
+
+1. 更新广告功能组件
+2. 更新导航菜单功能
+3. 更新今日头条小程序授权
+4. 更新授权登录用户注册邮箱
 
 = 1.1.1 =
 

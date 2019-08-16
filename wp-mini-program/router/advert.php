@@ -100,15 +100,10 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 			$adImage = wp_miniprogram_option('ad_p_image');
 			$adArgs = wp_miniprogram_option('ad_p_args');
 		}
-		wp_cache_set( $adType, array( "type"=>$adType, "thumbnail"=>$adImage, "code"=>$adArgs ), $adType.'_group',3600 );
-		$_data = wp_cache_get( $adType, $adType.'_group' );
-		if( $_data === false ) {
-			$_data = array( "type"=>$adType, "platform"=>$adPlatform, "thumbnail"=>$adImage, "code"=>$adArgs );
-			wp_cache_set( $adType, $_data, $adType.'_group', 3600 );
-		}
+		$_data = array( "platform"=>$adPlatform, "type"=>$adType, "thumbnail"=>$adImage, "code"=>$adArgs );
 		if($adOpen) {
 			if(!empty($adType) && !empty($adArgs)) {
-				if (empty($adImage) && $adType != 'wechat') {
+				if (empty($adImage) && $adType != 'unitad') {
 					$result["success"] = false;
 					$result["message"] = "小程序广告获取失败,广告图片没有设置";
 					$result["status"] = 500;

@@ -295,7 +295,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'first_name'			=> $user_data['nickname'],
 				'user_nicename' 		=> $openId,
 				'display_name' 			=> $user_data['nickname'],
-				'user_email' 			=> date('Ymdhms').'@qq.com',
+				'user_email' 			=> date('Ymdhms').'@baidu.com',
 				'role' 					=> $role,
 				'user_pass' 			=> $user_pass,
 				'gender'				=> $user_data['sex'],
@@ -374,7 +374,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$role 			= wp_miniprogram_option('use_role');
 		$expire 		= date('Y-m-d H:i:s',time()+7200);
 		$user_pass 		= wp_generate_password(16,false);
-
+		$user_id = 0;
 		$args = array(
 			'appid' => $appid,
 			'secret' => $secret,
@@ -389,17 +389,12 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$openId = $session['openid'];
 		$session_key = $session['session_key'];
 
-		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data );
+		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data);
 		if( $auth != 0 ) {
 			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
 		}
 		
 		$user_data = json_decode( $data, true );
-		
-		$user_id = 0;
-		
-		$expire = date('Y-m-d H:i:s',time()+7200);
-		$user_pass = wp_generate_password(16,false);
 		
 		if( !username_exists($openId) ) {
 			$userdata = array(
@@ -408,7 +403,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'first_name'			=> $user_data['nickName'],
 				'user_nicename' 		=> $openId,
 				'display_name' 			=> $user_data['nickName'],
-				'user_email' 			=> date('Ymdhms').'@qq.com',
+				'user_email' 			=> date('Ymdhms').'@toutiao.com',
 				'role' 					=> $role,
 				'user_pass' 			=> $user_pass,
 				'gender'				=> $user_data['gender'],

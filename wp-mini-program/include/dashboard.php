@@ -60,7 +60,7 @@ function imahui_applets_dashboard_widget() {
 	}
 	$html .= '<p class="community-events-footer">
 	<a href="https://www.imahui.com/" target="_blank">艾码汇 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
-	<a href="https://www.imahui.com/minapp" target="_blank">小程序教程 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
+	<a href="https://www.imahui.com/minapp" target="_blank">小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="http://mzhuti.com/" target="_blank">M主题小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="https://get-vpush2.mssnn.cn/?a=imahui" target="_blank">小程序推送 <span aria-hidden="true" class="dashicons dashicons-external"></span></a>
 	</p>';

@@ -106,7 +106,7 @@ class WP_REST_Menu_Router extends WP_REST_Controller {
 					$_data['class'] = $nav->classes;
 					$_data['icon'] = $nav->description;
 					$_data['url'] = '/pages/page/page?id='.$nav->object_id;
-				} elseif($nav->xfn == 'app') {
+				} elseif($nav->xfn == 'app' || $nav->xfn == 'weapp' || $nav->xfn == 'qq' || $nav->xfn == 'baidu') {
 					$_data['id'] = $nav->menu_order;
 					$_data['name'] = $nav->title;
 					$_data['type'] = $nav->xfn;

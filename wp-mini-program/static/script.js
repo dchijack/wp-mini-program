@@ -178,7 +178,7 @@ jQuery(document).ready(function($) {
 		$.each(ads_types, function(index,ads_type){
 			var select = $('select#'+ads_type).val();
 			var image_upload = '#' + ads_type.replace(/type/, "image_upload")
-			if(select != 'wechat' && select != 'tencent' && select != 'baidu'){
+			if(select != 'unitad'){
 				$(image_upload).show();
 			}
 		});
