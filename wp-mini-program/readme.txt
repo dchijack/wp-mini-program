@@ -95,12 +95,12 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
 == Changelog ==
 
-= 1.1.3 ==
+= 1.1.3 =
 
 1. 更新广告流量主参数
 2. 更新百度智能小程序 Web 化信息项
 
-= 1.1.2 ==
+= 1.1.2 =
 
 1. 更新广告功能组件
 2. 更新导航菜单功能
