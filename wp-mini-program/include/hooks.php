@@ -114,7 +114,25 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 			if($media_audio) {
 				$_data["media"]['audio'] = $media_audio;
 			}
-		} 
+		}
+		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+			$custom_keywords = get_post_meta( $post_id, "keywords", true );
+			if( !$custom_keywords ) {
+				$custom_keywords = "";
+				$tags = wp_get_post_tags( $post_id );
+				foreach ($tags as $tag ) {
+					$custom_keywords = $custom_keywords . $tag->name . ",";
+				}
+			}
+			$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
+			$_data["smartprogram"]["keywords"] = $custom_keywords;
+			$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
+			$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+			$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
+			$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
+			$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+			$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+		}
 		if(!$media_video) {
 			$_data["content"]["rendered"] = apply_filters( 'the_video_content', $post_content );
 		}
@@ -210,6 +228,24 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 	if ( !isset( $request['id'] ) ) {
 		if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
 	} else {
+		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+			$custom_keywords = get_post_meta( $post_id, "keywords", true );
+			if( !$custom_keywords ) {
+				$custom_keywords = "";
+				$tags = wp_get_post_tags( $post_id );
+				foreach ($tags as $tag ) {
+					$custom_keywords = $custom_keywords . $tag->name . ",";
+				}
+			}
+			$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
+			$_data["smartprogram"]["keywords"] = $custom_keywords;
+			$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
+			$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+			$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
+			$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
+			$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+			$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+		}
 		if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
 			add_post_meta($post_id, 'views', 1, true);  
 		}
@@ -262,6 +298,14 @@ add_filter( 'rest_prepare_category',function($data, $item, $request) {
 	} else {
 		$except = true;
 	}
+	if( isset($request['id']) ) {
+		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+			$smartprogram["title"] = $item->name .'-'.get_bloginfo('name');
+			$smartprogram["keywords"] = $item->name;
+			$smartprogram["description"] = $item->description;
+			$data->data['smartprogram'] = $smartprogram;
+		}
+	}
 	$data->data['cover'] = $cover;
 	$data->data['date'] = $recent_date;
 	$data->data['except'] = $except;
@@ -283,6 +327,14 @@ add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
 	}
 	$data->data['cover'] = $cover;
 	$data->data['except'] = $except;
+	if( isset($request['id']) ) {
+		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+			$smartprogram["title"] = $item->name .'-'.get_bloginfo('name');
+			$smartprogram["keywords"] = $item->name;
+			$smartprogram["description"] = $item->description;
+			$data->data['smartprogram'] = $smartprogram;
+		}
+	}
 	return $data;
 }, 10, 3 );
 

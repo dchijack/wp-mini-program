@@ -103,7 +103,7 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 		$_data = array( "platform"=>$adPlatform, "type"=>$adType, "thumbnail"=>$adImage, "code"=>$adArgs );
 		if($adOpen) {
 			if(!empty($adType) && !empty($adArgs)) {
-				if (empty($adImage) && $adType != 'unitad') {
+				if (empty($adImage) && $adType != 'unit') {
 					$result["success"] = false;
 					$result["message"] = "小程序广告获取失败,广告图片没有设置";
 					$result["status"] = 500;

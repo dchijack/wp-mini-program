@@ -31,6 +31,9 @@ add_filter( 'meta_options',function ($options) {
 		$fields['video'] = ['title'=>'视频地址',		'type'=>'upload',	'class' => 'regular-text'];
 		$fields['audio'] = ['title'=>'音频地址',		'type'=>'upload',	'class' => 'regular-text'];
 	}
+	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
+		$fields['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];
+	}
 	$options['post-box']['fields'] = $fields;
 	$options['page-box'] =  [
 		'title'   => '页面设置',
@@ -41,6 +44,9 @@ add_filter( 'meta_options',function ($options) {
 			'thumbnail'		=>['title'=>'自定义缩略图',	'type'=>'upload','class' => 'regular-text','description'=>'自定义缩略图地址.注意:设置后无须另行设置特色图像']
 		]
 	];
+	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
+		$options['page-box']['fields']['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];
+	}
 	return $options;
 });
 
