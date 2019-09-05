@@ -1,11 +1,11 @@
 === Mini Program API ===
-Contributors: 
+Contributors: Chi
 Donate link: https://www.imahui.com/about.html
 Tags: rest api
 Requires at least:  4.9.0
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag:  1.1.3
+Stable tag:  1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -17,7 +17,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 自定义 API 接口功能如下：
 
-1. 支持微信小程充 / QQ 小程序 / 百度智能小程序 / 字节跳动(今日头条)小程序授权登录。
+1. 支持微信小程序 / QQ 小程序 / 百度智能小程序 / 字节跳动(今日头条)小程序授权登录。
 2. 支持授权登录用户评论文章 / 点赞文章 / 收藏文章, 以及查看评论文章 / 点赞文章 / 收藏文章列表
 3. 支持微信小程序二维码生成
 4. 支持微信小程序评论消息通知, QQ 小程序评论消息通知
@@ -94,6 +94,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.4 =
+
+1. 新增自定义字段 API 扩展
+2. 更新修复页面摘要错误及百度 Web 化描述
 
 = 1.1.3 =
 

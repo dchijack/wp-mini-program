@@ -8,17 +8,21 @@
 
 ## 插件下载
 
-1. 关注 WordPressTalk 公众号，回复：**9527** 直接获取插件安装包
+1. 访问 WordPress 插件下载页：[点击这里访问页面](https://wordpress.org/plugins/wp-mini-program/)
 
-2. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
+2. 关注 WordPressTalk 公众号，回复：**9527** 直接获取插件安装包
 
-3. 可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
+3. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
+
+4. 可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
 
 ## 安装指南
 
-1. 关注 WordPressTalk 公众号回复：9527 下载的是插件安装包，可以直接上传网站后台的插件安装启用
+1. 可以直接通过 WordPress 网站后台 插件 - 安装插件 - 搜索：Mini Program API 获取插件安装启用
 
-2. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
+2. 关注 WordPressTalk 公众号回复：9527 下载的是插件安装包，可以直接上传网站后台的插件安装启用
+
+3. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
 ## 插件截图
 
@@ -33,6 +37,11 @@
 ![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-5.png)
 
 ## 更新日志
+
+2019.09.05 Ver 1.1.4
+
+> 1. 新增自定义字段 API 扩展
+> 2. 更新修复页面摘要错误及百度 Web 化描述
 
 2019.08.26 Ver 1.1.3
 

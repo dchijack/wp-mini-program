@@ -66,6 +66,12 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	$_data["author"]["description"] = get_the_author_meta('description',$author_id);
 	$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 	$_data["meta"]["views"] = $post_views;
+	$metas = apply_filters( 'custom_meta', $custom_meta = array() );
+	if ($metas) {
+		foreach ( $metas as $meta ) {
+			$_data["meta"][$meta] = get_post_meta( $post_id, $meta ,true );
+		}
+	}
 	$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 	$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 	$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
@@ -201,11 +207,9 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 	$post_title = $post->post_title;
 	$post_views = (int)get_post_meta( $post_id, "views" ,true );
 	$post_excerpt = $_data["excerpt"]["rendered"];
+	$post_content = $_data["content"]["rendered"];
 	$_data["id"]  = $post_id;
 	$_data["date"] = $post_date;
-	$_data["time"] = datetime_standard($post_date);
-	$_data["week"] = get_post_weekday($post_date);
-	$_data["link"] = get_the_permalink($post_id);
 	$_data["except"] = get_post_meta( $post_id, "except" ,true )?true:false;
 	unset($_data['author']);
 	$_data["author"]["id"] = $author_id;
@@ -224,7 +228,9 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 	$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 	$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
 	$_data["title"]["rendered"] = html_entity_decode( $post_title );
-	$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) ); 
+	if( !$post_excerpt ) {
+		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
+	}
 	if ( !isset( $request['id'] ) ) {
 		if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
 	} else {
@@ -239,7 +245,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 			}
 			$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
 			$_data["smartprogram"]["keywords"] = $custom_keywords;
-			$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
+			$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
 			$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
 			$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
 			$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
