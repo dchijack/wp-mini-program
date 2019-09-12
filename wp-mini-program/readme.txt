@@ -1,11 +1,11 @@
 === Mini Program API ===
-Contributors: Chi
+Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api
-Requires at least:  4.9.0
-Tested up to: 5.2.2
+Requires at least:  4.9.5
+Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag:  1.1.4
+Stable tag:  1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -28,6 +28,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 9. 支持小程序调用文章的上一篇和下一篇文章显示
 10. 支持小程序视频展示, 可解析部分腾讯视频链接
 11. 支持多种小程序广告功能, 包括微信小程序流量主广告、微信小程序跳转、活动链接广告、活动电话广告、微信小程序业务域名广告、复制广告口令内容
+12. 支持百度智能小程序 Web 化信息设置
 
 免费开源小程序：<a href="https://www.imahui.com/minapp/1747.html" target="_blank">点击这里查看丸子开源小程序系列</a>
 
@@ -94,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.5 =
+
+1. 更新 DownloadFile 合法域名设置
+2. 更新生成分享海报获取封面图的方式
 
 = 1.1.4 =
 

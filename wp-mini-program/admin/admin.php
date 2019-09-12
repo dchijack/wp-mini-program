@@ -55,3 +55,8 @@ function miniprogram_options_manage_page( ) {
 	);
 	require_once( IMAHUI_REST_API. 'admin/core/settings.php' );
 }
+add_action('admin_footer', function () {
+	echo '<script type="text/html" id="tmpl-mp-del-item">
+	<a href="javascript:;" class="button del-item">删除</a> <span class="dashicons dashicons-menu"></span>
+</script>';
+});

@@ -232,4 +232,26 @@ jQuery(document).ready(function($) {
 	$('select#ad_p_type').change(function(){
 		miniprogram_adsense_switch();
 	});
+	$('body').on('click', 'a.mp-mu-text', function(){
+		var prev_input	= $(this).prev("input");
+		var prev_value 	= prev_input.val();
+		prev_input.val('');
+		$(this).parent().after($(this).parent().clone());
+		prev_input.val(prev_value).after(wp.template('mp-del-item'));
+		$(this).remove();
+		return false;
+	});
+	$('body').on('click', '.del-item', function(){
+		var next_input	= $(this).parent().next("input");
+		if(next_input.length > 0){
+			next_input.val('');
+		}
+		$(this).parent().fadeOut(300, function(){
+			$(this).remove();
+		});
+		return false;
+	});
+	$('.mu-texts').sortable({
+		handle: '.dashicons-menu'
+	});
 });

@@ -102,6 +102,23 @@ function setting_sanitize_multicheck( $input, $option ) {
 add_filter( 'setting_sanitize_mu-check', 'setting_sanitize_multicheck', 10, 2 );
 
 /**
+ * Sanitization for multitext
+ *
+ * @param array of text values
+ * @return array of sanitized values ('1' or false)
+ */
+function setting_sanitize_multitext( $input, $option ) {
+	$output = array();
+	if ( is_array( $input ) ) {
+		foreach( $input as $value ) {
+			$output[] = apply_filters( 'sanitize_text_field', $value );
+		}
+	}
+	return $output;
+}
+add_filter( 'setting_sanitize_mu-text', 'setting_sanitize_multitext', 10, 2 );
+
+/**
  * File upload sanitization.
  *
  * Returns a sanitized filepath if it has a valid extension.

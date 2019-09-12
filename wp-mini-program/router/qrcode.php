@@ -126,14 +126,17 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		} else {
 			$qrcode 	= $qrcode_path.'qrcode-'.$post_id.'.png';
 		}
+		$isDown = true;
 		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
 		if( $thumbnail ) {
 			$prefix = parse_url($thumbnail);
 			$domain = $prefix["host"];
 			$trust_domain = wp_miniprogram_option('trust_domain');
-			$trust_domain = str_replace( "http://", "", str_replace( "https://", "", $trust_domain ) );
-			$trust = explode(PHP_EOL, $trust_domain);
-			if( in_array($domain,$trust) ) { 
+			$domains = array();
+			foreach( $trust_domain as $domain ) {
+				$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
+			}
+			if( in_array($domain,$domains) ) { 
 				$cover = $thumbnail;
 			} else {  
 				$cover = wp_miniprogram_option('thumbnail');

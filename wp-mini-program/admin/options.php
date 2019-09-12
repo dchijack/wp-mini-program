@@ -34,8 +34,8 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'version'		=>['title'=>'小程序版本','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("version"),'description'=>'小程序版本号,默认留空为 WordPress 程序版本号'],
 				'formats'		=>['title'=>'文章格式类型','type'=>'mu-check','options'=>['aside'=>'日志','gallery'=>'相册','link'=>'链接','image'=>'图像','quote'=>'引用','status'=>'状态','video'=>'视频','audio'=>'语音','chat'=>'聊天']],
 				'thumbnail'		=>['title'=>'默认缩略图','type'=>'upload','class'=>'regular-text'],
-				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'textarea','class'=>'regular-text','description'=>'把微信公众平台小程序的downloadFile合法域名填写这里,每个域名单独一行'],
 				'template_id'	=>['title'=>'微信评论通知','type'=>'text','class'=>'regular-text','description'=>'留言通知模板 ID ,参数：回复者,回复内容,回复时间'],
+				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],
 			],
 		],
 		'optimize-setting'=>[

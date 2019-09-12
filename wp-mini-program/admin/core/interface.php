@@ -131,6 +131,33 @@ function miniprogram_options_container( $option_name ) {
 									if(isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 						$output .= '</td></tr>';
 						break;
+
+					case "mu-text":
+						$multexts = isset($settings[$var])?$settings[$var]:'';
+						$class = isset($field["class"])?'class="'.$field["class"].'"':'';
+						$placeholder = isset($field["placeholder"])?'placeholder="'.$field["placeholder"].'"':'';
+						$output .= '<tr id="'.$var.'_mu_text">
+									<th><label for="'.$var.'">'.$field["title"].'</label></th>
+									<td>
+									<div class="mu-texts sortable ui-sortable">';
+									if($multexts) {
+										foreach ($multexts as $option) {
+											if($option) {
+												$output .= '<div class="mu-item">
+															<input '.$class.' id="' . esc_attr( $var ) . '" type="text" name="' .esc_attr( $option_name.'['.$var.'][]' ). '" '.$placeholder.' value="' . esc_html( $option ) . '" />
+															<a href="javascript:;" class="button del-item">删除</a>
+															<span class="dashicons dashicons-menu ui-sortable-handle"></span>
+															</div>';
+											}
+										}
+									}
+									$output .= '<div class="mu-item">
+												<input '.$class.' id="' . esc_attr( $var ) . '" type="text" name="' .esc_attr( $option_name.'['.$var.'][]' ). '" '.$placeholder.' value="" />
+												<a class="mp-mu-text button">添加</a>
+												</div>';
+												
+						$output .= '</div></td></tr>';
+						break;
 	
 				}
 				
@@ -189,6 +216,9 @@ function validate_sanitize_miniprogram_options( $input ) {
 					foreach ( $field['options'] as $key => $value ) {
 						$input[$id][$key] = false;
 					}
+				}
+				if ( 'mu-text' == $field['type'] && ! isset( $input[$id] ) ) {
+					$input[$id] = false;
 				}
 				// For a value to be submitted to database it must pass through a sanitization filter
 				if ( has_filter( 'setting_sanitize_' . $field['type'] ) ) {

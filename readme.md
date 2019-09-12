@@ -10,7 +10,7 @@
 
 1. 访问 WordPress 插件下载页：[点击这里访问页面](https://wordpress.org/plugins/wp-mini-program/)
 
-2. 关注 WordPressTalk 公众号，回复：**9527** 直接获取插件安装包
+2. 关注 GitHub好物荐 公众号，回复：**9527** 直接获取插件安装包
 
 3. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
 
@@ -20,7 +20,7 @@
 
 1. 可以直接通过 WordPress 网站后台 插件 - 安装插件 - 搜索：Mini Program API 获取插件安装启用
 
-2. 关注 WordPressTalk 公众号回复：9527 下载的是插件安装包，可以直接上传网站后台的插件安装启用
+2. 关注 GitHub好物荐 公众号回复：**9527** 下载的是插件安装包，可以直接上传网站后台的插件安装启用
 
 3. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
@@ -37,6 +37,11 @@
 ![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-5.png)
 
 ## 更新日志
+
+2019.09.12 Ver 1.1.5
+
+> 1. 更新 DownloadFile 合法域名设置
+> 2. 更新生成分享海报获取封面图的方式
 
 2019.09.05 Ver 1.1.4
 
@@ -118,6 +123,10 @@
 > 欢迎关注 WordPressTalk 微信公众号
 
 ![微信公众号二维码](https://github.com/dchijack/WP-REST-API/blob/master/qrcode.jpg)
+
+> 欢迎关注 GitHub好物荐 微信公众号
+
+![微信公众号二维码](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/GitHubMiniProgram.jpg)
 
 ## 赞助打赏
 
