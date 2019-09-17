@@ -25,11 +25,10 @@ add_filter( 'meta_options',function ($options) {
 	$fields['source'] = ['title'=>'出处/作者',	'type'=>'text',	'class' => 'regular-text','description'=>'文章引用来源/出处,或填写文章作者'];
 	$fields['thumbnail'] = ['title'=>'自定义缩略图',	'type'=>'upload','class' => 'regular-text','description'=>'自定义缩略图地址.注意:设置后无须另行设置特色图像'];
 	if (wp_miniprogram_option('mediaon')) {
-		$fields['cover'] = ['title'=>'封面图像',		'type'=>'upload','class' => 'regular-text','description'=>'视频/音频封面图像,不设置则采用文章缩略图'];
-		$fields['author'] = ['title'=>'封面图像',		'type'=>'upload','class' => 'regular-text','description'=>'视频/音频封面图像,不设置则采用文章缩略图'];
-		$fields['title'] = ['title'=>'作品名称',		'type'=>'text','class' => 'regular-text','description'=>'视频/音频的作品名称,比如歌曲名称'];
+		$fields['cover'] = ['title'=>'封面图像',		'type'=>'upload','class' => 'regular-text','description'=>'视频封面,不设置则采用文章缩略图'];
+		$fields['author'] = ['title'=>'视频作者',		'type'=>'text','class' => 'regular-text','description'=>'视频表演作者'];
+		$fields['title'] = ['title'=>'作品名称',		'type'=>'text','class' => 'regular-text','description'=>'视频作品名称'];
 		$fields['video'] = ['title'=>'视频地址',		'type'=>'upload',	'class' => 'regular-text'];
-		$fields['audio'] = ['title'=>'音频地址',		'type'=>'upload',	'class' => 'regular-text'];
 	}
 	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
 		$fields['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];

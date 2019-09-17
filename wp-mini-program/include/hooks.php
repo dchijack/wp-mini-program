@@ -423,122 +423,66 @@ function add_miniprogam_platform_select( $user ) { ?>
 </table>
 <?php }
 
-if (wp_miniprogram_option('user_manage')) {
-
-	add_action('admin_head-users.php', function (){
-		echo'<style type="text/css">
-			.column-user img { float: left; margin-right: 10px; margin-top: 1px; }
-			.column-gender { width:80px; }
-			.column-openid { width:280px; }
-			.column-registered, .column-expire { width:160px; }
-			</style>';
-	});
-
-	add_filter( 'manage_users_columns', function ( $columns ){ 
-
-		foreach ($columns as $column=>$value) {
-			unset($columns[$column]);
-		}
-		$columns['cb']	= '<input type="checkbox" />';
-		$columns["user"] = "用户";
-		$columns["gender"] = "性别";
-		$columns["openid"] = "OpenID";
-		$columns["area"] = "地区";
-		$columns["registered"] = "注册时间";
-		$columns["platform"] = "注册平台";
-		return $columns;
-
-	});
-
-	add_action( 'manage_users_custom_column', function ( $value, $column_name, $user_id ) {
-		$user = get_userdata( $user_id );
-		if('user' == $column_name) {
-			$avatar = get_user_meta($user->ID, 'avatar', true);
-			$nickname = get_user_meta($user->ID, 'nickname', true);
-			if ( $nickname != get_user_meta($user->ID, 'openid', true) ) {
-				$user_nickname = $nickname;
-			} else {
-				$user_nickname = '未知用户';
-			}
-			if ($avatar) { $value = '<img src="'.$avatar.'" class="avatar avatar-32 photo avatar-default" width="32" height="32" /><strong>'.$user_nickname.'</strong>'; } else { $value = get_avatar( get_the_author_meta( 'ID' ), 32 ).'<strong>'.$user_nickname.'</strong>'; }
-		} else if('gender' == $column_name){
-			$gender = get_user_meta($user->ID, 'gender', true);
-			if($gender == 1) {
-				$value = '男';
-			} else if ($gender == 2) {
-				$value = '女';
-			} else {
-				$value = '未知';
-			}
-		} else if ('area' == $column_name){
-			$city = get_user_meta($user->ID, 'city', true);
-			$province = get_user_meta($user->ID, 'province', true);
-			if (!empty($city) && !empty($province)) { $value = $city.' • '.$province; } else { $value = $city.$province; }
-		} else if ('openid' == $column_name){
-			$value = get_user_meta($user->ID, 'openid', true);
-		} else if ('registered' == $column_name){
-			$value = get_date_from_gmt($user->user_registered);
-		} else if ('platform' == $column_name){
-			$platform = get_user_meta($user->ID, 'platform', true);
-			if($platform == 'wechat') {
-				$value = '微信小程序';
-			} elseif($platform == 'tencent') {
-				$value = 'QQ 小程序';
-			} elseif($platform == 'baidu') {
-				$value = '百度小程序';
-			} elseif($platform == 'toutiao') {
-				$value = '头条小程序';
-			} else {
-				$value = '网站用户';
-			}
+add_filter( 'manage_users_columns', function ( $columns ){ 
+	$columns["registered"] = "注册时间";
+	$columns["platform"] = "注册平台";
+	return $columns;
+});
+add_action( 'manage_users_custom_column', function ( $value, $column_name, $user_id ) {
+	$user = get_userdata( $user_id );
+	if ('registered' == $column_name){
+		$value = get_date_from_gmt($user->user_registered);
+	} else if ('platform' == $column_name){
+		$platform = get_user_meta($user->ID, 'platform', true);
+		if($platform == 'wechat') {
+			$value = '微信小程序';
+		} elseif($platform == 'tencent') {
+			$value = 'QQ 小程序';
+		} elseif($platform == 'baidu') {
+			$value = '百度小程序';
+		} elseif($platform == 'toutiao') {
+			$value = '头条小程序';
 		} else {
-			$value = "";
+			$value = '网站用户';
 		}
-		return $value;
-	}, 10, 3 );
-	
-}
-
-if (wp_miniprogram_option('comment_manage'))  {
-	add_action('admin_head-edit-comments.php', function (){
-		echo'<style type="text/css">
-			.column-type { width:80px; }
-			</style>';
-	});
-	add_action( 'admin_menu',function () {
-		global $menu;
-		$menu[25][0] = '互动';
-	});
-	add_filter( 'manage_edit-comments_columns', function ( $columns ){
-		$columns[ 'type' ] = __( '类型' );
-		return $columns;
-	});
-	add_action( 'manage_comments_custom_column',function  ( $column_name, $comment_id ){
-		switch( $column_name ) {
-			case "type":
-				$type = get_comment_type();
-				switch( $type ) {
-					case 'fav' :
-						echo "收藏";
-						break;
-					case 'like' :
-						echo "点赞";
-						break;
-					case 'comment' :
-						echo "评论";
-						break;
-					default :
-						echo $commenttxt;
-				}
-		}
-	}, 10, 2 );
-	add_filter( 'get_comments_number', 'get_wp_comment_count', 10, 1 );
-	function get_wp_comment_count () {
-		$post_id = get_the_ID();
-		$args = array('post_id'=> $post_id, 'type'=>'comment', 'count' => true, 'status'=>'approve');
-		$count = get_comments($args);
-		return $count;
 	}
+	return $value;
+}, 10, 3 );
+
+add_action('admin_head-edit-comments.php', function (){
+	echo'<style type="text/css">
+		.column-type { width:80px; }
+		</style>';
+});
+add_filter( 'manage_edit-comments_columns', function ( $columns ){
+	$columns[ 'type' ] = __( '类型' );
+	return $columns;
+});
+add_action( 'manage_comments_custom_column',function  ( $column_name, $comment_id ){
+	switch( $column_name ) {
+		case "type":
+			$type = get_comment_type();
+			switch( $type ) {
+				case 'fav' :
+					echo "收藏";
+					break;
+				case 'like' :
+					echo "点赞";
+					break;
+				case 'comment' :
+					echo "评论";
+					break;
+				default :
+					echo $commenttxt;
+			}
+	}
+}, 10, 2 );
+add_filter( 'get_comments_number', 'get_wp_comment_count', 10, 1 );
+function get_wp_comment_count () {
+	$post_id = get_the_ID();
+	$args = array('post_id'=> $post_id, 'type'=>'comment', 'count' => true, 'status'=>'approve');
+	$count = get_comments($args);
+	return $count;
 }
 
 if (wp_miniprogram_option('reupload')) {

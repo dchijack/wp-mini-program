@@ -38,24 +38,16 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],
 			],
 		],
-		'optimize-setting'=>[
-			'title'=>'优化设置',
-			'summary'=>'<p>WordPress API 数据开启/关闭选项</p>',
+		'increase-setting'=>[
+			'title'=>'功能扩展',
+			'summary'=>'<p>WordPress API 功能扩展设置, 需要保存并刷新</p>',
 			'fields'=> [
 				'sticky'		=>['title'=>'推荐文章功能','type'=>'checkbox','description'=>'是否开启小程序文章推荐 [注: 仅针对小程序置顶文章]'],
 				'post_content'	=>['title'=>'文章列表内容','type'=>'checkbox','description'=>'是否启用文章列表 content 标签, 默认禁用'],
-				'user_manage'	=>['title'=>'自定义用户列表','type'=>'checkbox','description'=>'是否启用自定义用户管理列表'],
-				'comment_manage'=>['title'=>'自定义评论列表','type'=>'checkbox','description'=>'是否启用自定义评论管理列表'],
 				'post_picture'	=>['title'=>'文章图像列表','type'=>'checkbox','description'=>'是否开启文章所有图片标签'],
 				'gutenberg'		=>['title'=>'屏蔽古腾堡','type'=>'checkbox','description'=>'是否屏蔽古腾堡编辑器'],
-			],
-		],
-		'increase-setting'=>[
-			'title'=>'功能扩展',
-			'summary'=>'<p>WordPress API 功能扩展设置,需要保存并刷新</p>',
-			'fields'=> [
 				'prevnext'		=>['title'=>'文章上下篇','type'=>'checkbox','description'=>'是否开启文章输出上一篇及下一篇'],
-				'mediaon'		=>['title'=>'小程序视频/音频','type'=>'checkbox','description'=>'是否开启小程序视频/音频内容'],
+				'mediaon'		=>['title'=>'小程序视频','type'=>'checkbox','description'=>'是否开启小程序文章视频设置选项'],
 				'qvideo'		=>['title'=>'解析视频组件','type'=>'checkbox','description'=>'文章自定义字段，仅支持部分腾讯视频地址解析'],
 				'reupload'		=>['title'=>'图片重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
 				'advert'		=>['title'=>'广告功能设置','type'=>'checkbox','description'=>'是否开启小程序广告功能设置'],

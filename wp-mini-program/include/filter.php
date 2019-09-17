@@ -99,18 +99,22 @@ add_filter( 'the_video_content', function($content) {
 	preg_match("/https\:\/\/v\.qq\.com\/cover\/(.*?)\/(.*?)\.html/",$content, $tencent);
 	preg_match_all('|<img.*?src=[\'"](.*?)[\'"].*?>|i', do_shortcode($content), $matches);
 	$thumbnails = "";
-	if( $matches && isset($matches[1]) && isset($matches[1][0]) ){     
+	if( $matches && isset($matches[1]) && isset($matches[1][0]) ){
 		$thumbnails = 'poster="'.$thumbnails.'" ';
 	}
 	if($qvideo || $tencent) {
-		$url = $qvideo?$qvideo[0]:$tencent[0];
-		$video = apply_filters( 'tencent_video', $url );
+		$url = $qvideo?$qvideo[0]:$tencent?$tencent[0]:'';
+		if($url) {
+			$video = apply_filters( 'tencent_video', $url );
+		} else {
+			$video = '';
+		}
 		if($video) {
 			$contents = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);
 			return $contents;
 		} else {
 			return $content;
-		  }
+		}
 	} else {
 		return $content;
 	}

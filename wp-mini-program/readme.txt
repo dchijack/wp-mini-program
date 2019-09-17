@@ -5,7 +5,7 @@ Tags: rest api
 Requires at least:  4.9.5
 Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag:  1.1.5
+Stable tag:  1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,12 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.6 =
+
+1. 更新文章视频解析
+2. 简化小程序设置项
+3. 移除自定义用户管理列表及评论管理列表
 
 = 1.1.5 =
 
