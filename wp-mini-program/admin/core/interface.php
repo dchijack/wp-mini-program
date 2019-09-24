@@ -43,7 +43,7 @@ function miniprogram_options_container( $option_name ) {
 				
 				switch ( $field['type'] ) {
 					
-					case 'text':
+					case 'password':
 						$rows = isset($field["rows"])?$field["rows"]:4;
 						$class = isset($field["class"])?'class="'.$field["class"].'"':'';
 						$placeholder = isset($field["placeholder"])?'placeholder="'.$field["placeholder"].'"':'';
@@ -51,7 +51,7 @@ function miniprogram_options_container( $option_name ) {
 						$output .= '<tr id="'.$var.'_text">
 									<th><label for="'.$var.'">'.$field["title"].'</label></th>
 									<td>
-									<input type="text" id="' . esc_attr( $var ) . '" name="' .esc_attr( $option_name . '[' . $var. ']' ). '" '.$class.' rows="'.$rows.'" '.$placeholder.' '.$value.' />';
+									<input type="password" id="' . esc_attr( $var ) . '" name="' .esc_attr( $option_name . '[' . $var. ']' ). '" '.$class.' rows="'.$rows.'" '.$placeholder.' '.$value.' />';
 									if(!isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<span class="desc description">'.$field['description'].'</span>'; }
 									if(isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 						$output .= '</td></tr>';
@@ -157,6 +157,20 @@ function miniprogram_options_container( $option_name ) {
 												</div>';
 												
 						$output .= '</div></td></tr>';
+						break;
+
+					default:
+						$rows = isset($field["rows"])?$field["rows"]:4;
+						$class = isset($field["class"])?'class="'.$field["class"].'"':'';
+						$placeholder = isset($field["placeholder"])?'placeholder="'.$field["placeholder"].'"':'';
+						$value = isset($settings[$var])?'value="'. esc_attr( $settings[$var] ).'"':'value=""';
+						$output .= '<tr id="'.$var.'_text">
+									<th><label for="'.$var.'">'.$field["title"].'</label></th>
+									<td>
+									<input type="text" id="' . esc_attr( $var ) . '" name="' .esc_attr( $option_name . '[' . $var. ']' ). '" '.$class.' rows="'.$rows.'" '.$placeholder.' '.$value.' />';
+									if(!isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<span class="desc description">'.$field['description'].'</span>'; }
+									if(isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
+						$output .= '</td></tr>';
 						break;
 	
 				}

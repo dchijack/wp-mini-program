@@ -5,7 +5,7 @@ Tags: rest api
 Requires at least:  4.9.5
 Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag:  1.1.6
+Stable tag:  1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.7 =
+
+1. 修复文章格式形式 Bug
+2. 更新设置选项关于密钥类型
 
 = 1.1.6 =
 

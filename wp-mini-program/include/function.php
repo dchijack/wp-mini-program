@@ -5,18 +5,17 @@
  
 if ( !defined( 'ABSPATH' ) ) exit;
 // 文章格式类型
-add_theme_support( 'post-formats',function () {
-    $formats = wp_miniprogram_option('formats');
-    $post_formats = array();
-    if( $formats && is_array($formats) ) {
-        foreach($formats as $key => $format) {
-            if($format) {
-                $post_formats[] = $key;
-            }
-        }
+function wp_miniprogram_post_formats() {
+    $settings = wp_miniprogram_option('formats');
+    $formats = array();
+    if( is_array( $settings ) ) {
+        $formats = array_keys( $settings );
     }
-    return $post_formats;
-});
+    return $formats;
+}
+if( wp_miniprogram_post_formats() ) {
+    add_theme_support( 'post-formats', wp_miniprogram_post_formats() );
+}
 // 描述清理HTML标签
 function wp_delete_html_code($description) {
 	$description = trim($description);
