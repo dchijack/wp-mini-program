@@ -33,141 +33,142 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	//global $wpdb;
 	$_data = $data->data;
 	$post_id = $post->ID;
-	$post_date = $post->post_date;
-	$author_id = $post->post_author;
-	$author_avatar = get_user_meta($author_id, 'avatar', true);
-	$taxonomies = get_object_taxonomies($_data['type']);
-	$post_title = $post->post_title;
-	$post_views = (int)get_post_meta( $post_id, "views" ,true );
-	$post_excerpt = $_data["excerpt"]["rendered"];
-	$post_content = $_data["content"]["rendered"];
-	$session = isset($request['access_token'])?$request['access_token']:'';
-	if( $session ) {
-		$access_token = base64_decode( $session );
-		$users = MP_Auth::login( $access_token );
-		if ( $users ) {
-			$user_id = $users->ID;
+	if( is_miniprogram() || isset($request["debug"]) ) {
+		$post_date = $post->post_date;
+		$author_id = $post->post_author;
+		$author_avatar = get_user_meta($author_id, 'avatar', true);
+		$taxonomies = get_object_taxonomies($_data['type']);
+		$post_title = $post->post_title;
+		$post_views = (int)get_post_meta( $post_id, "views" ,true );
+		$post_excerpt = $_data["excerpt"]["rendered"];
+		$post_content = $_data["content"]["rendered"];
+		$session = isset($request['access_token'])?$request['access_token']:'';
+		if( $session ) {
+			$access_token = base64_decode( $session );
+			$users = MP_Auth::login( $access_token );
+			if ( $users ) {
+				$user_id = $users->ID;
+			} else {
+				$user_id = 0;
+			}
 		} else {
 			$user_id = 0;
 		}
-	} else {
-		$user_id = 0;
-	}
-	$_data["id"]  = $post_id;
-	$_data["date"] = $post_date;
-	unset($_data['author']);
-	$_data["author"]["id"] = $author_id;
-	$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
-	if ($author_avatar) {
-		$_data["author"]["avatar"] = $author_avatar;
-	} else {
-		$_data["author"]["avatar"] = get_avatar_url($author_id);
-	}
-	$_data["author"]["description"] = get_the_author_meta('description',$author_id);
-	$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
-	$_data["meta"]["views"] = $post_views;
-	$metas = apply_filters( 'custom_meta', $custom_meta = array() );
-	if ($metas) {
-		foreach ( $metas as $meta ) {
-			$_data["meta"][$meta] = get_post_meta( $post_id, $meta ,true );
+		$_data["id"]  = $post_id;
+		$_data["date"] = $post_date;
+		unset($_data['author']);
+		$_data["author"]["id"] = $author_id;
+		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
+		if ($author_avatar) {
+			$_data["author"]["avatar"] = $author_avatar;
+		} else {
+			$_data["author"]["avatar"] = get_avatar_url($author_id);
 		}
-	}
-	$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
-	$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
-	$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
-	$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
-	$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-	if ($taxonomies) {
-		foreach ( $taxonomies as $taxonomy ){
-			$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
-			foreach($terms as $term) {
-				$tax = array();
-				$tax["id"] = $term->term_id;
-				$tax["name"] = $term->name;
-				$tax["description"] = $term->description;
-				$tax["cover"] = get_term_meta($term->term_id,'cover',true);
-				if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
-				$_data[$taxonomy][] = $tax;
+		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
+	
+		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
+		$_data["meta"]["views"] = $post_views;
+		$metas = apply_filters( 'custom_meta', $custom_meta = array() );
+		if ($metas) {
+			foreach ( $metas as $meta ) {
+				$_data["meta"][$meta] = get_post_meta( $post_id, $meta ,true );
 			}
 		}
-	}
-	$_data["title"]["rendered"] = html_entity_decode( $post_title );
-	$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) ); 
-	if ( isset( $request['id'] ) ) {
-		if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
-			add_post_meta($post_id, 'views', 1, true);  
-		}
-		$media_cover = get_post_meta( $post_id, 'cover' ,true );
-		$media_author = get_post_meta( $post_id, 'author' ,true );
-		$media_title = get_post_meta( $post_id, 'title' ,true );
-		$media_video = get_post_meta( $post_id, 'video' ,true );
-		$media_audio = get_post_meta( $post_id, 'audio' ,true );
-		if (wp_miniprogram_option('mediaon') && ($media_video || $media_audio)) {
-			if ($media_cover) {
-				$_data["media"]['cover'] = $media_cover;
-			} else {
-				$_data["media"]['cover'] = apply_filters( 'post_thumbnail', $post_id );
-			}
-			if($media_author) {
-				$_data["media"]['author'] = $media_author;
-			}
-			if($media_title) {
-				$_data["media"]['title'] = $media_title;
-			}
-			if($media_video) {
-				$_data["media"]['video'] = $media_video;
-			}
-			if($media_audio) {
-				$_data["media"]['audio'] = $media_audio;
-			}
-		}
-		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
-			$custom_keywords = get_post_meta( $post_id, "keywords", true );
-			if( !$custom_keywords ) {
-				$custom_keywords = "";
-				$tags = wp_get_post_tags( $post_id );
-				foreach ($tags as $tag ) {
-					$custom_keywords = $custom_keywords . $tag->name . ",";
+		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
+		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
+		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
+		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+		if ($taxonomies) {
+			foreach ( $taxonomies as $taxonomy ){
+				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
+				foreach($terms as $term) {
+					$tax = array();
+					$tax["id"] = $term->term_id;
+					$tax["name"] = $term->name;
+					$tax["description"] = $term->description;
+					$tax["cover"] = get_term_meta($term->term_id,'cover',true);
+					if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
+					$_data[$taxonomy][] = $tax;
 				}
 			}
-			$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
-			$_data["smartprogram"]["keywords"] = $custom_keywords;
-			$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
-			$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
-			$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
-			$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
-			$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-			$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 		}
-		if(!$media_video) {
-			$_data["content"]["rendered"] = apply_filters( 'the_video_content', $post_content );
-		}
-		$_data["post_favs"] = apply_filters( 'comment_type_list', $post_id, 'fav' );
-		$_data["post_likes"] = apply_filters( 'comment_type_list', $post_id, 'like' );
-		if (wp_miniprogram_option("prevnext")) {
-			$category = get_the_category( $post_id );
-			$next = get_next_post($category[0]->term_id, '', 'category');
-			$previous = get_previous_post($category[0]->term_id, '', 'category');
-			if (!empty($next->ID)) {
-				$_data["next_post"]["id"] = $next->ID;
-				$_data["next_post"]["title"]["rendered"] = $next->post_title;
-				$_data["next_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $next->ID );
-				$_data["next_post"]["views"] = (int)get_post_meta( $next->ID, "views" ,true );
+		$_data["title"]["rendered"] = html_entity_decode( $post_title );
+		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) ); 
+		if ( isset( $request['id'] ) ) {
+			if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
+				add_post_meta($post_id, 'views', 1, true);  
 			}
-			if (!empty($previous->ID)) {
-				$_data["prev_post"]["id"] = $previous->ID;
-				$_data["prev_post"]["title"]["rendered"] = $previous->post_title;
-				$_data["prev_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $previous->ID );
-				$_data["prev_post"]["views"] = (int)get_post_meta( $previous->ID, "views" ,true );
+			$media_cover = get_post_meta( $post_id, 'cover' ,true );
+			$media_author = get_post_meta( $post_id, 'author' ,true );
+			$media_title = get_post_meta( $post_id, 'title' ,true );
+			$media_video = get_post_meta( $post_id, 'video' ,true );
+			$media_audio = get_post_meta( $post_id, 'audio' ,true );
+			if (wp_miniprogram_option('mediaon') && ($media_video || $media_audio)) {
+				if ($media_cover) {
+					$_data["media"]['cover'] = $media_cover;
+				} else {
+					$_data["media"]['cover'] = apply_filters( 'post_thumbnail', $post_id );
+				}
+				if($media_author) {
+					$_data["media"]['author'] = $media_author;
+				}
+				if($media_title) {
+					$_data["media"]['title'] = $media_title;
+				}
+				if($media_video) {
+					$_data["media"]['video'] = $media_video;
+				}
+				if($media_audio) {
+					$_data["media"]['audio'] = $media_audio;
+				}
+			}
+			if( is_smart_miniprogram() ) {
+				$custom_keywords = get_post_meta( $post_id, "keywords", true );
+				if( !$custom_keywords ) {
+					$custom_keywords = "";
+					$tags = wp_get_post_tags( $post_id );
+					foreach ($tags as $tag ) {
+						$custom_keywords = $custom_keywords . $tag->name . ",";
+					}
+				}
+				$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
+				$_data["smartprogram"]["keywords"] = $custom_keywords;
+				$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
+				$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+				$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
+				$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
+				$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+				$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+			}
+			if(!$media_video) {
+				$_data["content"]["rendered"] = apply_filters( 'the_video_content', $post_content );
+			}
+			$_data["post_favs"] = apply_filters( 'comment_type_list', $post_id, 'fav' );
+			$_data["post_likes"] = apply_filters( 'comment_type_list', $post_id, 'like' );
+			if (wp_miniprogram_option("prevnext")) {
+				$category = get_the_category( $post_id );
+				$next = get_next_post($category[0]->term_id, '', 'category');
+				$previous = get_previous_post($category[0]->term_id, '', 'category');
+				if (!empty($next->ID)) {
+					$_data["next_post"]["id"] = $next->ID;
+					$_data["next_post"]["title"]["rendered"] = $next->post_title;
+					$_data["next_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $next->ID );
+					$_data["next_post"]["views"] = (int)get_post_meta( $next->ID, "views" ,true );
+				}
+				if (!empty($previous->ID)) {
+					$_data["prev_post"]["id"] = $previous->ID;
+					$_data["prev_post"]["title"]["rendered"] = $previous->post_title;
+					$_data["prev_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $previous->ID );
+					$_data["prev_post"]["views"] = (int)get_post_meta( $previous->ID, "views" ,true );
+				}
+			}
+		} else {
+			if ( !wp_miniprogram_option("post_content") ) { unset($_data['content']); }
+			if ( wp_miniprogram_option("post_picture") ) {
+				$_data["pictures"] = apply_filters( 'post_images', $post_id );
 			}
 		}
-	} else {
-		if ( !wp_miniprogram_option("post_content") ) { unset($_data['content']); }
-		if ( wp_miniprogram_option("post_picture") ) {
-			$_data["pictures"] = apply_filters( 'post_images', $post_id );
-		}
-	}
-	if(wp_miniprogram_option('gutenberg')) {
 		unset($_data['categories']);
 		unset($_data['tags']);
 		unset($_data["_edit_lock"]);
@@ -201,62 +202,62 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 	$_data = $data->data;
 	$post_id = $post->ID;
-	$post_date = $post->post_date;
-	$author_id = $post->post_author;
-	$author_avatar = get_user_meta($author_id, 'avatar', true);
-	$post_title = $post->post_title;
-	$post_views = (int)get_post_meta( $post_id, "views" ,true );
-	$post_excerpt = $_data["excerpt"]["rendered"];
-	$post_content = $_data["content"]["rendered"];
-	$_data["id"]  = $post_id;
-	$_data["date"] = $post_date;
-	$_data["except"] = get_post_meta( $post_id, "except" ,true )?true:false;
-	unset($_data['author']);
-	$_data["author"]["id"] = $author_id;
-	$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
-	if ($author_avatar) {
-		$_data["author"]["avatar"] = $author_avatar;
-	} else {
-		$_data["author"]["avatar"] = get_avatar_url($author_id);
-	}
-	$_data["author"]["description"] = get_the_author_meta('description',$author_id);
-	$_data["menu"]["icon"] = get_post_meta( $post_id, "icon" ,true );
-	$_data["menu"]["title"] = get_post_meta( $post_id, "title" ,true );
-	$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
-	$_data["meta"]["views"] = $post_views;
-	$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
-	$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
-	$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-	$_data["title"]["rendered"] = html_entity_decode( $post_title );
-	if( !$post_excerpt ) {
-		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
-	}
-	if ( !isset( $request['id'] ) ) {
-		if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
-	} else {
-		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
-			$custom_keywords = get_post_meta( $post_id, "keywords", true );
-			if( !$custom_keywords ) {
-				$custom_keywords = "";
-				$tags = wp_get_post_tags( $post_id );
-				foreach ($tags as $tag ) {
-					$custom_keywords = $custom_keywords . $tag->name . ",";
+	if( is_miniprogram() || isset($request["debug"]) ) {
+		$post_date = $post->post_date;
+		$author_id = $post->post_author;
+		$author_avatar = get_user_meta($author_id, 'avatar', true);
+		$post_title = $post->post_title;
+		$post_views = (int)get_post_meta( $post_id, "views" ,true );
+		$post_excerpt = $_data["excerpt"]["rendered"];
+		$post_content = $_data["content"]["rendered"];
+		$_data["id"]  = $post_id;
+		$_data["date"] = $post_date;
+		$_data["except"] = get_post_meta( $post_id, "except" ,true )?true:false;
+		unset($_data['author']);
+		$_data["author"]["id"] = $author_id;
+		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
+		if ($author_avatar) {
+			$_data["author"]["avatar"] = $author_avatar;
+		} else {
+			$_data["author"]["avatar"] = get_avatar_url($author_id);
+		}
+		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
+		$_data["menu"]["icon"] = get_post_meta( $post_id, "icon" ,true );
+		$_data["menu"]["title"] = get_post_meta( $post_id, "title" ,true );
+		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
+		$_data["meta"]["views"] = $post_views;
+		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
+		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+		$_data["title"]["rendered"] = html_entity_decode( $post_title );
+		if( !$post_excerpt ) {
+			$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
+		}
+		if ( !isset( $request['id'] ) ) {
+			if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
+		} else {
+			if( is_smart_miniprogram() ) {
+				$custom_keywords = get_post_meta( $post_id, "keywords", true );
+				if( !$custom_keywords ) {
+					$custom_keywords = "";
+					$tags = wp_get_post_tags( $post_id );
+					foreach ($tags as $tag ) {
+						$custom_keywords = $custom_keywords . $tag->name . ",";
+					}
 				}
+				$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
+				$_data["smartprogram"]["keywords"] = $custom_keywords;
+				$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
+				$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+				$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
+				$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
+				$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+				$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 			}
-			$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
-			$_data["smartprogram"]["keywords"] = $custom_keywords;
-			$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
-			$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
-			$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
-			$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
-			$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-			$_data["smartprogram"]["collects"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
+			if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
+				add_post_meta($post_id, 'views', 1, true);  
+			}
 		}
-		if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
-			add_post_meta($post_id, 'views', 1, true);  
-		}
-	}
-	if(wp_miniprogram_option('gutenberg')) {
 		unset($_data["_edit_lock"]);
 		unset($_data["_edit_last"]);
 		unset($_data['featured_media']);
@@ -305,7 +306,7 @@ add_filter( 'rest_prepare_category',function($data, $item, $request) {
 		$except = true;
 	}
 	if( isset($request['id']) ) {
-		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+		if( is_smart_miniprogram() ) {
 			$smartprogram["title"] = $item->name .'-'.get_bloginfo('name');
 			$smartprogram["keywords"] = $item->name;
 			$smartprogram["description"] = $item->description;
@@ -334,7 +335,7 @@ add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
 	$data->data['cover'] = $cover;
 	$data->data['except'] = $except;
 	if( isset($request['id']) ) {
-		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+		if( is_smart_miniprogram() ) {
 			$smartprogram["title"] = $item->name .'-'.get_bloginfo('name');
 			$smartprogram["keywords"] = $item->name;
 			$smartprogram["description"] = $item->description;

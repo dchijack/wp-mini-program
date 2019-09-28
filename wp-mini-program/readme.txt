@@ -1,11 +1,11 @@
 === Mini Program API ===
 Contributors: imahui
 Donate link: https://www.imahui.com/about.html
-Tags: rest api
+Tags: rest api, api
 Requires at least:  4.9.5
 Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag:  1.1.7
+Stable tag:  1.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.8 =
+
+1. 增加微信、QQ、百度、头条小程序客户端识别
+2. 更新 Rest API 输出项, 兼容古腾堡编辑器
 
 = 1.1.7 =
 

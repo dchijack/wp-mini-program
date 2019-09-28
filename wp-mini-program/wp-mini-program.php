@@ -3,7 +3,7 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.1.7
+Version: 1.1.8
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
@@ -46,5 +46,38 @@ function wp_miniprogram_option($option_name) {
 		}	
 	} else {
 		return false;
+	}
+}
+if( !function_exists('get_minapp_option') ) {
+	function is_wechat_miniprogram() {
+		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/servicewechat\.com/i', $_SERVER['HTTP_REFERER'] );
+		}
+		return false;
+	}
+	function is_tencent_miniprogram() {
+		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/qq\.com/i', $_SERVER['HTTP_REFERER'] );
+		}
+		return false;
+	}
+	function is_smart_miniprogram() {
+		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/smartapps\.cn/i', $_SERVER['HTTP_REFERER'] );
+		}
+		return false;
+	}
+	function is_toutiao_miniprogram() {
+		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/touciao\.com/i', $_SERVER['HTTP_REFERER'] );
+		}
+		return false;
+	}
+	function is_miniprogram() {
+		if( is_wechat_miniprogram() || is_tencent_miniprogram() || is_smart_miniprogram() || is_toutiao_miniprogram() ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
