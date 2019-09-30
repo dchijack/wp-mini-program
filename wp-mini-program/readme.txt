@@ -2,10 +2,10 @@
 Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api
-Requires at least:  4.9.5
+Requires at least: 4.9.5
 Tested up to: 5.2.3
 Requires PHP: 5.6
-Stable tag:  1.1.8
+Stable tag: 1.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.1.9 =
+
+1. 更新修复百度智能小程序获取缩略图错误
+2. 更新修复头条小程序客户端判断错误 Bug
 
 = 1.1.8 =
 

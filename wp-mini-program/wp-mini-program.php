@@ -63,13 +63,13 @@ if( !function_exists('get_minapp_option') ) {
 	}
 	function is_smart_miniprogram() {
 		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
-			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/smartapps\.cn/i', $_SERVER['HTTP_REFERER'] );
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && ( preg_match( '/smartapps\.cn/i', $_SERVER['HTTP_REFERER'] ) || preg_match( '/smartapp\.baidu\.com/i', $_SERVER['HTTP_REFERER'] ) );
 		}
 		return false;
 	}
 	function is_toutiao_miniprogram() {
 		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {
-			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/touciao\.com/i', $_SERVER['HTTP_REFERER'] );
+			return ! empty( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) && preg_match( '/tmaservice\.developer\.toutiao\.com/i', $_SERVER['HTTP_REFERER'] );
 		}
 		return false;
 	}
