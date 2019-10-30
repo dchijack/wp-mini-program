@@ -3,9 +3,9 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api
 Requires at least: 4.9.5
-Tested up to: 5.2.3
+Tested up to: 5.2.4
 Requires PHP: 5.6
-Stable tag: 1.1.9
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -24,7 +24,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 支持自定义推荐文章, 可替换置顶文章在小程序中调用显示
 6. 支持自定义用户管理列表 / 自定义评论管理列表, 用户注册平台清晰可见, 评论/点赞/收藏清晰可见
 7. 支持获取文章所有图片前 9 张地址, 可以在小程序文章列表里调用 9 张图显示
-8. 支持屏蔽古腾堡编辑器, 使用经典编辑器, 不需要安装经典编辑器插件
+8. 支持屏蔽古腾堡编辑器, 使用经典编辑器, 不需要安装经典编辑器插件
 9. 支持小程序调用文章的上一篇和下一篇文章显示
 10. 支持小程序视频展示, 可解析部分腾讯视频链接
 11. 支持多种小程序广告功能, 包括微信小程序流量主广告、微信小程序跳转、活动链接广告、活动电话广告、微信小程序业务域名广告、复制广告口令内容
@@ -95,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.2.0 =
+
+1. 更新样式 CSS 文件
+2. 更新小程序 Secret 类型为文本
 
 = 1.1.9 =
 
