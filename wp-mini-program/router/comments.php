@@ -241,6 +241,10 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			if( $content == null || $content == "") {
 				return new WP_Error( 'error', '内容不能为空', array( 'status' => 400 ) );
 			}
+			$msgCheck = apply_filters( 'security_msgSecCheck', $content );
+			if( isset($msgCheck->errcode) && $msgCheck->errcode == 87014 ) {
+				return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 400 ) );
+			}
 		} else if($type == 'like') {
 			$content = "点赞《".$post_title."》文章";
 		} else if($type == 'fav') {

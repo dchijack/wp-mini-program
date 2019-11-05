@@ -273,3 +273,26 @@ add_filter( 'reply_comments', function( $post_id,$reply,$parent ) {
 	}	
 	return $data;
 }, 10, 3 );
+
+add_filter( 'security_msgSecCheck', function($content) {
+	$url = 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token='.$access_token;
+    $header = array(
+        "Content-Type: application/json;charset=UTF-8"
+    );
+	$access_token = MP_Auth::we_miniprogram_access_token( );
+	$token = isset($token['access_token']) ? $token['access_token'] : '';
+	if( !$token ) {
+		return new WP_Error( 'error', 'access token 错误' , array( 'status' => 400 ) );
+	}
+	$msg = wp_delete_html_code( $content );
+	$body = json_encode( array( "content" => $msg ) );
+	$args = array(
+		'method'  => 'POST',
+		'body' 	  => ''.$body.'',
+		'headers' => $header,
+		'cookies' => array( )
+	);
+	$response = wp_remote_post( $url, $args );
+	$result = wp_remote_retrieve_body( $response );
+	return json_decode( $result );
+} );

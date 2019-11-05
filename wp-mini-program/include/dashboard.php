@@ -23,28 +23,31 @@ function imahui_applets_dashboard_widget() {
 	$minprogam = array(
 		"categories" => 3
 	);
-	$url = 'https://mp.weitimes.com/wp-json/wp/v2/posts';
-	$minprogams = add_query_arg($minprogam,$url);
-	$notice = wp_remote_get($minprogams);
-	$notices = json_decode( $notice['body'], true );
-	$count = count($notices);
-	$plugin = array(
-		"categories" => 1
-	);
-	$plugins = add_query_arg($plugin,$url);
-	$update = wp_remote_get($plugins);
-	$updates = json_decode( $update['body'], true );
+	$url = 'https://mp.weitimes.com';
+	$miniprograms = wp_remote_get( $url.'/wp-json/wp/v2/products' );
+	if( is_array( $miniprograms ) || !is_wp_error($miniprograms) || $miniprograms['response']['code'] == '200' ) {
+		$miniprogram = json_decode( $miniprograms['body'], true );
+	} else {
+		$miniprogram = array( );
+	}
+	$plugins = wp_remote_get( $url.'/wp-json/wp/v2/plugins/269');
+	if( is_array( $plugins ) || !is_wp_error($plugins) || $plugins['response']['code'] == '200' ) {
+		$plugin = json_decode( $plugins['body'], true );
+		$plugin_version = $plugin['plugins']['version'];
+	} else {
+		$plugin_version = '1.0.0';
+	}
 	$plugin_ver = sprintf( ' <a href="%s" target="%s" data-title="%s">%s</a>',
 	esc_url( 'https://www.imahui.com/minapp/1044.html' ),
-	"_blank",
+	esc_attr( "_blank" ),
 	esc_attr( '小程序 API' ),
-	'高级版插件：Version '.$updates[0]["meta"]["version"].''
+	esc_html( '高级版插件：Version '.$plugin_version.'' )
 	);
 	$update_ver = sprintf( ' <a href="%s" target="%s" data-title="%s">%s</a>',
 	esc_url( 'https://www.imahui.com/minapp/1747.html' ),
-	"_blank",
+	esc_attr( "_blank" ),
 	esc_attr( ' Mini Program API ' ),
-	'查看免费 WordPress 小程序详情'
+	esc_html( '查看 WordPress 免费小程序' )
 	);
 	$html = '';
 	$html .= '<div class="main">
@@ -52,15 +55,14 @@ function imahui_applets_dashboard_widget() {
 	<li class="post-count">'.$plugin_ver.'</li>
 	<li class="page-count">'.$update_ver.'</li>
 	</ul>';
-	foreach($notices as $post) {
-		$version = $post["meta"]["version"];
-		$title = $post["title"]["rendered"];
-		//$down = isset($post["meta"]["views"])?' 下载:'.$post["meta"]["views"].'次':'';
-		$html .= '<p id="applets-version"><a href="https://www.imahui.com/" class="button">获取 Version '.$version.'</a> <span id="wp-version">'.$title.'   更新:'.update_standard_datetime($post["date"]).'</span></p>';
+	foreach($miniprogram as $post) {
+		$version = $post["version"];
+		$title = $post["title"];
+		$html .= '<p id="applets-version"><a href="https://www.weitimes.com/" class="button">查看 Version '.$version.'</a> <span id="wp-version">'.$title.'   更新:'.update_standard_datetime($post["date"]).'</span></p>';
 	}
 	$html .= '<p class="community-events-footer">
 	<a href="https://www.imahui.com/" target="_blank">艾码汇 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
-	<a href="https://www.imahui.com/minapp" target="_blank">小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
+	<a href="https://www.weitimes.com/" target="_blank">丸子小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="http://mzhuti.com/" target="_blank">M主题小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="https://get-vpush2.mssnn.cn/?a=imahui" target="_blank">小程序推送 <span aria-hidden="true" class="dashicons dashicons-external"></span></a>
 	</p>';
