@@ -3,9 +3,9 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api
 Requires at least: 4.9.5
-Tested up to: 5.2.4
+Tested up to: 5.3.0
 Requires PHP: 5.6
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.2.2 =
+
+1. 更新移除表态选项及路由
+2. 更新优化和修复若干 Bug
+3. 更新移除微信消息模板功能
+4. 更新微信小程序订阅消息功能
+5. 更新 QQ 小程序消息模板通知功能
+6. 更新百度智能小程序消息模板通知功能
 
 = 1.2.1 =
 

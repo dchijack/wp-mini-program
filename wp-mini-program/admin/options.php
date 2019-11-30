@@ -34,14 +34,17 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'version'		=>['title'=>'小程序版本','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("version"),'description'=>'小程序版本号,默认留空为 WordPress 程序版本号'],
 				'formats'		=>['title'=>'文章格式类型','type'=>'mu-check','options'=>['aside'=>'日志','gallery'=>'相册','link'=>'链接','image'=>'图像','quote'=>'引用','status'=>'状态','video'=>'视频','audio'=>'语音','chat'=>'聊天']],
 				'thumbnail'		=>['title'=>'默认缩略图','type'=>'upload','class'=>'regular-text'],
-				'template_id'	=>['title'=>'微信评论通知','type'=>'text','class'=>'regular-text','description'=>'留言通知模板 ID ,参数：回复者,回复内容,回复时间'],
 				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],
+				'template_id'	=>['title'=>'评论回复通知','type'=>'text','class'=>'regular-text','description'=>'服务类目：在线教育 - 文章评论回复通知, 关键词：文章标题、评论内容、回复内容、回复时间'],
+				'auditing_id'	=>['title'=>'审核通过通知','type'=>'text','class'=>'regular-text','description'=>'服务类目：信息查询 - 审核通过通知, 关键词：审核结果、审核内容、提交时间'],
+				'update_tpl_id'	=>['title'=>'资讯更新提醒','type'=>'text','class'=>'regular-text','description'=>'服务类目：信息查询 - 资讯更新提醒, 关键词：新闻类型、新闻标题、新闻摘要'],
 			],
 		],
 		'increase-setting'=>[
 			'title'=>'功能扩展',
 			'summary'=>'<p>WordPress API 功能扩展设置, 需要保存并刷新</p>',
 			'fields'=> [
+				'update'		=>['title'=>'启用更新提醒','type'=>'checkbox','description'=>'是否开启文章更新内容推送订阅消息通知 [注：需要设置资讯更新提醒模板]'],
 				'sticky'		=>['title'=>'推荐文章功能','type'=>'checkbox','description'=>'是否开启小程序文章推荐 [注: 仅针对小程序置顶文章]'],
 				'post_content'	=>['title'=>'文章列表内容','type'=>'checkbox','description'=>'是否启用文章列表 content 标签, 默认禁用'],
 				'post_picture'	=>['title'=>'文章图像列表','type'=>'checkbox','description'=>'是否开启文章所有图片标签'],

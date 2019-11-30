@@ -43,6 +43,16 @@
 .postbox-container .postbox {
 	background:#fff!important;
 }
+div.mu-item {
+    margin-bottom: 4px;
+    display: block;
+}
+div.mu-item span.dashicons {
+    margin-left: 6px;
+    color: #ccc;
+    font-size: 28px;
+    cursor: pointer;
+}
 #section .miniprogram-group {
 	padding:10px;
 }
@@ -278,8 +288,8 @@ a.course-post span{display: table-cell; height: 50px; vertical-align: middle;}
     justify-content: center;
     padding-bottom:20px;
 }
-.el-col>h1 {
+.el-col > h1 {
     font-size: 34px;
     color: #67c23a;
-    margin: 10px;
+     margin: 10px;
 }

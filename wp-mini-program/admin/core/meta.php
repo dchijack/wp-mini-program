@@ -91,7 +91,11 @@ class WP_Custom_Meta_Box {
 			foreach($metas as $keys => $meta) {
 				$fields = $meta['fields'];
 				foreach($fields as $key => $field) {
-					$data = sanitize_text_field( $_POST[$key] );
+					if($field['type'] === 'mu-text') {
+						$data = apply_filters( 'setting_sanitize_mu-text', $_POST[$key], '' );
+					} else {
+						$data = sanitize_text_field( $_POST[$key] );
+					}
 					if ( get_post_meta($post_id, $key, FALSE) ) {
 						update_post_meta($post_id, $key, $data);
 					} else {
@@ -127,8 +131,8 @@ class WP_Custom_Meta_Box {
 						$value = get_post_meta( $post->ID, $key, true );
 						switch ( $field['type'] ) {
 							case 'textarea':
-								$rows = isset($field["rows"])?$field["rows"]:4;
-								$rows = isset($field["cols"])?$field["cols"]:20;
+								$rows = isset($field["rows"])?$field["rows"]:5;
+								$cols = isset($field["cols"])?$field["cols"]:4;
 								$class = isset($field["class"])?'class="'.$field["class"].'"':'';
 								$output .= '<tr id="'.$key.'_textarea">
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>
@@ -170,6 +174,30 @@ class WP_Custom_Meta_Box {
 											if($field['description'] && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 								$output .= '</td></tr>';
 								break;
+
+							case "mu-text":
+								$multexts = $value?$value:'';
+								$output .= '<tr id="'.$key.'_mu_text">
+											<th><label for="'.$key.'">'.$field["title"].'</label></th>
+											<td>
+											<div class="mu-texts sortable ui-sortable">';
+											if($multexts) {
+												foreach ($multexts as $option) {
+													if($option) {
+														$output .= '<div class="mu-item">
+																	<input id="' . esc_attr( $key ) . '" type="text" name="' .esc_attr( $key.'[]' ). '" class="regular-text" value="' . esc_html( $option ) . '" />
+																	<a href="javascript:;" class="button del-item">删除</a>
+																	<span class="dashicons dashicons-menu ui-sortable-handle"></span>
+																	</div>';
+													}
+												}
+											}
+											$output .= '<div class="mu-item">
+														<input id="' . esc_attr( $key ) . '" type="text" name="' .esc_attr( $key.'[]' ). '" class="regular-text" value="" />
+														<a class="mp-mu-text button">添加</a>
+														</div>';		
+									$output .= '</div></td></tr>';
+									break;
 						
 							default:
 								$rows = isset($field["rows"])?$field["rows"]:4;

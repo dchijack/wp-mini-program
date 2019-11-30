@@ -13,3 +13,4 @@ include( IMAHUI_REST_API.'include/auth.php' );
 include( IMAHUI_REST_API.'include/dashboard.php' );
 include( IMAHUI_REST_API.'include/custom.php' );
 include( IMAHUI_REST_API.'include/notices.php' );
+include( IMAHUI_REST_API.'include/subscribe.php' );

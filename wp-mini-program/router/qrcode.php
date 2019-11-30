@@ -114,7 +114,7 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		} else {
 			$post_path = "/pages/index/index";
 		}
-		$path = isset($request['path'])?$request['path']:$post_path;
+		$path = isset($request['path']) && $request['path'] ? $request['path'] : $post_path;
 		$uploads = wp_upload_dir();
 		$qrcode_path = $uploads['basedir'] .'/qrcode/';
 		$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/qrcode-".$post_id.".png";

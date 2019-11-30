@@ -64,7 +64,8 @@ function imahui_applets_dashboard_widget() {
 	<a href="https://www.imahui.com/" target="_blank">艾码汇 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="https://www.weitimes.com/" target="_blank">丸子小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="http://mzhuti.com/" target="_blank">M主题小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
-	<a href="https://get-vpush2.mssnn.cn/?a=imahui" target="_blank">小程序推送 <span aria-hidden="true" class="dashicons dashicons-external"></span></a>
+	<a href="https://promotion.aliyun.com/ntms/act/qwbk.html?userCode=5qpjfxzk" target="_blank">阿里云 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
+	<a href="https://cloud.tencent.com/act/cps/redirect?redirect=1040&cps_key=350ffc16783f58518e37a08a5b5625aa&from=console" target="_blank">腾讯云 <span aria-hidden="true" class="dashicons dashicons-external"></span></a>
 	</p>';
 	$html .= '</div>';
 	echo $html;

@@ -40,6 +40,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$taxonomies = get_object_taxonomies($_data['type']);
 		$post_title = $post->post_title;
 		$post_views = (int)get_post_meta( $post_id, "views" ,true );
+		$post_vote = get_post_meta( $post_id, "vote_options" ,true );
 		$post_excerpt = $_data["excerpt"]["rendered"];
 		$post_content = $_data["content"]["rendered"];
 		$session = isset($request['access_token'])?$request['access_token']:'';
@@ -79,6 +80,24 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
+		$_data["isvote"] = $post_vote ? true : false;
+		if( $isvote ) {
+			$voted_options = get_post_meta($post_id, 'vote', true);
+			$voted = is_serialized( $vote_option ) ? maybe_unserialize( $vote_option ) : $vote_option;
+			$vote_user = get_user_by( 'ID', $user_id );
+			$openid = $vote_user->user_login;
+			$vote_options = array();
+			foreach( $post_vote as $option ) {
+				$_vote = array( );
+				$count_id = '_'.md5($option);
+				$count_option = (int)get_post_meta( $post_id, $count_id, true );
+				$_vote["count"] = $count_option;
+				$_vote["voted"] = isset($voted[$openid])?$voted[$openid]:false;
+				$_vote["option"] = $option;
+				$vote_options[] = $_vote;
+			}
+			$_data["vote"] = $vote_options;
+		}
 		if ($taxonomies) {
 			foreach ( $taxonomies as $taxonomy ){
 				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));

@@ -3,21 +3,22 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.2.1
+Version: 1.2.2
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
-tested up to: 5.2.4
+tested up to: 5.3
 */
-// DEFINE PLUGIN PATH
+
 define('IMAHUI_REST_API', plugin_dir_path(__FILE__));
 define('IMAHUI_REST_URL', plugin_dir_url(__FILE__ ));
-// 所有插件加载完成
+
 add_action( 'plugins_loaded', 'minprogam_plugins_loaded' );
 function minprogam_plugins_loaded() {
 	include( IMAHUI_REST_API.'include/include.php' );
 	include( IMAHUI_REST_API.'router/router.php' );
 }
+
 add_filter( 'plugin_action_links', function( $links, $file ) {
 	if ( plugin_basename( __FILE__ ) !== $file ) {
 		return $links;
@@ -27,15 +28,32 @@ add_filter( 'plugin_action_links', function( $links, $file ) {
 	return $links;
 }, 10, 2 );
 
+add_filter( 'plugin_row_meta', function( $links, $file ) {
+	if ( plugin_basename( __FILE__ ) !== $file ) {
+		return $links;
+	}
+	$detail_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
+		esc_url( 'https://www.weitimes.com' ),
+		esc_attr( "_blank" ),
+		esc_attr( '更多关于 丸子小程序 的信息' ),
+		esc_attr( '丸子小程序' ),
+		esc_html( '丸子小程序' )
+	);
+	$more_link = array( 'detail' => $detail_link );
+	$links = array_merge( $links, $more_link );
+	return $links;
+}, 10, 2 );
+
 register_activation_hook(__FILE__, function () {
 	add_role( 'wechat', '小程序', array( 'read' => true, 'level_0' => true ) );
 });
+
 if(function_exists('register_nav_menus')) {
 	register_nav_menus( array(
 		'minapp-menu' => __( '小程序导航' )
 	) );
 }
-// 获取设置选项返回数据
+
 function wp_miniprogram_option($option_name) {
 	$options = get_option('minapp');
 	if($options) {
@@ -48,6 +66,42 @@ function wp_miniprogram_option($option_name) {
 		return false;
 	}
 }
+
+function mp_install_subscribe_message_table() {
+    global $wpdb;
+    $vpush = $wpdb->prefix . 'applets_subscribe_user';
+    $history = $wpdb->prefix . 'applets_subscribe_message';
+    $charset_collate = $wpdb->get_charset_collate();
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    if( $wpdb->get_var("SHOW TABLES LIKE '$vpush'") != $vpush ) :
+        $vpush_sql = " CREATE TABLE `".$vpush."` (
+            `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
+            `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
+            `template` VARCHAR(120) DEFAULT NULL COMMENT '模板ID',
+            `count` INT(20) DEFAULT NULL COMMENT '统计',
+            `pages` VARCHAR(20) DEFAULT NULL COMMENT '页面',
+            `platform` VARCHAR(20) DEFAULT NULL COMMENT '平台',
+            `program` VARCHAR(80) DEFAULT NULL COMMENT '小程序',
+            `date` DATETIME NOT NULL COMMENT '时间'
+        ) $charset_collate;";
+        dbDelta($vpush_sql);
+    endif;
+    if( $wpdb->get_var("SHOW TABLES LIKE '$history'") != $history ) :
+        $history_sql = " CREATE TABLE `".$history."` (
+            `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
+            `task` BIGINT(20) DEFAULT NULL COMMENT '任务ID',
+            `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
+            `template` VARCHAR(120) DEFAULT NULL COMMENT '模板ID',
+            `pages` VARCHAR(80) DEFAULT NULL COMMENT '页面',
+            `program` VARCHAR(80) DEFAULT NULL COMMENT '小程序',
+            `errcode` VARCHAR(20) DEFAULT NULL COMMENT '错误码',
+            `errmsg` VARCHAR(240) DEFAULT NULL COMMENT '错误信息',
+            `date` DATETIME NOT NULL COMMENT '时间'
+        ) $charset_collate;";
+        dbDelta($history_sql);
+    endif;
+}
+
 if( !function_exists('get_minapp_option') ) {
 	function is_wechat_miniprogram() {
 		if( isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['HTTP_REFERER']) ) {

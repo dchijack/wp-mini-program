@@ -91,7 +91,6 @@ class MP_Auth {
     }
 	
 	public static function generate_session() {
-        date_default_timezone_set(get_option('timezone_string'));
         $session_str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $session_key = substr( str_shuffle($session_str), mt_rand( 0, strlen($session_str) - 17 ), 16 );
         $expire_in = date('Y-m-d H:i:s',time()+7200);

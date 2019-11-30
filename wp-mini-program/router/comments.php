@@ -273,22 +273,14 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				if($formId != '' && $formId != 'the formId is a mock one') {
 					$flag = add_comment_meta($comment_id, 'formId', $formId, true); 
 				}
-				$result["code"] = "success";
-				if($flag) {
-					$result["message"] = "评论发布成功,推送凭证收集成功"; 
-				} else {
-					$result["message"] = "评论发布成功,推送凭证收集失败";
-				}
-				if($approved) {
-					$result["flag"] = false;
-				} else {
-					$result["flag"] = true;
-				}
+				$result["status"] = 200;
 				$result["id"] = $comment_id;
-				$result["status"] = 200;			
+				$result["code"] = "success";
+				$result["formid"] = $flag;
+				$result["message"] = $approved ? "提交成功, 待人工审核通过" : "发布完成, 刷新页面查看评论"; 			
 			} else {
 				$result["code"] = "success";
-				$result["message"] = "评论发布失败,无法收集推送凭证";
+				$result["message"] = "评论发布失败, 请检查";
 				$result["status"] = 500;                   
 			}
 		} else {

@@ -17,15 +17,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @see WP_REST_Controller
  */
 class WP_REST_Posts_Router extends WP_REST_Controller {
-	
-	/**
-	 * Post type.
-	 *
-	 * @since 4.7.0
-	 * @access protected
-	 * @var string
-	 */
-	protected $post_type;
 
 	/**
 	 * Constructor.

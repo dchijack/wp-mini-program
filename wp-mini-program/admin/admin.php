@@ -9,11 +9,13 @@ include( IMAHUI_REST_API. 'admin/core/meta.php');
 include( IMAHUI_REST_API. 'admin/core/terms.php' );
 include( IMAHUI_REST_API. 'admin/core/interface.php' );
 include( IMAHUI_REST_API. 'admin/core/sanitization.php' );
+include( IMAHUI_REST_API. 'admin/page/subscribe.php' );
 add_action( 'load-post.php',     'creat_meta_box' );
 add_action( 'load-post-new.php', 'creat_meta_box' );
 add_action( 'init', 'creat_miniprogram_terms_meta_box' );
 add_action( 'admin_menu', function() {
 	register_miniprogram_manage_menu();
+	mp_install_subscribe_message_table();
 });
 add_action( 'admin_enqueue_scripts', 'enqueue_admin_styles' );
 add_action( 'admin_enqueue_scripts', 'enqueue_admin_scripts' );
@@ -36,6 +38,8 @@ if(is_admin()) {
 	add_filter( 'miniprogram_manage_menus', function( $admin_menu ) {
 		$submenu = array();
 		$submenu[] = ['page_title' => '小程序设置','menu_title' => '基本设置', 'option_name' => 'miniprogram','slug' => 'miniprogram', 'function' => 'miniprogram_options_manage_page'];
+		$submenu[] = ['page_title' => '小程序订阅消息统计','menu_title' => '订阅统计', 'option_name' => 'miniprogram','slug' => 'subscribe', 'function' => 'miniprogram_subscribe_message_count'];
+		$submenu[] = ['page_title' => '小程序历史推送任务','menu_title' => '任务列表', 'option_name' => 'miniprogram','slug' => 'task', 'function' => 'miniprogram_subscribe_message_task_table'];
 		$submenu[] = ['page_title' => 'Mini Program API 使用指南','menu_title' => '使用指南', 'option_name' => 'miniprogram','slug' => 'guide', 'function' => 'guide'];
 		$admin_menu = array(
 			'menu' => [
