@@ -79,7 +79,7 @@ function mini_program_api_admin_notice() {
 
 // Admin footer text
 function mini_program_api_admin_footer_text($text) {
-       $text = '<span id="footer-thankyou">感谢使用 <a href=http://cn.wordpress.org/ target="_blank">WordPress</a>进行创作，<a target="_blank" rel="nofollow" href="https://www.weitimes.com/">点击访问</a> WordPress 小程序专业版。</span>';
+    $text = '<span id="footer-thankyou">感谢使用 <a href=http://cn.wordpress.org/ target="_blank">WordPress</a>进行创作，<a target="_blank" rel="nofollow" href="https://www.weitimes.com/">点击访问</a> WordPress 小程序专业版。</span>';
     return $text;
 }
 

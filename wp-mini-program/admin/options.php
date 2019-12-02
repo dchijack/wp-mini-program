@@ -84,13 +84,13 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				
 				'ad_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
 				'ad_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_t_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
+				'ad_d_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
 				'ad_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
 				'ad_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
 				
 				'ad_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
 				'ad_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_t_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
+				'ad_p_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
 				'ad_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
 				'ad_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
 			],

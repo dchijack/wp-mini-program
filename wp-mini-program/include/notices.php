@@ -7,17 +7,10 @@ if ( !defined( 'ABSPATH' ) ) exit;
 
 if( get_option('comment_moderation') ) {
 	add_action('comment_unapproved_to_approved', 'we_miniprogram_comment_reply_message');
-}
-
-if( wp_miniprogram_option('update') ) {
-    add_action('publish_post','we_miniprogram_posts_update_notice',10,1);
-    add_action('publish_to_publish',function () {
-        remove_action('publish_post','we_miniprogram_posts_update_notice',10,1);
-    },11,1);
+	add_action('comment_unapproved_to_approved', 'we_miniprogram_comment_audit_message');
 }
 
 function we_miniprogram_comment_reply_message( $comment ) {
-	date_default_timezone_set(get_option('timezone_string'));
 	$current_id = $comment->comment_ID;
 	if( $current_id === 0 ) {
 		return new WP_Error( 'error', '评论 ID 为空', array( 'status' => 400 ) );
@@ -50,7 +43,6 @@ function we_miniprogram_comment_reply_message( $comment ) {
 		);
 		if( $platform == 'wechat' ) {
 			$response = we_miniprogram_comments_reply_action( $comment );
-			$auditing = we_miniprogram_comment_audit_message( $comment );
 		} else if( $platform == 'tencent' ) {
 			$response = qq_miniprogram_comment_notice_action( $args );
 		} else if( $platform == 'baidu' ) {
@@ -60,7 +52,6 @@ function we_miniprogram_comment_reply_message( $comment ) {
 	return $response;	
 }
 function we_miniprogram_comment_audit_message( $comment ) {
-    date_default_timezone_set(get_option('timezone_string'));
     $current_id = $comment->comment_ID;
     $post_id = $comment->comment_post_ID;
     $type = get_post_type( $post_id );
@@ -95,7 +86,6 @@ function we_miniprogram_comment_audit_message( $comment ) {
 	$status = we_miniprogram_subscribe_message_action( $task_id, $contents );
 }
 function we_miniprogram_comments_reply_action( $comment ) {
-    date_default_timezone_set(get_option('timezone_string'));
 	$current_id = $comment->comment_ID;
 	$post_id = $comment->comment_post_ID;
 	$reply_name = $comment->comment_author;
@@ -243,6 +233,14 @@ function bd_miniprogram_comment_notice_action( $contents ) {
 	}
 	return $response;
 }
+
+if( wp_miniprogram_option('update') ) {
+    add_action('publish_post','we_miniprogram_posts_update_notice',10,1);
+    add_action('publish_to_publish',function () {
+        remove_action('publish_post','we_miniprogram_posts_update_notice',10,1);
+    },11,1);
+}
+
 function we_miniprogram_posts_update_notice( $post_id ) {
     $post = get_post($post_id);
     if($post->post_title) {

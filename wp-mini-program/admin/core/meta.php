@@ -137,7 +137,7 @@ class WP_Custom_Meta_Box {
 								$output .= '<tr id="'.$key.'_textarea">
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>
 											<td><textarea id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ). '" '.$class.' rows="'.$rows.'" cols="'.$cols.'">' . esc_textarea( $value ) . '</textarea>';
-											if($field['description'] && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
+											if(isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 								$output .= '</td></tr>';
 								break;
 							case 'select':
@@ -149,7 +149,7 @@ class WP_Custom_Meta_Box {
 										$output .= '<option'. selected( $value, $id, false ) .' value="' . esc_attr( $id ) . '">' . esc_html( $option ) . '</option>';
 									}
 									$output .= '</select>';
-									if($field['description'] && !empty($field['description'])) { $output .= '<span class="description">'.$field['description'].'</span>'; }
+									if(isset($field['description']) && !empty($field['description'])) { $output .= '<span class="description">'.$field['description'].'</span>'; }
 									$output .= '</td></tr>';
 								break;
 								
@@ -160,7 +160,7 @@ class WP_Custom_Meta_Box {
 								$output .= '<tr id="'.$key.'_checkbox">
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>
 											<td><input type="checkbox" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ). '" '.$class.' '. checked( $value, 1, false) .' value="1">';
-											if($field['description'] && !empty($field['description'])) { $output .= '<span class="regular-color description">'.$field['description'].'</span>'; }
+											if(isset($field['description']) && !empty($field['description'])) { $output .= '<span class="regular-color description">'.$field['description'].'</span>'; }
 								$output .= '</td></tr>';
 								break;
 								
@@ -171,8 +171,26 @@ class WP_Custom_Meta_Box {
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>
 											<td><input type="text" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ). '" '.$class.' '.$val.'>
 											<input type="button" id="' . esc_attr( $key ) . '-btn" class="button upload-button" value="选择媒体">';
-											if($field['description'] && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
+											if(isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 								$output .= '</td></tr>';
+								break;
+
+							case "image":
+								$output .= '<tr id="'.$key.'_image">
+											<th><label for="'.$key.'">'.$field["title"].'</label></th>';
+											if( $value ) {
+												$output .= '<td><div class="image_field">
+												<img src="'.esc_attr( $value ).'" width="360" height="180" />
+												</div>
+												<input type="text" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ). '" class="regular-text" value="'.esc_attr( $value ).'" >
+												<input type="button" id="' . esc_attr( $key ) . '-btn" class="button upload-button" value="选择媒体">
+												</td>';
+											} else {
+												$output .= '<td><input type="text" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ). '" class="regular-text" value="" >
+													<input type="button" id="' . esc_attr( $key ) . '-btn" class="button upload-button" value="选择媒体">
+													</td>';
+											}
+								$output .= '</tr>';
 								break;
 
 							case "mu-text":
@@ -196,19 +214,18 @@ class WP_Custom_Meta_Box {
 														<input id="' . esc_attr( $key ) . '" type="text" name="' .esc_attr( $key.'[]' ). '" class="regular-text" value="" />
 														<a class="mp-mu-text button">添加</a>
 														</div>';		
-									$output .= '</div></td></tr>';
-									break;
+								$output .= '</div></td></tr>';
+								break;
 						
 							default:
-								$rows = isset($field["rows"])?$field["rows"]:4;
 								$class = isset($field["class"])?'class="'.$field["class"].'"':'';
 								$val = $value?'value="'. esc_attr( $value ).'"':'value=""';
 								$output .= '<tr id="'.$key.'_text">
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>
 											<td>
-											<input type="text" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ).'" '.$class.' rows="'.$rows.'" '.$val.' />';
-											if(!isset($field["class"]) && $field['description'] && !empty($field['description'])) { $output .= '<span class="description">'.$field['description'].'</span>'; }
-											if(isset($field["class"]) && $field['description'] && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
+											<input type="text" id="' . esc_attr( $key ) . '" name="' .esc_attr( $key ).'" '.$class.' '.$val.' />';
+											if(!isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<span class="description">'.$field['description'].'</span>'; }
+											if(isset($field["class"]) && isset($field['description']) && !empty($field['description'])) { $output .= '<p class="description">'.$field['description'].'</p>'; }
 								$output .= '</td></tr>';
 								break;
 						}
