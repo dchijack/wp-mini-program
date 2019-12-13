@@ -1,6 +1,5 @@
 <?php
 /**
- * REST API: WP_REST_Users_Controller class
  *
  * @package WordPress
  * @subpackage REST_API
