@@ -114,7 +114,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		$remote = wp_remote_get($urls);
 		
 		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
-			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 500 'message' => $remote ) );
+			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 500, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );
