@@ -44,7 +44,7 @@ function imahui_applets_dashboard_widget() {
 	esc_html( '高级版插件：Version '.$plugin_version.'' )
 	);
 	$update_ver = sprintf( ' <a href="%s" target="%s" data-title="%s">%s</a>',
-	esc_url( 'https://www.imahui.com/minapp/1747.html' ),
+	esc_url( 'https://www.imahui.com/minapp/2185.html' ),
 	esc_attr( "_blank" ),
 	esc_attr( ' Mini Program API ' ),
 	esc_html( '查看 WordPress 免费小程序' )

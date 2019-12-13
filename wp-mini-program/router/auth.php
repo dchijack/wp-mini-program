@@ -153,8 +153,10 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
 			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 500 ) );
 		}
+
+		$body = stripslashes( $remote['body'] );
 		
-		$session = json_decode( $remote['body'], true );
+		$session = json_decode( $body, true );
 		if( $session['errcode'] != 0 ) {
 			return new WP_Error( 'error', $session['errmsg'], array( 'status' => 500 ) );
 		}

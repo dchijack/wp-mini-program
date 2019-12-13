@@ -3,7 +3,7 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.2.3
+Version: 1.2.4
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
@@ -74,7 +74,7 @@ function mp_install_subscribe_message_table() {
     $charset_collate = $wpdb->get_charset_collate();
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     if( $wpdb->get_var("SHOW TABLES LIKE '$vpush'") != $vpush ) :
-        $vpush_sql = " CREATE TABLE `".$vpush."` (
+        $vpush_sql = "CREATE TABLE `".$vpush."` (
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
             `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
             `template` VARCHAR(120) DEFAULT NULL COMMENT '模板ID',
@@ -87,7 +87,7 @@ function mp_install_subscribe_message_table() {
         dbDelta($vpush_sql);
     endif;
     if( $wpdb->get_var("SHOW TABLES LIKE '$history'") != $history ) :
-        $history_sql = " CREATE TABLE `".$history."` (
+        $history_sql = "CREATE TABLE `".$history."` (
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
             `task` BIGINT(20) DEFAULT NULL COMMENT '任务ID',
             `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
