@@ -1,6 +1,6 @@
 <?php
 /*
- * WordPress Custom API Data Hooks
+ * WordPress Custom Dashboard
  */
  
 if ( !defined( 'ABSPATH' ) ) exit;
