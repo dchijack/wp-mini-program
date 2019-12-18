@@ -72,7 +72,7 @@ function mini_program_api_admin_notice() {
     }
   </style>
   <div class="notice notice-info">
-  <p class="about-description">欢迎使用 Mini Program API 连接小程序。欢迎访阅：<a target="_blank" rel="nofollow" href="https://www.weitimes.com">丸子小程序</a>, 查看 WordPress 小程序详情</p>
+  <p class="about-description">欢迎使用 Mini Program API 连接小程序。欢迎访问：<a target="_blank" rel="nofollow" href="https://www.weitimes.com">丸子小程序</a>, 查看 WordPress 小程序详情</p>
   </div>
   <?php
 }

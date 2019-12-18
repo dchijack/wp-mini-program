@@ -69,12 +69,6 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	
 		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 		$_data["meta"]["views"] = $post_views;
-		$metas = apply_filters( 'custom_meta', $custom_meta = array() );
-		if ($metas) {
-			foreach ( $metas as $meta ) {
-				$_data["meta"][$meta] = get_post_meta( $post_id, $meta ,true );
-			}
-		}
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
