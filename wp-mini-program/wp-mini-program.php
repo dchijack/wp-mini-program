@@ -3,21 +3,21 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.2.5
+Version: 1.2.6
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
-tested up to: 5.3
+tested up to: 5.3.2
 */
 
 define('IMAHUI_REST_API', plugin_dir_path(__FILE__));
 define('IMAHUI_REST_URL', plugin_dir_url(__FILE__ ));
+define('MINI_PROGRAM_API_PLUGIN',  __FILE__);
 
-add_action( 'plugins_loaded', 'minprogam_plugins_loaded' );
-function minprogam_plugins_loaded() {
+add_action( 'plugins_loaded', function () {
 	include( IMAHUI_REST_API.'include/include.php' );
 	include( IMAHUI_REST_API.'router/router.php' );
-}
+} );
 
 add_filter( 'plugin_action_links', function( $links, $file ) {
 	if ( plugin_basename( __FILE__ ) !== $file ) {
@@ -43,6 +43,22 @@ add_filter( 'plugin_row_meta', function( $links, $file ) {
 	$links = array_merge( $links, $more_link );
 	return $links;
 }, 10, 2 );
+
+add_action( 'admin_init', function ( ) {
+	if( is_admin() && defined('IMAHUI_REST_API_PLUGIN') ) {
+		$wp_applets_missing = sprintf( '<a href="%s" title="%s" target="%s">%s</a>',
+            esc_url( 'https://www.imahui.com/minapp/1044.html' ),
+            esc_attr( '小程序 API' ),
+            esc_attr( '_blank' ),
+            esc_attr( '查看详情' )
+        );
+        deactivate_plugins( plugin_basename( __FILE__ ) ); 
+        if( isset( $_GET['activate'] ) ) {
+            unset( $_GET['activate'] );
+        }
+        printf('<div class="error notice is-dismissible"><p>您已激活启用 %s , 无法启用 Mini Program API 插件</p></div>', $wp_applets_missing);
+	}
+} );
 
 register_activation_hook(__FILE__, function () {
 	add_role( 'wechat', '小程序', array( 'read' => true, 'level_0' => true ) );
@@ -75,10 +91,10 @@ function mp_install_subscribe_message_table() {
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     if( $wpdb->get_var("SHOW TABLES LIKE '$vpush'") != $vpush ) :
         $vpush_sql = "CREATE TABLE `".$vpush."` (
-            `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
+            `id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
             `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
             `template` VARCHAR(120) DEFAULT NULL COMMENT '模板ID',
-            `count` INT(20) DEFAULT NULL COMMENT '统计',
+            `count` INT DEFAULT NULL COMMENT '统计',
             `pages` VARCHAR(20) DEFAULT NULL COMMENT '页面',
             `platform` VARCHAR(20) DEFAULT NULL COMMENT '平台',
             `program` VARCHAR(80) DEFAULT NULL COMMENT '小程序',
@@ -88,8 +104,8 @@ function mp_install_subscribe_message_table() {
     endif;
     if( $wpdb->get_var("SHOW TABLES LIKE '$history'") != $history ) :
         $history_sql = "CREATE TABLE `".$history."` (
-            `id` BIGINT(20) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
-            `task` BIGINT(20) DEFAULT NULL COMMENT '任务ID',
+            `id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id),
+            `task` INT DEFAULT NULL COMMENT '任务ID',
             `openid` VARCHAR(120) DEFAULT NULL COMMENT 'OpenID',
             `template` VARCHAR(120) DEFAULT NULL COMMENT '模板ID',
             `pages` VARCHAR(80) DEFAULT NULL COMMENT '页面',
@@ -134,4 +150,8 @@ if( !function_exists('get_minapp_option') ) {
 			return false;
 		}
 	}
+}
+function is_debug( ) {
+	$debug = wp_miniprogram_option('debug');
+	return $debug;
 }

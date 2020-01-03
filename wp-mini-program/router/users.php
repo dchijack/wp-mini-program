@@ -134,7 +134,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		$auth_code = MP_Auth::decryptData($appid, $session['session_key'], urldecode($params['encryptedData']), urldecode($params['iv']), $data );
 
 		if( $auth_code != 0 ) {
-			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );

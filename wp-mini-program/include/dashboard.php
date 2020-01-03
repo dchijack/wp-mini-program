@@ -56,9 +56,10 @@ function imahui_applets_dashboard_widget() {
 	<li class="page-count">'.$update_ver.'</li>
 	</ul>';
 	foreach($miniprogram as $post) {
-		$version = $post["version"];
-		$title = $post["title"];
-		$html .= '<p id="applets-version"><a href="https://www.weitimes.com/" class="button">查看 Version '.$version.'</a> <span id="wp-version">'.$title.'   更新:'.update_standard_datetime($post["date"]).'</span></p>';
+		$version = isset($post["version"])?$post["version"]:"1.0.0";
+		$title = isset($post["title"])?$post["title"]:"丸子小程序";
+		$date = isset($post["date"])?$post["date"]:date('Y-m-d h:i:s');
+		$html .= '<p id="applets-version"><a href="https://www.weitimes.com/" class="button">查看 Version '.$version.'</a> <span id="wp-version">'.$title.'   更新:'.update_standard_datetime($date).'</span></p>';
 	}
 	$html .= '<p class="community-events-footer">
 	<a href="https://www.imahui.com/" target="_blank">艾码汇 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 

@@ -33,14 +33,13 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	//global $wpdb;
 	$_data = $data->data;
 	$post_id = $post->ID;
-	if( is_miniprogram() || isset($request["debug"]) ) {
+	if( is_miniprogram() || is_debug() ) {
 		$post_date = $post->post_date;
 		$author_id = $post->post_author;
 		$author_avatar = get_user_meta($author_id, 'avatar', true);
 		$taxonomies = get_object_taxonomies($_data['type']);
 		$post_title = $post->post_title;
 		$post_views = (int)get_post_meta( $post_id, "views" ,true );
-		$post_vote = get_post_meta( $post_id, "vote_options" ,true );
 		$post_excerpt = $_data["excerpt"]["rendered"];
 		$post_content = $_data["content"]["rendered"];
 		$session = isset($request['access_token'])?$request['access_token']:'';
@@ -66,7 +65,6 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 			$_data["author"]["avatar"] = get_avatar_url($author_id);
 		}
 		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
-	
 		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 		$_data["meta"]["views"] = $post_views;
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
@@ -74,24 +72,6 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-		$_data["isvote"] = $post_vote ? true : false;
-		if( $isvote ) {
-			$voted_options = get_post_meta($post_id, 'vote', true);
-			$voted = is_serialized( $vote_option ) ? maybe_unserialize( $vote_option ) : $vote_option;
-			$vote_user = get_user_by( 'ID', $user_id );
-			$openid = $vote_user->user_login;
-			$vote_options = array();
-			foreach( $post_vote as $option ) {
-				$_vote = array( );
-				$count_id = '_'.md5($option);
-				$count_option = (int)get_post_meta( $post_id, $count_id, true );
-				$_vote["count"] = $count_option;
-				$_vote["voted"] = isset($voted[$openid])?$voted[$openid]:false;
-				$_vote["option"] = $option;
-				$vote_options[] = $_vote;
-			}
-			$_data["vote"] = $vote_options;
-		}
 		if ($taxonomies) {
 			foreach ( $taxonomies as $taxonomy ){
 				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
@@ -204,7 +184,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	}
 	wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
 	$_post = wp_cache_get('post_id_'.$post_id,'post_id_'.$post_id.'_group');
-	if( $_post === false ){
+	if( $_post === false ) {
 		$_post = $_data;
 		wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
 	}
@@ -215,7 +195,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 	$_data = $data->data;
 	$post_id = $post->ID;
-	if( is_miniprogram() || isset($request["debug"]) ) {
+	if( is_miniprogram() || is_debug() ) {
 		$post_date = $post->post_date;
 		$author_id = $post->post_author;
 		$author_avatar = get_user_meta($author_id, 'avatar', true);
@@ -415,10 +395,10 @@ function update_miniprogam_platform( $user_id ) {
 	update_user_meta( $user_id, 'platform', $_POST['platform'] );
 }
 
-add_action( 'show_user_profile', 'add_miniprogam_platform_select' );
-add_action( 'edit_user_profile', 'add_miniprogam_platform_select' );
+add_action( 'show_user_profile', 'add_miniprogam_platform_source' );
+add_action( 'edit_user_profile', 'add_miniprogam_platform_source' );
 
-function add_miniprogam_platform_select( $user ) { ?>
+function add_miniprogam_platform_source( $user ) { ?>
 <table class="form-table">       
     <tr>
         <th><label for="dropdown">平台用户</label></th>
@@ -508,6 +488,6 @@ if (wp_miniprogram_option('reupload')) {
 }
 
 // 屏蔽古腾堡编辑器
-if( wp_miniprogram_option('gutenberg') ) {
+if( wp_miniprogram_option('gutenberg') || is_debug() ) {
 	add_filter('use_block_editor_for_post_type', '__return_false');
 }

@@ -151,7 +151,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$remote = wp_remote_get( $urls );
 
 		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
-			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 500 ) );
+			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 500, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );
@@ -163,7 +163,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );
@@ -393,7 +393,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data);
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败：' .$auth_code, array( 'status' => 400 ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );

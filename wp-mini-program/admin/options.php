@@ -32,6 +32,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'appname'		=>['title'=>'小程序名称','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("name")],
 				'appdesc'		=>['title'=>'小程序描述','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>get_bloginfo('description')],
 				'version'		=>['title'=>'小程序版本','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("version"),'description'=>'小程序版本号,默认留空为 WordPress 程序版本号'],
+				'debug'			=>['title'=>'API调试模式','type'=>'checkbox','description'=>'是否启用 API 调试模式, 注意: 上线小程序不建议启用'],
 				'formats'		=>['title'=>'文章格式类型','type'=>'mu-check','options'=>['aside'=>'日志','gallery'=>'相册','link'=>'链接','image'=>'图像','quote'=>'引用','status'=>'状态','video'=>'视频','audio'=>'语音','chat'=>'聊天']],
 				'thumbnail'		=>['title'=>'默认缩略图','type'=>'upload','class'=>'regular-text'],
 				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],

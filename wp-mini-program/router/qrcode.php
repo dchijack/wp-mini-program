@@ -108,7 +108,11 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 	public function wp_post_qrcode( $request ) {
 		$post_id = $request['id'];
 		$qrcode_type = isset($request['type']) ? $request['type'] : '';
-		$post_type = get_post_type( $post_id );
+		if( $post_id ) {
+			$post_type = get_post_type( $post_id );
+		} else {
+			$post_type = "custom";
+		}
 		if( $post_type == 'post' ) {
 			$post_path = '/pages/detail/detail?id='.$post_id;
 		} else {
@@ -117,16 +121,20 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		$path = isset($request['path']) && $request['path'] ? $request['path'] : $post_path;
 		$uploads = wp_upload_dir();
 		$qrcode_path = $uploads['basedir'] .'/qrcode/';
-		$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/qrcode-".$post_id.".png";
+		if( $qrcode_type && $post_id ) {
+			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_id.".png";
+			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/".$qrcode_type."-qrcode-".$post_id.".png";
+		} else if( $qrcode_type && !$post_id ) {
+			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_type.".png";
+			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/".$qrcode_type."-qrcode-".$post_type.".png";
+		} else {
+			$qrcode 	 = $qrcode_path.'qrcode-'.$post_id.'.png';
+			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/qrcode-".$post_id.".png";
+		}
 		if (!is_dir($qrcode_path)) {
 			mkdir($qrcode_path, 0755);
 		}
-		if( $qrcode_type ) {
-			$qrcode 	= $qrcode_path.'qrcode-'.$qrcode_type.'-'.$post_id.'.png';
-		} else {
-			$qrcode 	= $qrcode_path.'qrcode-'.$post_id.'.png';
-		}
-		$isDown = true;
+		
 		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
 		if( $thumbnail ) {
 			$prefix = parse_url($thumbnail);
