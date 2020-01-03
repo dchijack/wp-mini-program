@@ -5,15 +5,15 @@
  
 if ( !defined( 'ABSPATH' ) ) exit;
 
-include( IMAHUI_REST_API.'router/setting.php' );
-include( IMAHUI_REST_API.'router/users.php' );
-include( IMAHUI_REST_API.'router/posts.php' );
-include( IMAHUI_REST_API.'router/comments.php' );
-include( IMAHUI_REST_API.'router/qrcode.php' );
-include( IMAHUI_REST_API.'router/auth.php' );
-include( IMAHUI_REST_API.'router/subscribe.php' );
-include( IMAHUI_REST_API.'router/advert.php' );
-include( IMAHUI_REST_API.'router/menu.php' );
+include( MINI_PROGRAM_REST_API.'router/setting.php' );
+include( MINI_PROGRAM_REST_API.'router/users.php' );
+include( MINI_PROGRAM_REST_API.'router/posts.php' );
+include( MINI_PROGRAM_REST_API.'router/comments.php' );
+include( MINI_PROGRAM_REST_API.'router/qrcode.php' );
+include( MINI_PROGRAM_REST_API.'router/auth.php' );
+include( MINI_PROGRAM_REST_API.'router/subscribe.php' );
+include( MINI_PROGRAM_REST_API.'router/advert.php' );
+include( MINI_PROGRAM_REST_API.'router/menu.php' );
 
 add_action( 'rest_api_init', function () {
 	$controller = array();

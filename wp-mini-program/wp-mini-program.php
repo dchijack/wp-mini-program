@@ -10,13 +10,13 @@ requires at least: 4.9.5
 tested up to: 5.3.2
 */
 
-define('IMAHUI_REST_API', plugin_dir_path(__FILE__));
-define('IMAHUI_REST_URL', plugin_dir_url(__FILE__ ));
+define('MINI_PROGRAM_REST_API', plugin_dir_path(__FILE__));
+define('MINI_PROGRAM_API_URL', plugin_dir_url(__FILE__ ));
 define('MINI_PROGRAM_API_PLUGIN',  __FILE__);
 
 add_action( 'plugins_loaded', function () {
-	include( IMAHUI_REST_API.'include/include.php' );
-	include( IMAHUI_REST_API.'router/router.php' );
+	include( MINI_PROGRAM_REST_API.'include/include.php' );
+	include( MINI_PROGRAM_REST_API.'router/router.php' );
 } );
 
 add_filter( 'plugin_action_links', function( $links, $file ) {

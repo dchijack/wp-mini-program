@@ -3,13 +3,13 @@
  * @package   Admin Settings
  */
 if ( !defined( 'ABSPATH' ) ) exit;
-include( IMAHUI_REST_API. 'admin/about.php' );
-include( IMAHUI_REST_API. 'admin/options.php' );
-include( IMAHUI_REST_API. 'admin/core/meta.php');
-include( IMAHUI_REST_API. 'admin/core/terms.php' );
-include( IMAHUI_REST_API. 'admin/core/interface.php' );
-include( IMAHUI_REST_API. 'admin/core/sanitization.php' );
-include( IMAHUI_REST_API. 'admin/page/subscribe.php' );
+include( MINI_PROGRAM_REST_API. 'admin/about.php' );
+include( MINI_PROGRAM_REST_API. 'admin/options.php' );
+include( MINI_PROGRAM_REST_API. 'admin/core/meta.php');
+include( MINI_PROGRAM_REST_API. 'admin/core/terms.php' );
+include( MINI_PROGRAM_REST_API. 'admin/core/interface.php' );
+include( MINI_PROGRAM_REST_API. 'admin/core/sanitization.php' );
+include( MINI_PROGRAM_REST_API. 'admin/page/subscribe.php' );
 add_action( 'load-post.php',     'creat_meta_box' );
 add_action( 'load-post-new.php', 'creat_meta_box' );
 add_action( 'init', 'creat_miniprogram_terms_meta_box' );
@@ -20,10 +20,10 @@ add_action( 'admin_menu', function() {
 add_action( 'admin_enqueue_scripts', 'enqueue_admin_styles' );
 add_action( 'admin_enqueue_scripts', 'enqueue_admin_scripts' );
 function enqueue_admin_styles() {
-	wp_enqueue_style('miniprogram', IMAHUI_REST_URL.'static/style.css', array(), '1.0' );
+	wp_enqueue_style('miniprogram', MINI_PROGRAM_API_URL.'static/style.css', array(), '1.0' );
 }
 function enqueue_admin_scripts() {
-	wp_enqueue_script( 'miniprogram', IMAHUI_REST_URL.'static/script.js', array( 'jquery' ), '1.0' );
+	wp_enqueue_script( 'miniprogram', MINI_PROGRAM_API_URL.'static/script.js', array( 'jquery' ), '1.0' );
 	if ( function_exists( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}
@@ -57,7 +57,7 @@ function miniprogram_options_manage_page( ) {
 		'options'	=> 'minapp',
 		"group"		=> "minapp-group"
 	);
-	require_once( IMAHUI_REST_API. 'admin/core/settings.php' );
+	require_once( MINI_PROGRAM_REST_API. 'admin/core/settings.php' );
 }
 add_action('admin_footer', function () {
 	echo '<script type="text/html" id="tmpl-mp-del-item">
