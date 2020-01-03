@@ -17,17 +17,15 @@ add_action( 'admin_menu', function() {
 	register_miniprogram_manage_menu();
 	mp_install_subscribe_message_table();
 });
-add_action( 'admin_enqueue_scripts', 'enqueue_admin_styles' );
-add_action( 'admin_enqueue_scripts', 'enqueue_admin_scripts' );
-function enqueue_admin_styles() {
+add_action( 'admin_enqueue_scripts', function () {
 	wp_enqueue_style('miniprogram', MINI_PROGRAM_API_URL.'static/style.css', array(), '1.0' );
-}
-function enqueue_admin_scripts() {
+} );
+add_action( 'admin_enqueue_scripts', function () {
 	wp_enqueue_script( 'miniprogram', MINI_PROGRAM_API_URL.'static/script.js', array( 'jquery' ), '1.0' );
 	if ( function_exists( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}
-}
+} );
 
 add_action( 'admin_init', function() {
 	register_setting( "minapp-group", "minapp", array( 'sanitize_callback' => 'validate_sanitize_miniprogram_options' ) );

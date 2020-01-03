@@ -44,22 +44,6 @@ add_filter( 'plugin_row_meta', function( $links, $file ) {
 	return $links;
 }, 10, 2 );
 
-add_action( 'admin_init', function ( ) {
-	if( is_admin() && defined('IMAHUI_REST_API_PLUGIN') ) {
-		$wp_applets_missing = sprintf( '<a href="%s" title="%s" target="%s">%s</a>',
-            esc_url( 'https://www.imahui.com/minapp/1044.html' ),
-            esc_attr( '小程序 API' ),
-            esc_attr( '_blank' ),
-            esc_attr( '查看详情' )
-        );
-        deactivate_plugins( plugin_basename( __FILE__ ) ); 
-        if( isset( $_GET['activate'] ) ) {
-            unset( $_GET['activate'] );
-        }
-        printf('<div class="error notice is-dismissible"><p>您已激活启用 %s , 无法启用 Mini Program API 插件</p></div>', $wp_applets_missing);
-	}
-} );
-
 register_activation_hook(__FILE__, function () {
 	add_role( 'wechat', '小程序', array( 'read' => true, 'level_0' => true ) );
 });
