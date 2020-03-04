@@ -194,63 +194,40 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 
 	public function get_comment_posts( $request ) {
 		$data = array();
-		$type = isset($request["type"])?$request["type"]:'';
+		$type = isset($request["type"])?$request["type"]:"comment";
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
 		$offset = ($page * $per_page) - $per_page;
-		$access_token = isset($request['access_token'])?$request['access_token']:'';
-		if( $type ) {
-			if( $access_token ) {
-				$session = base64_decode( $access_token );
-				$users = MP_Auth::login( $session );
-				if ( !$users ) {
-					return new WP_Error( 'error', '授权信息有误' , array( 'status' => 400 ) );
-				}
-				$user_id = $users->ID;
-				$user_comments_arr = array( 'type__in' => array( $type ), 'status' => 'approve', 'user_id' => $user_id, 'number' => $per_page, 'offset' => $offset );
-				$comments = get_comments($user_comments_arr);
-				if($comments) {
-					$posts = array();
-					foreach ( $comments as $comment ) {
-						$posts[] = $comment->comment_post_ID;
-					}
-					$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'post__in' => $posts, 'orderby' => 'date', 'order' => 'DESC', 'date_query' => array( array( 'after' => '1 year ago' )) );
-				}
+		$access_token = isset($request['access_token'])?$request['access_token']:"";
+		if( $access_token ) {
+			$session = base64_decode( $access_token );
+			$users = MP_Auth::login( $session );
+			if ( !$users ) {
+				return new WP_Error( 'error', '授权信息有误' , array( 'status' => 400 ) );
 			}
-		} else {
-			$comments_arr = array(
-				'parent' => 0,
-				'status' => 'approve',
-				'type__in' => 'comment',
-				"number" => $per_page,
-				"offset" => $offset,
-				"orderby" => 'comment_date',
-				"order" => 'DESC',
-				'date_query' => array(
-					'after' => '1 year ago',
-					'before' => 'today',
-					'inclusive' => true,
-				)
+			$user_id = $users->ID;
+			$user_comments_arr = array( 
+				'type__in' => array( $type ), 
+				'status' => 'approve', 
+				'user_id' => $user_id, 
+				'number' => $per_page, 
+				'offset' => $offset 
 			);
-			$comments = get_comments($comments_arr);
+			$comments = get_comments($user_comments_arr);
 			if($comments) {
 				$posts = array();
 				foreach ( $comments as $comment ) {
 					$posts[] = $comment->comment_post_ID;
 				}
-				$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'post__in' => $posts, 'orderby' => 'date', 'order' => 'DESC' );
+				$posts = array_values(array_flip(array_flip($posts)));
+				foreach ( $posts as $post_id ) {
+					$post = get_post( $post_id );
+					$data[] = $post;
+				}
 			}
 		}
-		$query  = new WP_Query();
-		if( $args ) {
-			$result = $query->query( $args );
-		} else {
-			$result = array();
-		}
-		if($result) {
-			$data = apply_filters( 'rest_posts', $result, $access_token );
-		}
-		$response  = rest_ensure_response( $data );
+		$result = apply_filters( 'rest_posts', $data, $access_token );
+		$response  = rest_ensure_response( $result );
 		return $response;
 	}
 

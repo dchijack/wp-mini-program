@@ -3,7 +3,7 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.2.6
+Version: 1.2.7
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
@@ -32,14 +32,28 @@ add_filter( 'plugin_row_meta', function( $links, $file ) {
 	if ( plugin_basename( __FILE__ ) !== $file ) {
 		return $links;
 	}
-	$detail_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
+	$minprogram_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
 		esc_url( 'https://www.weitimes.com' ),
 		esc_attr( "_blank" ),
 		esc_attr( '更多关于 丸子小程序 的信息' ),
 		esc_attr( '丸子小程序' ),
 		esc_html( '丸子小程序' )
 	);
-	$more_link = array( 'detail' => $detail_link );
+	$mtheme_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
+		esc_url( 'http://www.mzhuti.com' ),
+		esc_attr( "_blank" ),
+		esc_attr( '更多关于 M 主题小程序站 的信息' ),
+		esc_attr( 'M 主题小程序站' ),
+		esc_html( ' M 主题' )
+	);
+	$wptoo_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
+		esc_url( 'https://www.wptoo.com' ),
+		esc_attr( "_blank" ),
+		esc_attr( '更多关于 wpToo 站点的信息' ),
+		esc_attr( 'wpToo 主题网站' ),
+		esc_html( 'Blues 主题' )
+	);
+	$more_link = array( 'miniprogram' => $minprogram_link, 'mtheme' => $mtheme_link, 'wptoo' => $wptoo_link );
 	$links = array_merge( $links, $more_link );
 	return $links;
 }, 10, 2 );

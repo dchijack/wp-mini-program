@@ -360,7 +360,7 @@ add_filter( 'the_content',function ($content) {
 		$audio_id = get_post_meta($post_id,'audio',true);
 	}
 	if (!empty($video_id) && wp_miniprogram_option('qvideo')) {
-		$video = apply_filters( 'share_video', $video_id );
+		$video = apply_filters( 'tencent_video', $video_id );
 		if($video) {
 			$video_code = '<p><video '.$media_author.$media_title.' controls="controls" poster="'.$cover_url.'" src="'.$video.'" width="100%"></video></p>';
 		} else {
@@ -491,3 +491,36 @@ if (wp_miniprogram_option('reupload')) {
 if( wp_miniprogram_option('gutenberg') || is_debug() ) {
 	add_filter('use_block_editor_for_post_type', '__return_false');
 }
+
+add_shortcode('qvideo', function ($attr) {
+	extract(
+        shortcode_atts(
+            array(
+				'vid' => ''
+            ), 
+            $attr
+        )
+	);
+	if(strpos($vid, 'v.qq.com') === false) {
+		$url = 'https://v.qq.com/x/page/'.$vid.'.html';
+	} else {
+		$url =  $vid;
+	}
+	$video = apply_filters( 'tencent_video', $url );
+	if( $video ) {
+		$output = '<p><video controls="controls" poster="https://puui.qpic.cn/qqvideo_ori/0/'.$vid.'_496_280/0" src="'.$video.'" width="100%"></video></p>';
+	} else {
+		$output = '<p>腾讯视频参数不支持，请重新检查！</p>';
+	}
+	return $output;
+});
+
+add_action( 'admin_print_footer_scripts', function () {
+    if (wp_script_is('quicktags')){
+?>
+    <script type="text/javascript">
+    QTags.addButton( 'qvideo', '腾讯视频', '[qvideo vid="腾讯视频 vid 或 url"]','' );
+    </script>
+<?php
+    }
+} );

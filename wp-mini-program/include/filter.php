@@ -79,17 +79,16 @@ add_filter( 'tencent_video', function($url) {
 		if(strlen($vids) > 20) {
 			return $url;
 		}
-		$url = 'http://vv.video.qq.com/getinfo?vid='.$vids.'&defaultfmt=auto&otype=json&platform=11001&defn=fhd&charge=0';
+		$url = 'https://vv.video.qq.com/getinfo?vid='.$vids.'&platform=101001&charge=0&otype=json';
 		$remote = wp_remote_get( $url );
 		$response = wp_remote_retrieve_body( $remote );
 		$response = substr($response,13,-1);
 		$response = json_decode($response,true);
-		$res	= $response['vl']['vi'][0];
-		$p0		= $res['ul']['ui'][0]['url'];
-		$p1		= $res['fn'];
-		$p2		= $res['fvkey'];
+		$response = $response['vl']['vi'][0];
+		$mp4file  = $response['fn'];
+		$mp4keys  = $response['fvkey'];
 		//$ti		= $res['ti'];
-		$mp4	= $p0.$p1.'?vkey='.$p2;
+		$mp4	= 'https://ugcws.video.gtimg.com/'.$mp4file.'?vkey='.$mp4keys;
 		return $mp4;
 	}
 });

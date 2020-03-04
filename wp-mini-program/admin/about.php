@@ -7,7 +7,7 @@
  * 基于 WordPress REST 创建小程序应用 API 数据接口。
  * 
  */
-function guide(){ ?>
+function miniprogram_api_guide(){ ?>
 	<div style="width:600px;">
 		<h2>Mini Program API</h2>
 		<p>WordPress Mini Program API 插件是 <a href="https://www.imahui.com/" target="_blank">艾码汇</a> 基于 WP REST API 创建小程序 API 数据接口。</p>

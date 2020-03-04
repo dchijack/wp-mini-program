@@ -62,29 +62,12 @@ function mp_subscribe_errcode_msg($key) {
         '47003' => __('模板参数不准确','imahui'),
         '41030' => __('页面路径不正确','imahui')
     );
-    
     return isset($msg[$key]) ? $msg[$key] : '';
 }
 
-// Admin notice
-add_action( 'welcome_panel', 'mini_program_api_admin_notice' );
-function mini_program_api_admin_notice() {
-  ?>
-  <style type="text/css">
-    .about-description a{
-      text-decoration:none;
-    }
-  </style>
-  <div class="notice notice-info">
-  <p class="about-description">欢迎使用 Mini Program API 连接小程序。欢迎访问：<a target="_blank" rel="nofollow" href="https://www.weitimes.com">丸子小程序</a>, 查看 WordPress 小程序详情</p>
-  </div>
-  <?php
-}
-
 // Admin footer text
+add_filter('admin_footer_text', 'mini_program_api_admin_footer_text');
 function mini_program_api_admin_footer_text($text) {
     $text = '<span id="footer-thankyou">感谢使用 <a href=http://cn.wordpress.org/ target="_blank">WordPress</a>进行创作，<a target="_blank" rel="nofollow" href="https://www.weitimes.com/">点击访问</a> WordPress 小程序专业版。</span>';
     return $text;
 }
-
-add_filter('admin_footer_text', 'mini_program_api_admin_footer_text');

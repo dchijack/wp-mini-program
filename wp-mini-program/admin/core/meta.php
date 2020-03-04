@@ -8,34 +8,25 @@ if ( !defined( 'ABSPATH' ) ) exit;
 /**
  * Calls the class on the post edit screen.
  */
-function creat_meta_box() {
-    new WP_Custom_Meta_Box();
-}
- 
+add_action('add_meta_boxes', array('WP_Custom_Meta_Box', 'add_custom_meta_box'));
+add_action('save_post', array('WP_Custom_Meta_Box', 'save_meta_methods'));
+
 /**
  * WordPress Creat Custom Meta Box Class.
  */
-class WP_Custom_Meta_Box {
- 
-    /**
-     * Hook into the appropriate actions when the class is constructed.
-     */
-    public function __construct() {
-        add_action( 'add_meta_boxes', array( $this, 'add_meta_container' ) );
-        add_action( 'save_post',      array( $this, 'save_meta_methods'   ) );
-    }
- 
+abstract class WP_Custom_Meta_Box {
+
     /**
      * Adds the meta box container.
      */
-    public function add_meta_container( ) {
+    public static function add_custom_meta_box( ) {
         // Limit meta box to certain post types.
 
 		$metas = apply_filters( 'meta_options', $options = array() );
 		
 		if($metas) {
 			foreach($metas as $key => $meta) {
-				add_meta_box( $key, $meta['title'], array( $this, 'creat_meta_container' ), $meta['type'], 'normal','default' );
+				add_meta_box( $key, $meta['title'], array( self::class, 'creat_meta_container' ), $meta['type'], 'normal','default' );
 			}
 		}
     }
@@ -45,7 +36,7 @@ class WP_Custom_Meta_Box {
      *
      * @param int $post_id The ID of the post being saved.
      */
-    public function save_meta_methods( $post_id ) {
+    public static function save_meta_methods( $post_id ) {
  
         /*
          * We need to verify this came from the our screen and with proper authorization,
@@ -113,7 +104,7 @@ class WP_Custom_Meta_Box {
      *
      * @param WP_Post $post The post object.
      */
-    public function creat_meta_container( $post ) {
+    public static function creat_meta_container( $post ) {
  
         // Add an nonce field so we can check for it later.
         wp_nonce_field( 'add_meta_inner_custom_box', 'add_meta_custom_box_nonce' );
