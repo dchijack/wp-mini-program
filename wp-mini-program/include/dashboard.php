@@ -25,15 +25,15 @@ function imahui_applets_dashboard_widget() {
 	);
 	$url = 'https://mp.weitimes.com';
 	$miniprograms = wp_remote_get( $url.'/wp-json/wp/v2/products' );
-	if( is_array( $miniprograms ) || !is_wp_error($miniprograms) || $miniprograms['response']['code'] == '200' ) {
+	if( is_array( $miniprograms ) || !is_wp_error($miniprograms) ) {
 		$miniprogram = json_decode( $miniprograms['body'], true );
 	} else {
 		$miniprogram = array( );
 	}
 	$plugins = wp_remote_get( $url.'/wp-json/wp/v2/plugins/269');
-	if( is_array( $plugins ) || !is_wp_error($plugins) || $plugins['response']['code'] == '200' ) {
+	if( is_array( $plugins ) || !is_wp_error($plugins) ) {
 		$plugin = json_decode( $plugins['body'], true );
-		$plugin_version = $plugin['plugins']['version'];
+		$plugin_version = isset($plugin['plugins']['version'])?$plugin['plugins']['version']:'1.0.0';
 	} else {
 		$plugin_version = '1.0.0';
 	}
