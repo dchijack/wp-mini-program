@@ -75,100 +75,7 @@ jQuery(document).ready(function($) {
 		});
 		mediaUploader.open();
 	});
-	
-	// 广告设置
-	if (jQuery('#ad_i_open:checked').val() !== undefined) {
-		jQuery('#ad_i_type_select').show();
-		jQuery('#ad_i_args_text').show();
-		jQuery('#ad_i_platform_mu_check').show();
-		if (jQuery('#ad_i_type').val() !== 'unit') {
-        	jQuery('#ad_i_image_upload').show();
-        }
-	} else {
-		jQuery('#ad_i_type_select').hide();
-		jQuery('#ad_i_args_text').hide();
-		jQuery('#ad_i_platform_mu_check').hide();
-		if (jQuery('#ad_i_type').val() !== 'unit') {
-        	jQuery('#ad_i_image_upload').hide();
-        }
-	}
-	jQuery('#ad_i_open').click(function() {
-		jQuery('#ad_i_type_select').fadeToggle(400);
-		jQuery('#ad_i_args_text').fadeToggle(400);
-		jQuery('#ad_i_platform_mu_check').fadeToggle(400);
-		if (jQuery('#ad_i_type').val() !== 'unit') {
-			jQuery('#ad_i_image_upload').fadeToggle(400);
-		}
-	});
-	if (jQuery('#ad_t_open:checked').val() !== undefined) {
-		jQuery('#ad_t_open_checkbox').show();
-		jQuery('#ad_t_args_text').show();
-		jQuery('#ad_t_platform_mu_check').show();
-		if (jQuery('#ad_i_type').val() !== 'unit') {
-        	jQuery('#ad_i_image_upload').show();
-        }
-	} else {
-		jQuery('#ad_t_type_select').hide();
-		jQuery('#ad_t_args_text').hide();
-		jQuery('#ad_t_platform_mu_check').hide();
-		if (jQuery('#ad_t_type').val() !== 'unit') {
-        	jQuery('#ad_t_image_upload').hide();
-        }
-	}
-	jQuery('#ad_t_open').click(function() {
-		jQuery('#ad_t_type_select').fadeToggle(400);
-		jQuery('#ad_t_args_text').fadeToggle(400);
-		jQuery('#ad_t_platform_mu_check').fadeToggle(400);
-		if (jQuery('#ad_t_type').val() !== 'unit') {
-        	jQuery('#ad_t_image_upload').fadeToggle(400);
-        }
-	});
-	if (jQuery('#ad_d_open:checked').val() !== undefined) {
-		jQuery('#ad_d_type_select').show();
-		jQuery('#ad_d_args_text').show();
-		jQuery('#ad_d_platform_mu_check').show();
-		if (jQuery('#ad_d_type').val() !== 'unit') {
-        	jQuery('#ad_d_image_upload').show();
-        }
-	} else {
-		jQuery('#ad_d_type_select').hide();
-		jQuery('#ad_d_args_text').hide();
-		jQuery('#ad_d_platform_mu_check').hide();
-		if (jQuery('#ad_d_type').val() !== 'unit') {
-        	jQuery('#ad_d_image_upload').hide();
-        }
-	}
-	jQuery('#ad_d_open').click(function() {
-		jQuery('#ad_d_type_select').fadeToggle(400);
-		jQuery('#ad_d_args_text').fadeToggle(400);
-		jQuery('#ad_d_platform_mu_check').fadeToggle(400);
-		if (jQuery('#ad_d_type').val() !== 'unit') {
-        	jQuery('#ad_d_image_upload').fadeToggle(400);
-        }
-	});
-	if (jQuery('#ad_p_open:checked').val() !== undefined) {
-		jQuery('#ad_p_type_select').show();
-		jQuery('#ad_p_args_text').show();
-		jQuery('#ad_p_platform_mu_check').show();
-		if (jQuery('#ad_p_type').val() !== 'unit') {
-        	jQuery('#ad_p_image_upload').show();
-        }
-	} else {
-		jQuery('#ad_p_type_select').hide();
-		jQuery('#ad_p_args_text').hide();
-		jQuery('#ad_p_platform_mu_check').hide();
-		if (jQuery('#ad_p_type').val() !== 'unit') {
-        	jQuery('#ad_p_image_upload').hide();
-        }
-	}
-	jQuery('#ad_p_open').click(function() {
-		jQuery('#ad_p_type_select').fadeToggle(400);
-		jQuery('#ad_p_args_text').fadeToggle(400);
-		jQuery('#ad_p_platform_mu_check').fadeToggle(400);
-		if (jQuery('#ad_p_type').val() !== 'unit') {
-        	jQuery('#ad_p_image_upload').fadeToggle(400);
-        }
-	});
+	// 小程序授权
 	if (jQuery('#qq_applets:checked').val() !== undefined) {
 		jQuery('#qq_appid_text').show();
 		jQuery('#qq_secret_text').show();
@@ -201,36 +108,6 @@ jQuery(document).ready(function($) {
 	jQuery('#tt_applets').click(function() {
 		jQuery('#tt_appid_text').fadeToggle(400);
 		jQuery('#tt_secret_text').fadeToggle(400);
-	});
-	// 广告选择
-	function miniprogram_adsense_switch(){
-		var switcheds 	= ['i_image_upload','t_image_upload','d_image_upload','p_image_upload'];
-		var ads_types	= ['ad_i_type','ad_t_type','ad_d_type','ad_p_type'];
-		
-		$.each(switcheds, function(index,switched){
-			$('#ad_'+switched).hide();
-		});
-
-		$.each(ads_types, function(index,ads_type){
-			var select = $('select#'+ads_type).val();
-			var image_upload = '#' + ads_type.replace(/type/, "image_upload")
-			if(select != 'unit'){
-				$(image_upload).show();
-			}
-		});
-	}
-	miniprogram_adsense_switch();
-	$('select#ad_i_type').change(function(){
-		miniprogram_adsense_switch();
-	});
-	$('select#ad_t_type').change(function(){
-		miniprogram_adsense_switch();
-	});
-	$('select#ad_d_type').change(function(){
-		miniprogram_adsense_switch();
-	});
-	$('select#ad_p_type').change(function(){
-		miniprogram_adsense_switch();
 	});
 	$('body').on('click', 'a.mp-mu-text', function(){
 		var prev_input	= $(this).prev("input");

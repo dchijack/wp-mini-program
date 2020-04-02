@@ -74,7 +74,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:"";
 		$iv = isset($request['iv'])?$request['iv']:"";
 		if( empty($code) ) {
-			return new WP_Error( 'error', '用户登录 code 参数错误', array( 'status' => 400 ) );
+			return new WP_Error( 'error', '用户登录 code 参数错误', array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -112,8 +112,8 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		
 		$remote = wp_remote_get($urls);
 		
-		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
-			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 500, 'message' => $remote ) );
+		if( !is_array( $remote ) || is_wp_error($remote) ) {
+			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 403, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );
@@ -123,7 +123,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		$token = MP_Auth::generate_session();
 		
 		if( !$token ) {
-			return new WP_Error( 'error', 'Tekon Session 错误', array( 'status' => 400 ) );
+			return new WP_Error( 'error', 'Tekon Session 错误', array( 'status' => 403 ) );
 		}
 		
 		if ( empty($params['encryptedData']) && empty($params['iv']) ) {
@@ -134,7 +134,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		$auth_code = MP_Auth::decryptData($appid, $session['session_key'], urldecode($params['encryptedData']), urldecode($params['iv']), $data );
 
 		if( $auth_code != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );
@@ -166,7 +166,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
             );
 			$user_id = wp_insert_user( $userdata );			
 			if ( is_wp_error( $user_id ) ) {
-				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
 			add_user_meta( $user_id, 'session_key', $token['session_key'] );
 			add_user_meta( $user_id, 'platform', 'wechat');
@@ -190,7 +190,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
             );
 			$user_id = wp_update_user($userdata);
 			if(is_wp_error($user_id)) {
-				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
 			update_user_meta( $user_id, 'session_key', $token['session_key'] );
 			add_user_meta( $user_id, 'platform', 'wechat');
@@ -200,7 +200,12 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		wp_set_auth_cookie( $user_id, true );
 
 		$current_user = get_user_by( 'ID', $user_id );
-		$roles = ( array )$current_user->roles;
+		if( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$roles = ( array )$current_user->roles[$blog_id];
+		} else {
+			$roles = ( array )$current_user->roles;
+		}
 		
 		$user = array(
 			"user"	=> array(
@@ -244,8 +249,8 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		
 		$remote = wp_remote_get($urls);
 		
-		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
-			return new WP_Error( 'error', '授权 API 错误：' .json_encode( $remote ), array( 'status' => 500 ) );
+		if( !is_array( $remote ) || is_wp_error($remote) ) {
+			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 403, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );

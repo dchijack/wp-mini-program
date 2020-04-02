@@ -162,7 +162,7 @@ class WP_REST_Menu_Router extends WP_REST_Controller {
 			);
 		} else {
 			$result = array(
-				'status'	=> 500,
+				'status'	=> 400,
 				'success' 	=> false ,
 				'message'	=> 'miniprogram menu setting failure'
 			);

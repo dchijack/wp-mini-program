@@ -63,11 +63,11 @@ class WP_REST_Subscribe_Router extends WP_REST_Controller {
 	public function get_items_permissions_check( $request ) {
 		$openid = isset($request['openid'])?$request['openid']:'';
 		if( $openid == '' || $openid == null ) {
-			return new WP_Error( 'error', '获取用户 OpenID 错误', array( 'status' => 200 ) );
+			return new WP_Error( 'error', '获取用户 OpenID 错误', array( 'status' => 403 ) );
 		}
 		$template = isset($request['template'])?$request['template']:'';
 		if( $template == '' || $template == null ) {
-			return new WP_Error( 'error', '获取订阅消息模板 ID 错误', array( 'status' => 200 ) );
+			return new WP_Error( 'error', '获取订阅消息模板 ID 错误', array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -145,7 +145,7 @@ class WP_REST_Subscribe_Router extends WP_REST_Controller {
 		if( $subscribe ) {
 			$result = array( 'status' => 200, 'code' => 'success', 'message' => '订阅消息完成' );
 		} else {
-			$result = array( 'status' => 200, 'code' => 'success', 'message' => '订阅消息失败' );
+			$result = array( 'status' => 400, 'code' => 'success', 'message' => '订阅消息失败' );
 		}
 		$response = rest_ensure_response( $result );
 		return $response;

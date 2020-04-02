@@ -32,6 +32,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'appname'		=>['title'=>'小程序名称','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("name")],
 				'appdesc'		=>['title'=>'小程序描述','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>get_bloginfo('description')],
 				'version'		=>['title'=>'小程序版本','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("version"),'description'=>'小程序版本号,默认留空为 WordPress 程序版本号'],
+				'appcover'		=>['title'=>'小程序封面','type'=>'upload','class'=>'regular-text'],
 				'debug'			=>['title'=>'API调试模式','type'=>'checkbox','description'=>'是否启用 API 调试模式, 注意: 上线小程序不建议启用'],
 				'formats'		=>['title'=>'文章格式类型','type'=>'mu-check','options'=>['aside'=>'日志','gallery'=>'相册','link'=>'链接','image'=>'图像','quote'=>'引用','status'=>'状态','video'=>'视频','audio'=>'语音','chat'=>'聊天']],
 				'thumbnail'		=>['title'=>'默认缩略图','type'=>'upload','class'=>'regular-text'],
@@ -55,6 +56,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'qvideo'		=>['title'=>'解析视频组件','type'=>'checkbox','description'=>'文章自定义字段，仅支持部分腾讯视频地址解析'],
 				'reupload'		=>['title'=>'图片重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
 				'advert'		=>['title'=>'广告功能设置','type'=>'checkbox','description'=>'是否开启小程序广告功能设置'],
+				'we_submit'		=>['title'=>'页面内容接入','type'=>'checkbox','description'=>'是否开启微信小程序页面路径推送'],
 			],
 		],
 	);
@@ -69,7 +71,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 	if (wp_miniprogram_option('advert')) {
 		$options['adsense-setting'] = [
 			'title'=>'广告功能',
-			'summary'=>'<p>小程序广告功能设置,注意填写正确参数</p>',
+			'summary'=>'<p>旧版小程序广告功能，后续更新即将弃用，请及时更新小程序</p>',
 			'fields'=> [
 				'ad_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
 				'ad_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
@@ -96,6 +98,112 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'ad_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
 			],
 		];
+		$options['weadvert-setting'] = [
+			'title'=>'微信广告功能',
+			'summary'=>'<p>微信小程序广告功能设置,注意填写正确参数</p>',
+			'fields'=> [
+				'we_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
+				'we_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+				'we_i_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+				'we_i_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				
+				'we_t_open'			=>['title'=>'列表广告','type'=>'checkbox','description'=>'是否开启列表页广告'],
+				'we_t_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+				'we_t_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+				'we_t_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				
+				'we_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
+				'we_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+				'we_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+				'we_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				
+				'we_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
+				'we_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+				'we_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+				'we_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+			],
+		];
+		if ( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
+			$options['qqadvert-setting'] = [
+				'title'=>'QQ 广告功能',
+				'summary'=>'<p>QQ 小程序广告功能设置,注意填写正确参数</p>',
+				'fields'=> [
+					'qq_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
+					'qq_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'qq_i_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'qq_i_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'qq_t_open'			=>['title'=>'列表广告','type'=>'checkbox','description'=>'是否开启列表页广告'],
+					'qq_t_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'qq_t_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'qq_t_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'qq_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
+					'qq_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'qq_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'qq_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'qq_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
+					'qq_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'qq_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'qq_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				],
+			];
+		}
+		if ( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+			$options['bdadvert-setting'] = [
+				'title'=>'百度广告功能',
+				'summary'=>'<p>QQ 小程序广告功能设置,注意填写正确参数</p>',
+				'fields'=> [
+					'bd_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
+					'bd_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'bd_i_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'bd_i_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'bd_t_open'			=>['title'=>'列表广告','type'=>'checkbox','description'=>'是否开启列表页广告'],
+					'bd_t_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'bd_t_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'bd_t_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'bd_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
+					'bd_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'bd_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'bd_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'bd_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
+					'bd_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'bd_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'bd_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				],
+			];
+		}
+		if ( wp_miniprogram_option('tt_appid') && wp_miniprogram_option('tt_secret') ) {
+			$options['ttadvert-setting'] = [
+				'title'=>'头条广告功能',
+				'summary'=>'<p>头条小程序广告功能设置,注意填写正确参数</p>',
+				'fields'=> [
+					'tt_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
+					'tt_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'tt_i_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'tt_i_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'tt_t_open'			=>['title'=>'列表广告','type'=>'checkbox','description'=>'是否开启列表页广告'],
+					'tt_t_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'tt_t_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'tt_t_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'tt_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
+					'tt_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'tt_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'tt_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					
+					'tt_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
+					'tt_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
+					'tt_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
+					'tt_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				],
+			];
+		}
 	}
 	
 	return $options;

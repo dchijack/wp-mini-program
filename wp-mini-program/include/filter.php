@@ -124,13 +124,13 @@ add_filter( 'miniprogram_commented', function( $post_id, $user_id, $type ) {
 	if(!$user) {
 		return false;
 	}
-	$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id,'count' => true, 'status' => 'approve');
+	$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'count' => true, 'status' => 'approve');
 	$count = get_comments($args);
 	return $count ? true : false;
 }, 10, 3 );
 
 add_filter( 'comment_type_count', function( $post_id, $type ) {
-	$args = array('post_id'=> $post_id,'type__in'=>array( $type ),'count' => true, 'status'=>'approve');
+	$args = array('post_id'=> $post_id,'type__in'=>array( $type ),'count' => true,'status'=>'approve');
 	$counts = get_comments($args);
 	if(!update_post_meta($post_id, $type.'s', $counts)) {
 		add_post_meta($post_id, $type.'s', 0, true);
@@ -139,7 +139,7 @@ add_filter( 'comment_type_count', function( $post_id, $type ) {
 }, 10, 2 );
 
 add_filter( 'comment_type_list', function( $post_id, $type ) {
-	$args = array('post_id'=> $post_id,'type__in'=>array( $type ), 'status'=>'approve');
+	$args = array('post_id'=> $post_id,'type__in'=>array( $type ),'number'=>10,'status'=>'approve');
 	$comments = get_comments($args);
 	$authors = array();
 	foreach ( $comments as $comment ) {
@@ -235,7 +235,7 @@ add_filter( 'rest_posts', function( $posts, $access_token ) {
 	return $data;
 }, 10, 2 );
 
-add_filter( 'reply_comments', function( $post_id,$reply,$parent ) {
+add_filter( 'reply_comments', function( $post_id, $reply, $parent ) {
 	$args = array(
 		'post_id' => $post_id,
 		'type__in' => array('comment'),
@@ -274,15 +274,15 @@ add_filter( 'reply_comments', function( $post_id,$reply,$parent ) {
 }, 10, 3 );
 
 add_filter( 'security_msgSecCheck', function($content) {
+	$access_token = MP_Auth::we_miniprogram_access_token( );
+	$token = isset($token['access_token']) ? $token['access_token'] : '';
+	if( !$token ) {
+		return new WP_Error( 'error', 'access token 错误' , array( 'status' => 403 ) );
+	}
 	$url = 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token='.$access_token;
     $header = array(
         "Content-Type: application/json;charset=UTF-8"
     );
-	$access_token = MP_Auth::we_miniprogram_access_token( );
-	$token = isset($token['access_token']) ? $token['access_token'] : '';
-	if( !$token ) {
-		return new WP_Error( 'error', 'access token 错误' , array( 'status' => 400 ) );
-	}
 	$msg = wp_delete_html_code( $content );
 	$body = json_encode( array( "content" => $msg ) );
 	$args = array(
@@ -294,4 +294,32 @@ add_filter( 'security_msgSecCheck', function($content) {
 	$response = wp_remote_post( $url, $args );
 	$result = wp_remote_retrieve_body( $response );
 	return json_decode( $result );
+} );
+
+add_filter( 'mp_we_submit_pages', function($post_id) {
+	$post_type = get_post_type( $post_id );
+		$session = MP_Auth::we_miniprogram_access_token( );
+		$access_token = isset($session['access_token']) ? $session['access_token'] : '';
+		if( $access_token ) {
+			$url = 'https://api.weixin.qq.com/wxa/search/wxaapi_submitpages?access_token='.$access_token;
+			if( $post_type == 'post' ) {
+				$path = 'pages/detail/detail';
+			} else if( $post_type == 'page' ) {
+				$path = 'pages/page/page';
+			} else {
+				$path = '';
+			}
+			if( $path ) {
+				$pages = array( 'path' => $path, 'query' => 'id='.$post_id );
+				$args = array( 'body' => json_encode( array('pages' => array( $pages ) ) ) );
+				$response = wp_remote_post( $url, $args );
+				if ( is_wp_error( $response ) ) {
+					return array( "status" => 404, "code" => "error", "message" => "数据请求错误" );
+				} else {
+					return json_decode( $response['body'], true );
+				}
+			} else {
+				return array( "status" => 404, "code" => "error", "message" => "页面路径错误" );
+			}
+		}
 } );

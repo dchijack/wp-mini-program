@@ -203,7 +203,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			$session = base64_decode( $access_token );
 			$users = MP_Auth::login( $session );
 			if ( !$users ) {
-				return new WP_Error( 'error', '授权信息有误' , array( 'status' => 400 ) );
+				return new WP_Error( 'error', '授权信息有误' , array( 'status' => 403 ) );
 			}
 			$user_id = $users->ID;
 			$user_comments_arr = array( 

@@ -22,6 +22,15 @@ if( !function_exists('wp_delete_html_code') ) {
         return ($description);
     }
 }
+// 统计文章字符
+function mp_count_post_content_text_length( $content ) {
+    if( !empty($content) ) {
+        $count = (int)mb_strlen( preg_replace( '/\s/', '', html_entity_decode( strip_tags( $content ) ) ),'UTF-8' );
+    } else {
+        $count = 0;
+    }
+    return $count;
+}
 // 之前时间格式
 if( !function_exists('datetime_before') ) {
     function datetime_before($the_time) {

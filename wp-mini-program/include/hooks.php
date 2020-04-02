@@ -30,7 +30,6 @@ if(wp_miniprogram_option('gutenberg')) {
 }
 
 add_filter( 'rest_prepare_post',function ($data, $post, $request) {
-	//global $wpdb;
 	$_data = $data->data;
 	$post_id = $post->ID;
 	if( is_miniprogram() || is_debug() ) {
@@ -67,6 +66,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
 		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 		$_data["meta"]["views"] = $post_views;
+		$_data["meta"]["count"] = mp_count_post_content_text_length( $post->post_content );
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
@@ -77,44 +77,27 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
 				foreach($terms as $term) {
 					$tax = array();
+					$term_cover = get_term_meta($term->term_id,'cover',true);
 					$tax["id"] = $term->term_id;
 					$tax["name"] = $term->name;
 					$tax["description"] = $term->description;
-					$tax["cover"] = get_term_meta($term->term_id,'cover',true);
+					$tax["cover"] = $term_cover ? $term_cover : wp_miniprogram_option('thumbnail');
 					if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
 					$_data[$taxonomy][] = $tax;
 				}
 			}
 		}
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
-		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) ); 
+		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) );
+		if ( wp_miniprogram_option('mediaon') ) {
+			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover' ,true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
+			$_data["media"]['author'] = get_post_meta( $post_id, 'author' ,true );
+			$_data["media"]['title'] = get_post_meta( $post_id, 'title' ,true );
+			$_data["media"]['video'] = get_post_meta( $post_id, 'video' ,true );
+		}
 		if ( isset( $request['id'] ) ) {
 			if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
 				add_post_meta($post_id, 'views', 1, true);  
-			}
-			$media_cover = get_post_meta( $post_id, 'cover' ,true );
-			$media_author = get_post_meta( $post_id, 'author' ,true );
-			$media_title = get_post_meta( $post_id, 'title' ,true );
-			$media_video = get_post_meta( $post_id, 'video' ,true );
-			$media_audio = get_post_meta( $post_id, 'audio' ,true );
-			if (wp_miniprogram_option('mediaon') && ($media_video || $media_audio)) {
-				if ($media_cover) {
-					$_data["media"]['cover'] = $media_cover;
-				} else {
-					$_data["media"]['cover'] = apply_filters( 'post_thumbnail', $post_id );
-				}
-				if($media_author) {
-					$_data["media"]['author'] = $media_author;
-				}
-				if($media_title) {
-					$_data["media"]['title'] = $media_title;
-				}
-				if($media_video) {
-					$_data["media"]['video'] = $media_video;
-				}
-				if($media_audio) {
-					$_data["media"]['audio'] = $media_audio;
-				}
 			}
 			if( is_smart_miniprogram() ) {
 				$custom_keywords = get_post_meta( $post_id, "keywords", true );
@@ -162,6 +145,8 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 				$_data["pictures"] = apply_filters( 'post_images', $post_id );
 			}
 		}
+	}
+	if( is_miniprogram() ) {
 		unset($_data['categories']);
 		unset($_data['tags']);
 		unset($_data["_edit_lock"]);
@@ -183,12 +168,12 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		unset($_data['_links']);
 	}
 	wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
-	$_post = wp_cache_get('post_id_'.$post_id,'post_id_'.$post_id.'_group');
-	if( $_post === false ) {
-		$_post = $_data;
+	$cache_post = wp_cache_get('post_id_'.$post_id,'post_id_'.$post_id.'_group');
+	if( $cache_post === false ) {
+		$cache_post = $_data;
 		wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
 	}
-    $data->data = $_post;
+    $data->data = $cache_post;
 	return $data;
 }, 10, 3 );
 
@@ -251,6 +236,8 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 				add_post_meta($post_id, 'views', 1, true);  
 			}
 		}
+	}
+	if( is_miniprogram() ) {
 		unset($_data["_edit_lock"]);
 		unset($_data["_edit_last"]);
 		unset($_data['featured_media']);
@@ -357,7 +344,6 @@ add_filter( 'the_content',function ($content) {
 			$media_title = '';
 		}
 		$video_id = get_post_meta($post_id,'video',true);
-		$audio_id = get_post_meta($post_id,'audio',true);
 	}
 	if (!empty($video_id) && wp_miniprogram_option('qvideo')) {
 		$video = apply_filters( 'tencent_video', $video_id );
@@ -487,8 +473,7 @@ if (wp_miniprogram_option('reupload')) {
 	});
 }
 
-// 屏蔽古腾堡编辑器
-if( wp_miniprogram_option('gutenberg') || is_debug() ) {
+if( wp_miniprogram_option('gutenberg') ) {
 	add_filter('use_block_editor_for_post_type', '__return_false');
 }
 

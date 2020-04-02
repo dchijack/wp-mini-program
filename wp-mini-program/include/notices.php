@@ -13,7 +13,7 @@ if( get_option('comment_moderation') ) {
 function we_miniprogram_comment_reply_message( $comment ) {
 	$current_id = $comment->comment_ID;
 	if( $current_id === 0 ) {
-		return new WP_Error( 'error', '评论 ID 为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '评论 ID 为空', array( 'status' => 403 ) );
 	}
 	$post_id = $comment->comment_post_ID;
 	$reply_name = $comment->comment_author;
@@ -30,7 +30,7 @@ function we_miniprogram_comment_reply_message( $comment ) {
 		$parents_user = get_user_by( 'ID', $parents_user_id );
 		$touser = $parents_user->openid ? $parents_user->openid : $parents_user->user_login;
 		if( !$touser ) {
-			return new WP_Error( 'error', 'OpenID 无效,无法推送', array( 'status' => 400 ) );
+			return new WP_Error( 'error', 'OpenID 无效,无法推送', array( 'status' => 403 ) );
 		}
 		$args = array(
 			"id"			=> $parents->comment_ID,
@@ -61,7 +61,7 @@ function we_miniprogram_comment_audit_message( $comment ) {
     $thingData = wp_trim_words( $content, 16, '...' );
 	$template_id = wp_miniprogram_option('auditing_id');
 	if( empty($template_id) ) {
-		return new WP_Error( 'error', '评论审核通过订阅模板为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '评论审核通过订阅模板为空', array( 'status' => 403 ) );
 	}
 	$comment_user = get_user_by( 'ID', $user_id );
 	$touser = $comment_user->openid ? $comment_user->openid : $comment_user->user_login;
@@ -108,7 +108,7 @@ function we_miniprogram_comments_reply_action( $comment ) {
 	$touser = $parents_user->openid ? $parents_user->openid : $parents_user->user_login;
 	$template_id = wp_miniprogram_option('template_id');
 	if( empty($template_id) ) {
-		return new WP_Error( 'error', '文章评论回复提醒订阅模板为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '文章评论回复提醒订阅模板为空', array( 'status' => 403 ) );
 	}
 	$data = array(
         "thing1"	=> array( "value" => wp_trim_words( $post_title, 16, '...' ) ),
@@ -128,11 +128,11 @@ function qq_miniprogram_comment_notice_action( $contents ) {
 	$token = MP_Auth::qq_miniprogram_access_token();
 	$access_token = isset($token['access_token']) ? $token['access_token'] : '';
 	if( !$access_token ) {
-		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 403 ) );
 	}
 	$template_id = wp_miniprogram_option('qq_reply_tpl');
 	if( empty($template_id) ) {
-		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 403 ) );
 	}
 	$url = "https://api.q.qq.com/api/json/template/send?access_token=".$access_token;
 	$data = array(
@@ -181,11 +181,11 @@ function bd_miniprogram_comment_notice_action( $contents ) {
 	$token = MP_Auth::bd_miniprogram_access_token();
 	$access_token = isset($token['access_token']) ? $token['access_token'] : '';
 	if( !$access_token ) {
-		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 403 ) );
 	}
 	$template_id = wp_miniprogram_option('bd_reply_tpl');
 	if( empty($template_id) ) {
-		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '评论消息模板 ID 为空', array( 'status' => 403 ) );
 	}
 	$url = "https://openapi.baidu.com/rest/2.0/smartapp/template/send?access_token=".$access_token;
 	$data = array(
@@ -256,7 +256,7 @@ function we_miniprogram_posts_update_notice( $post_id ) {
     $pages = "/pages/detail/detail?id=".$post_id;
 	$template = wp_miniprogram_option('update_tpl_id');
 	if( empty($template) ) {
-		return new WP_Error( 'error', '文章更新提醒订阅模板为空', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '文章更新提醒订阅模板为空', array( 'status' => 403 ) );
 	}
     $task = MP_Subscribe::mp_subscribe_message_send_task( );
     $task_id = $task ? (int)$task->task + 1 : 1;
@@ -281,7 +281,7 @@ function we_miniprogram_subscribe_message_action( $task_id, $contents ) {
     $token = MP_Auth::we_miniprogram_access_token();
 	$access_token = isset($token['access_token']) ? $token['access_token'] : '';
 	if( !$access_token ) {
-		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 400 ) );
+		return new WP_Error( 'error', '获取 ACCESS_TOKEN 失败', array( 'status' => 403 ) );
     }
     $url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=".$access_token;
 	$data = array(

@@ -119,39 +119,40 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 			$post_path = "/pages/index/index";
 		}
 		$path = isset($request['path']) && $request['path'] ? $request['path'] : $post_path;
-		$uploads = wp_upload_dir();
-		$qrcode_path = $uploads['basedir'] .'/qrcode/';
+		$wp_upload = wp_upload_dir();
+		$upload_path = get_option('upload_path');
+		
+		if( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$blog_url = get_site_url( 1 );
+			if( $blog_id === 1 ) {
+				$qrcode_path = $wp_upload['basedir'] .'/qrcode/';
+				$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path : trailingslashit($blog_url).'wp-content/uploads';
+			} else {
+				$qrcode_path = $wp_upload['basedir'] .'/sites/'.$blog_id.'/qrcode/';
+				$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path.'/sites/'.$blog_id : trailingslashit($blog_url).'wp-content/uploads/sites/'.$blog_id;
+			}
+		} else {
+			$blog_url = get_bloginfo('url');
+			$qrcode_path = $wp_upload['basedir'] .'/qrcode/';
+			$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path : trailingslashit($blog_url).'wp-content/uploads';
+		}
+
 		if( $qrcode_type && $post_id ) {
 			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_id.".png";
-			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/".$qrcode_type."-qrcode-".$post_id.".png";
+			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/".$qrcode_type."-qrcode-".$post_id.".png";
 		} else if( $qrcode_type && !$post_id ) {
 			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_type.".png";
-			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/".$qrcode_type."-qrcode-".$post_type.".png";
+			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/".$qrcode_type."-qrcode-".$post_type.".png";
 		} else {
 			$qrcode 	 = $qrcode_path.'qrcode-'.$post_id.'.png';
-			$qrcode_link = str_replace("http://","https://",$uploads["baseurl"])."/qrcode/qrcode-".$post_id.".png";
+			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/qrcode-".$post_id.".png";
 		}
+
 		if (!is_dir($qrcode_path)) {
 			mkdir($qrcode_path, 0755);
 		}
 		
-		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
-		if( $thumbnail ) {
-			$prefix = parse_url($thumbnail);
-			$domain = $prefix["host"];
-			$trust_domain = wp_miniprogram_option('trust_domain');
-			$domains = array();
-			foreach( $trust_domain as $domain ) {
-				$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
-			}
-			if( in_array($domain,$domains) ) { 
-				$cover = $thumbnail;
-			} else {  
-				$cover = wp_miniprogram_option('thumbnail');
-			}
-		} else {
-			$cover = wp_miniprogram_option('thumbnail');
-		}
 		if(!is_file($qrcode)) {
 			$token = MP_Auth::we_miniprogram_access_token();
 			if( !isset($token['errcode']) || empty($token['errcode']) ) {
@@ -189,25 +190,31 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 					if( !empty( $content ) ) {
 						//输出二维码
 						file_put_contents($qrcode,$content);
-						$result["status"]		= 200; 
-						$result["code"]			= "success";
-						$result["message"]		= "qrcode creat success"; 
-						$result["qrcode"]		= $qrcode_link;
-						$result["cover"] 		= $cover;
+						if( is_file($qrcode) ) {
+							$result["status"]		= 200; 
+							$result["code"]			= "success";
+							$result["message"]		= "qrcode creat success";
+							$result["qrcode"]		= $qrcode_link;
+							$result["cover"] 		= apply_filters( 'miniprogram_prefix_thumbnail', $post_id );
+						} else {
+							$result["status"]		= 400; 
+							$result["code"]			= "error";
+							$result["message"]		= "qrcode creat error";
+						}
 					} else {
-						$result["status"]		= 500; 
+						$result["status"]		= 400; 
 						$result["code"]			= "error";
-						$result["message"]	= "qrcode creat error"; 
+						$result["message"]		= "qrcode creat error"; 
 						
 					}
 				} else {
-					$result["status"]		= 500; 
+					$result["status"]		= 400; 
 					$result["code"]			= "error";
 					$result["message"]		= "access_token is empty"; 
 					
 				}
 			} else {
-				$result["status"]		= 500; 
+				$result["status"]		= 400; 
 				$result["code"]			= "error";
 				$result["message"]		= "access_token code error"; 
 			}
@@ -216,7 +223,7 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 			$result["code"]			= "success";
 			$result["message"]		= "qrcode creat success"; 
 			$result["qrcode"]		= $qrcode_link;
-			$result["cover"] 		= $cover;
+			$result["cover"] 		= apply_filters( 'miniprogram_prefix_thumbnail', $post_id );
 		}
 		$response = rest_ensure_response( $result );
 		return $response;

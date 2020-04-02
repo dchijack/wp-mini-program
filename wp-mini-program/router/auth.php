@@ -130,7 +130,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
 		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
-			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 500 ) );
+			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 		
 		$appid 			= wp_miniprogram_option('qq_appid');
@@ -151,19 +151,19 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$remote = wp_remote_get( $urls );
 
 		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
-			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 500, 'message' => $remote ) );
+			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 403, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );
 		
 		$session = json_decode( $body, true );
 		if( $session['errcode'] != 0 ) {
-			return new WP_Error( 'error', $session['errmsg'], array( 'status' => 500 ) );
+			return new WP_Error( 'error', $session['errmsg'], array( 'status' => 403 ) );
 		}
 
 		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );
@@ -195,7 +195,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_insert_user( $userdata );			
 			if ( is_wp_error( $user_id ) ) {
-				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
 			add_user_meta( $user_id, 'session_key', $session['session_key'] );
 			add_user_meta( $user_id, 'platform', 'tencent');
@@ -219,7 +219,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_update_user($userdata);
 			if(is_wp_error($user_id)) {
-				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
 			update_user_meta( $user_id, 'session_key', $session['session_key'] );
 			update_user_meta( $user_id, 'platform', 'tencent');
@@ -229,7 +229,12 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		wp_set_auth_cookie( $user_id, true );
 		
 		$current_user = get_user_by( 'ID', $user_id );
-		$roles = ( array )$current_user->roles;
+		if( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$roles = ( array )$current_user->roles[$blog_id];
+		} else {
+			$roles = ( array )$current_user->roles;
+		}
 		
 		$user = array(
 			"user"	=> array(
@@ -263,7 +268,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
 		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
-			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 500 ) );
+			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 
 		$appkey 		= wp_miniprogram_option('bd_appkey');
@@ -307,7 +312,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_insert_user( $userdata );			
 			if ( is_wp_error( $user_id ) ) {
-				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
 			add_user_meta( $user_id, 'session_key', $session_key);
 			add_user_meta( $user_id, 'platform', 'baidu');
@@ -327,7 +332,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_update_user($userdata);
 			if(is_wp_error($user_id)) {
-				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
 			update_user_meta( $user_id, 'session_key', $session_key );
 			update_user_meta( $user_id, 'platform', 'baidu');
@@ -337,7 +342,12 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		wp_set_auth_cookie( $user_id, true );
 
 		$current_user = get_user_by( 'ID', $user_id );
-		$roles = ( array )$current_user->roles;
+		if( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$roles = ( array )$current_user->roles[$blog_id];
+		} else {
+			$roles = ( array )$current_user->roles;
+		}
 		
 		$user = array(
 			"user"	=> array(
@@ -368,7 +378,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
 		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
-			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 500 ) );
+			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 
 		$appid 			= wp_miniprogram_option('tt_appid');
@@ -393,7 +403,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data);
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 400, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
 		}
 		
 		$user_data = json_decode( $data, true );
@@ -419,7 +429,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_insert_user( $userdata );			
 			if ( is_wp_error( $user_id ) ) {
-				return new WP_Error( 'error', '创建用户失败', array( 'status' => 404 ) );				
+				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
 			add_user_meta( $user_id, 'session_key', $session_key );
 			add_user_meta( $user_id, 'platform', 'toutiao');
@@ -443,7 +453,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
             );
 			$user_id = wp_update_user($userdata);
 			if(is_wp_error($user_id)) {
-				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 404 ) );
+				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
 			update_user_meta( $user_id, 'session_key', $session_key );
 			update_user_meta( $user_id, 'platform', 'toutiao');
@@ -453,7 +463,12 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		wp_set_auth_cookie( $user_id, true );
 		
 		$current_user = get_user_by( 'ID', $user_id );
-		$roles = ( array )$current_user->roles;
+		if( is_multisite() ) {
+			$blog_id = get_current_blog_id();
+			$roles = ( array )$current_user->roles[$blog_id];
+		} else {
+			$roles = ( array )$current_user->roles;
+		}
 		
 		$user = array(
 			"user"	=> array(

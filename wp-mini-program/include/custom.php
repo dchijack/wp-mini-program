@@ -72,3 +72,47 @@ if( wp_miniprogram_option('sticky') ) {
 		return $query;
 	});
 }
+
+add_filter('admin_comment_types_dropdown', function($comment_types) {
+	unset($comment_types['pings']);
+	return array_merge($comment_types, ['fav'=>'收藏'], ['like'=>'喜欢']);
+});
+
+add_action('parse_comment_query', function($comment_query) {
+	if(is_singular()) {
+		if(isset($comment_query->query_vars['parent']) && $comment_query->query_vars['parent'] == 0) {
+			$comment_query->query_vars['type']	= 'comment';
+		}	
+	}
+});
+
+if( wp_miniprogram_option("we_submit") ) {
+	add_action('publish_post','we_miniprogram_posts_submit_pages',10,1);
+	add_action('publish_to_publish',function () {
+		remove_action('publish_post','we_miniprogram_posts_submit_pages',10,1);
+	},11,1);
+}
+function we_miniprogram_posts_submit_pages( $post_id ) {
+	return apply_filters( 'mp_we_submit_pages', $post_id );
+}
+
+add_filter('miniprogram_prefix_thumbnail', function($post_id) {
+	$thumbnail = apply_filters( 'post_thumbnail', $post_id );
+	if( $thumbnail ) {
+		$prefix = parse_url($thumbnail);
+		$domain = $prefix["host"];
+		$trust_domain = wp_miniprogram_option('trust_domain');
+		$domains = array();
+		foreach( $trust_domain as $domain ) {
+			$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
+		}
+		if( in_array($domain,$domains) ) { 
+			$cover = $thumbnail;
+		} else {  
+			$cover = wp_miniprogram_option('thumbnail');
+		}
+	} else {
+		$cover = wp_miniprogram_option('thumbnail');
+	}
+	return $cover;
+});

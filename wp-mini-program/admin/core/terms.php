@@ -17,7 +17,7 @@ function creat_miniprogram_terms_fields_box($taxonomy) {
 							<div class="form-field term-<?php echo esc_attr( $key ); ?>-wrap">
 								<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $option["title"] ); ?></label>
 								<input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="checkbox" value="1" />
-								<?php if($option['description'] && !empty($option['description'])) { echo esc_html($option['description']); } ?>
+								<?php if($option['description'] && !empty($option['description'])) { echo '<span>'.esc_html($option['description']).'</span>'; } ?>
 							</div>
 							<?php break;
 						case "upload": ?>
@@ -32,7 +32,7 @@ function creat_miniprogram_terms_fields_box($taxonomy) {
 							<div class="form-field term-<?php echo esc_attr( $key ); ?>-wrap">
 								<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $option["title"] ); ?></label>
 								<input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="text" size="40" value="" />
-								<?php if($option['description'] && !empty($option['description'])) { echo esc_html($option['description']); } ?>
+								<?php if($option['description'] && !empty($option['description'])) { echo '<p>'.esc_html($option['description']).'</p>'; } ?>
 							</div>
 							<?php break;
 					}
@@ -71,7 +71,7 @@ function edit_miniprogram_terms_fields_box( $term, $taxonomy ){
 								<th scope="row"><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $option["title"] ); ?></label></th>
 								<td>
 								<input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="checkbox" <?php checked( $value, 1 ); ?> value="1" />
-								<?php if($option['description'] && !empty($option['description'])) { echo esc_html($option['description']); } ?>
+								<?php if($option['description'] && !empty($option['description'])) { echo '<span>'.esc_html($option['description']).'</span>'; } ?>
 								</td>
 							</tr>
 							<?php break;

@@ -3,11 +3,11 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.2.7
+Version: 1.2.8
 Author:  艾码汇
 Author URI: https://www.imahui.com/
 requires at least: 4.9.5
-tested up to: 5.3.2
+tested up to: 5.4
 */
 
 define('MINI_PROGRAM_REST_API', plugin_dir_path(__FILE__));
@@ -149,7 +149,9 @@ if( !function_exists('get_minapp_option') ) {
 		}
 	}
 }
-function is_debug( ) {
-	$debug = wp_miniprogram_option('debug');
-	return $debug;
+if( !function_exists('is_debug') ) {
+	function is_debug( ) {
+		$debug = wp_miniprogram_option('debug');
+		return $debug;
+	}
 }

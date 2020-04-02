@@ -84,11 +84,11 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 	public function wp_insert_comment_permissions_check( $request ) {
 		$access_token = isset($request['access_token'])?$request['access_token']:'';
 		if( $access_token == '' || $access_token == null ) {
-			return new WP_Error( 'error', 'Token 认证错误,未授权用户', array( 'status' => 400 ) );
+			return new WP_Error( 'error', 'Token 认证错误,未授权用户', array( 'status' => 403 ) );
 		}
 		$post_id = isset($request['id'])?$request['id']:'';
 		if( $post_id == '' || $post_id == null || $post_id == 0) {
-			return new WP_Error( 'error', '评论文章 ID 错误', array( 'status' => 400 ) );
+			return new WP_Error( 'error', '评论文章 ID 错误', array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -229,7 +229,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		$session = base64_decode( $request['access_token'] );
 		$users = MP_Auth::login( $session );
 		if ( !$users ) {
-			return new WP_Error( 'error', '授权信息有误' , array( 'status' => 400 ) );
+			return new WP_Error( 'error', '授权信息有误' , array( 'status' => 403 ) );
 		}
 		$user_id = $users->ID;
 		$user = get_user_by( 'ID', $user_id );
@@ -239,11 +239,11 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		$post_title = get_the_title( $post_id );
 		if($type == 'comment') {
 			if( $content == null || $content == "") {
-				return new WP_Error( 'error', '内容不能为空', array( 'status' => 400 ) );
+				return new WP_Error( 'error', '内容不能为空', array( 'status' => 403 ) );
 			}
 			$msgCheck = apply_filters( 'security_msgSecCheck', $content );
 			if( isset($msgCheck->errcode) && $msgCheck->errcode == 87014 ) {
-				return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 400 ) );
+				return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 403 ) );
 			}
 		} else if($type == 'like') {
 			$content = "点赞《".$post_title."》文章";
@@ -281,7 +281,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			} else {
 				$result["code"] = "success";
 				$result["message"] = "评论发布失败, 请检查";
-				$result["status"] = 500;                   
+				$result["status"] = 400;                   
 			}
 		} else {
 			$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'parent' => 0, 'status' => 'approve', 'orderby' => 'comment_date', 'order' => 'DESC');
@@ -304,7 +304,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				} else {
 					$result["code"] = "success";
 					$result["message"] = "取消".$message."失败";
-					$result["status"] = 500; 
+					$result["status"] = 400; 
 				}
 			} else {
 				$customarr = array(
@@ -327,7 +327,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				} else {
 					$result["code"] = "success";
 					$result["message"] = $message."失败";
-					$result["status"] = 500;
+					$result["status"] = 400;
 				}
 			}
 		}

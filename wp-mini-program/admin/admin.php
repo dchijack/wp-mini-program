@@ -21,6 +21,7 @@ add_action( 'admin_enqueue_scripts', function () {
 } );
 add_action( 'admin_enqueue_scripts', function () {
 	wp_enqueue_script( 'miniprogram', MINI_PROGRAM_API_URL.'static/script.js', array( 'jquery' ), '1.0' );
+	wp_enqueue_script( 'mini-adv', MINI_PROGRAM_API_URL.'static/mini.adv.js', array( 'jquery' ), '1.0' );
 	if ( function_exists( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}
