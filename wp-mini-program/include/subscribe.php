@@ -142,9 +142,9 @@ if( !class_exists('MP_Subscribe') ) {
 			$table_name = $wpdb->prefix . 'applets_subscribe_user';
 			if( $openid ) {
 				$where = $wpdb->prepare("AND openid = %s",esc_sql($openid));
-				$sql = "SELECT sum( count )  FROM $table_name WHERE $where";
+				$sql = "SELECT SUM( count ) FROM $table_name WHERE $where";
 			} else {
-				$sql = "SELECT sum( count )  FROM $table_name";
+				$sql = "SELECT SUM( count ) FROM $table_name";
 			}
 			$sql = @str_replace('WHERE AND','WHERE',$sql);
 			$count = $wpdb->get_var( $sql );

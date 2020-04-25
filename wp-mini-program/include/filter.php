@@ -158,7 +158,7 @@ add_filter( 'comment_type_list', function( $post_id, $type ) {
 	return $authors;
 }, 10, 2 );
 
-add_filter( 'rest_posts', function( $posts, $access_token ) {
+add_filter( 'rest_posts', function( $posts, $request ) {
 	$data = array();
 	foreach ( $posts as $post ) {
 		$_data = array();
@@ -187,10 +187,20 @@ add_filter( 'rest_posts', function( $posts, $access_token ) {
 		}
 		$_data["id"]  = $post_id;
 		$_data["date"] = $post_date;
+		$_data["week"] = get_wp_post_week($post_date);
 		$_data["format"] = $post_format?$post_format:'standard'; 
 		$_data["type"] = $post_type;
+		if( get_post_meta( $post_id, "source" ,true ) ) {
+			$_data["meta"]["source"] = get_post_meta( $post_id, "source" ,true );
+		}
 		$_data["meta"]["thumbnail"] = $thumbnail;
 		$_data["meta"]["views"] = (int)get_post_meta( $post_id, "views" ,true );
+		$meta = apply_filters( 'custom_meta', $meta = array() );
+		if ($meta) {
+			foreach ( $meta as $meta_key ) {
+				$_data["meta"][$meta_key] = get_post_meta( $post_id, $meta_key ,true );
+			}
+		}
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );

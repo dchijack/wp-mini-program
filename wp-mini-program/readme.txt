@@ -5,7 +5,7 @@ Tags: rest api, api
 Requires at least: 4.9.5
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 1.2.8
+Stable tag: 1.2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.2.9 =
+
+1. 更新文章评论数钩子
+2. 更新优化海报封面图地址
+3. 更新文章自定义字段查询
+4. 更新优化订阅消息通知功能
+5. 更新优化微信订阅消息数据查询
+6. 更新文章自定义字段数据返回扩展
 
 = 1.2.8 =
 

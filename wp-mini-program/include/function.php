@@ -61,6 +61,12 @@ if( !function_exists('datetime_before') ) {
         }
     }
 }
+function get_wp_post_week($the_time) {
+    $datetime = strtotime($the_time);
+	$trans = date("Y-m-d",$datetime);
+    $weekarray = array("日","一","二","三","四","五","六");
+	return '星期'.$weekarray[date("w",strtotime($trans))];
+}
 // 推送订阅消息错误码信息
 function mp_subscribe_errcode_msg($key) {
     $msg = array(

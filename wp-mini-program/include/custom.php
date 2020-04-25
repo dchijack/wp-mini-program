@@ -29,6 +29,7 @@ add_filter( 'meta_options',function ($options) {
 		$fields['author'] = ['title'=>'视频作者',		'type'=>'text','class' => 'regular-text','description'=>'视频表演作者'];
 		$fields['title'] = ['title'=>'作品名称',		'type'=>'text','class' => 'regular-text','description'=>'视频作品名称'];
 		$fields['video'] = ['title'=>'视频地址',		'type'=>'upload',	'class' => 'regular-text'];
+		$fields['audio'] = ['title'=>'音频地址',		'type'=>'upload',	'class' => 'regular-text'];
 	}
 	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
 		$fields['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];
@@ -97,22 +98,17 @@ function we_miniprogram_posts_submit_pages( $post_id ) {
 }
 
 add_filter('miniprogram_prefix_thumbnail', function($post_id) {
+	$cover = '';
 	$thumbnail = apply_filters( 'post_thumbnail', $post_id );
-	if( $thumbnail ) {
-		$prefix = parse_url($thumbnail);
-		$domain = $prefix["host"];
-		$trust_domain = wp_miniprogram_option('trust_domain');
-		$domains = array();
-		foreach( $trust_domain as $domain ) {
-			$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
-		}
-		if( in_array($domain,$domains) ) { 
-			$cover = $thumbnail;
-		} else {  
-			$cover = wp_miniprogram_option('thumbnail');
-		}
-	} else {
-		$cover = wp_miniprogram_option('thumbnail');
+	$prefix = parse_url($thumbnail);
+	$domain = $prefix["host"];
+	$trust_domain = wp_miniprogram_option('trust_domain');
+	$domains = array();
+	foreach( $trust_domain as $domain ) {
+		$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
+	}
+	if( in_array($domain,$domains) ) { 
+		$cover = $thumbnail;
 	}
 	return $cover;
 });

@@ -86,6 +86,15 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			)
 		));
 
+		register_rest_route( $this->namespace, '/' . $this->resource_name.'/meta', array(
+			array(
+				'methods'             	=> WP_REST_Server::READABLE,
+				'callback'            	=> array( $this, 'get_meta_posts' ),
+				'permission_callback' 	=> array( $this, 'get_wp_posts_permissions_check' ),
+				'args'                	=> $this->default_posts_collection_params()
+			)
+		));
+
 	}
 	
 	/**
@@ -124,10 +133,10 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'date', 'post__in'  => $sticky );
 		}
 		$query  = new WP_Query();
-		$result = $query->query( $args );
+		$posts = $query->query( $args );
 
-		if($result) {
-			$data = apply_filters( 'rest_posts', $result, $access_token );
+		if($posts) {
+			$data = apply_filters( 'rest_posts', $posts, $request );
 		}
 		
 		$response  = rest_ensure_response( $data );
@@ -139,13 +148,12 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$data = array();
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
-		$access_token = isset($request['access_token'])?$request['access_token']:'';
 		$offset = ($page * $per_page) - $per_page;
 		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'rand', 'date_query' => array( array( 'after' => '1 year ago' ) ) );
 		$query  = new WP_Query();
-		$result = $query->query( $args );
-		if($result) {
-			$data = apply_filters( 'rest_posts', $result, $access_token );
+		$posts = $query->query( $args );
+		if($posts) {
+			$data = apply_filters( 'rest_posts', $posts, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -155,14 +163,13 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$data = array();
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
-		$access_token = isset($request['access_token'])?$request['access_token']:'';
 		$offset = ($page * $per_page) - $per_page;
 		$meta = isset($request["meta"])?$request["meta"]:'views';
 		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'meta_key' => $meta, 'orderby' => 'meta_value_num', 'order' => 'DESC', 'date_query' => array( array( 'after' => '1 year ago' )), 'update_post_meta_cache' => false, 'cache_results' => false );
 		$query  = new WP_Query();
-		$result = $query->query( $args );
-		if($result) {
-			$data = apply_filters( 'rest_posts', $result, $access_token );
+		$posts = $query->query( $args );
+		if($posts) {
+			$data = apply_filters( 'rest_posts', $posts, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -173,7 +180,6 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$post_id = isset($request["id"])?(int)$request["id"]:0;
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
-		$access_token = isset($request['access_token'])?$request['access_token']:'';
 		$offset = ($page * $per_page) - $per_page;
 		if( $post_id ) {
 			$tags = get_the_tags($post_id);
@@ -184,9 +190,9 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'date', 'order' => 'DESC', 'post__not_in' => array( $post_id ), 'tag__in' => $post_tag, 'date_query' => array( array( 'after' 	=> '1 year ago' ) ) );
 		}
 		$query  = new WP_Query();
-		$result = $query->query( $args );
-		if($result) {
-			$data = apply_filters( 'rest_posts', $result, $access_token );
+		$posts = $query->query( $args );
+		if($posts) {
+			$data = apply_filters( 'rest_posts', $posts, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -228,6 +234,26 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		}
 		$result = apply_filters( 'rest_posts', $data, $access_token );
 		$response  = rest_ensure_response( $result );
+		return $response;
+	}
+
+	public function get_meta_posts( $request ) {
+		$data = array();
+		$page = isset($request["page"])?$request["page"]:1;
+		$per_page = isset($request["per_page"])?$request["per_page"]:10;
+		$meta_key = isset($request['key'])?$request['key']:'';
+		$meta_value = isset($request['value'])?$request['value']:'';
+		if( !$meta_key || !$meta_value ) {
+			return new WP_Error( 'error', '自定义字段 Key 和 Value 不能为空' , array( 'status' => 403 ) );
+		}
+		$offset = ($page * $per_page) - $per_page;
+		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'meta_key' => $meta_key, 'meta_value' => $meta_value, 'update_post_meta_cache' => false, 'cache_results' => false );
+		$query  = new WP_Query();
+		$posts = $query->query( $args );
+		if($posts) {
+			$data = apply_filters( 'rest_posts', $posts, $request );
+		}
+		$response  = rest_ensure_response( $data );
 		return $response;
 	}
 

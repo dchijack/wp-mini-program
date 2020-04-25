@@ -29,4 +29,4 @@ add_action( 'rest_api_init', function () {
 	foreach ( $controller as $control ) {
 		$control->register_routes();
 	}
-});
+} );

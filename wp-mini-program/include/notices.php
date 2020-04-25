@@ -244,16 +244,16 @@ if( wp_miniprogram_option('update') ) {
 function we_miniprogram_posts_update_notice( $post_id ) {
     $post = get_post($post_id);
     if($post->post_title) {
-        $title = wp_trim_words( $post->post_title, 16, '...' );
+        $title = wp_trim_words( wp_delete_html_code( $post->post_title ), 12, '...' );
     } else {
-        $title = wp_trim_words( $post->post_content, 16, '...' );
+        $title = wp_trim_words( wp_delete_html_code( $post->post_content ), 12, '...' );
     }
     if($post->post_excerpt) {
-        $content = wp_trim_words( $post->post_excerpt, 16, '...' );
+        $content = wp_trim_words( wp_delete_html_code( $post->post_excerpt ), 12, '...' );
     } else {
-        $content = wp_trim_words( $post->post_content, 16, '...' );
+        $content = wp_trim_words( wp_delete_html_code( $post->post_content ), 12, '...' );
     }
-    $pages = "/pages/detail/detail?id=".$post_id;
+    $page = "/pages/detail/detail?id=".$post_id;
 	$template = wp_miniprogram_option('update_tpl_id');
 	if( empty($template) ) {
 		return new WP_Error( 'error', '文章更新提醒订阅模板为空', array( 'status' => 403 ) );
@@ -263,14 +263,14 @@ function we_miniprogram_posts_update_notice( $post_id ) {
     $subscribe_user = MP_Subscribe::mp_list_subscribe_user_by_template( $template );
     $data = array(
         "thing1"	=> array( "value" => '推荐阅读' ),
-		"thing2"	=> array( "value" => html_entity_decode( strip_tags( trim( $title ) ) ) ),
-		"thing3"	=> array( "value" => html_entity_decode( strip_tags( trim( $content ) ) ) )
+		"thing2"	=> array( "value" => html_entity_decode( $title ) ),
+		"thing3"	=> array( "value" => html_entity_decode( $content ) )
     );
     foreach( $subscribe_user as $user ) {
         $openid = $user->openid;
         $contents = array(
             'touser' => $openid,
-            'page' => $pages,
+            'page' => $page,
             'template_id' => $template,
             'data' => $data
         );
@@ -307,7 +307,7 @@ function we_miniprogram_subscribe_message_action( $task_id, $contents ) {
     $task = array('task' => $task_id, 'openid' => $contents['touser'], 'template' => $contents['template_id'], 'pages' => $contents['page'], 'program' => 'WeChat', 'errcode' => $code, 'errmsg' => $message, 'date' => current_time( 'mysql' ));
     $insert_id = MP_Subscribe::mp_insert_subscribe_message_send( $task );
     $counts = MP_Subscribe::mp_user_subscribe_template_count( $contents['touser'], $contents['template_id'] );
-    if( $counts->count ) {
+    if( isset($counts->count) && $counts->count ) {
         $update_id = MP_Subscribe::mp_update_subscribe_user( $contents['touser'], $contents['template_id'], array( 'count' => (int)$counts->count - 1 ) );
     } else {
         $update_id = 0;

@@ -52,7 +52,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'post_picture'	=>['title'=>'文章图像列表','type'=>'checkbox','description'=>'是否开启文章所有图片标签'],
 				'gutenberg'		=>['title'=>'屏蔽古腾堡','type'=>'checkbox','description'=>'是否屏蔽古腾堡编辑器'],
 				'prevnext'		=>['title'=>'文章上下篇','type'=>'checkbox','description'=>'是否开启文章输出上一篇及下一篇'],
-				'mediaon'		=>['title'=>'小程序视频','type'=>'checkbox','description'=>'是否开启小程序文章视频设置选项'],
+				'mediaon'		=>['title'=>'小程序视频/音频','type'=>'checkbox','description'=>'是否开启小程序文章视频/音频设置选项'],
 				'qvideo'		=>['title'=>'解析视频组件','type'=>'checkbox','description'=>'文章自定义字段，仅支持部分腾讯视频地址解析'],
 				'reupload'		=>['title'=>'图片重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
 				'advert'		=>['title'=>'广告功能设置','type'=>'checkbox','description'=>'是否开启小程序广告功能设置'],
