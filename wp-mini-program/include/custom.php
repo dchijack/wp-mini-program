@@ -22,14 +22,14 @@ add_filter( 'meta_options',function ($options) {
 	if (wp_miniprogram_option('sticky')) {
 		$fields['focus'] = ['title'=>'推荐文章', 'type'=>'checkbox',	'description'=>'是否在小程序推荐文章'];
 	}
-	$fields['source'] = ['title'=>'出处/作者',	'type'=>'text',	'class' => 'regular-text','description'=>'文章引用来源/出处,或填写文章作者'];
+	$fields['source'] = ['title'=>'出处/作者', 'type'=>'text',	'class' => 'regular-text','description'=>'文章引用来源/出处,或填写文章作者'];
 	$fields['thumbnail'] = ['title'=>'自定义缩略图',	'type'=>'upload','class' => 'regular-text','description'=>'自定义缩略图地址.注意:设置后无须另行设置特色图像'];
 	if (wp_miniprogram_option('mediaon')) {
-		$fields['cover'] = ['title'=>'封面图像',		'type'=>'upload','class' => 'regular-text','description'=>'视频封面,不设置则采用文章缩略图'];
-		$fields['author'] = ['title'=>'视频作者',		'type'=>'text','class' => 'regular-text','description'=>'视频表演作者'];
-		$fields['title'] = ['title'=>'作品名称',		'type'=>'text','class' => 'regular-text','description'=>'视频作品名称'];
-		$fields['video'] = ['title'=>'视频地址',		'type'=>'upload',	'class' => 'regular-text'];
-		$fields['audio'] = ['title'=>'音频地址',		'type'=>'upload',	'class' => 'regular-text'];
+		$fields['cover'] = ['title'=>'封面图像', 'type'=>'upload','class' => 'regular-text','description'=>'视频封面,不设置则采用文章缩略图'];
+		$fields['author'] = ['title'=>'视频作者', 'type'=>'text','class' => 'regular-text','description'=>'视频表演作者'];
+		$fields['title'] = ['title'=>'作品名称', 'type'=>'text','class' => 'regular-text','description'=>'视频作品名称'];
+		$fields['video'] = ['title'=>'视频地址', 'type'=>'upload',	'class' => 'regular-text'];
+		$fields['audio'] = ['title'=>'音频地址', 'type'=>'upload',	'class' => 'regular-text'];
 	}
 	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
 		$fields['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];
@@ -100,14 +100,15 @@ function we_miniprogram_posts_submit_pages( $post_id ) {
 add_filter('miniprogram_prefix_thumbnail', function($post_id) {
 	$cover = '';
 	$thumbnail = apply_filters( 'post_thumbnail', $post_id );
+	$thumbnail = apply_filters( 'miniprogram_crop_prefix_thumbnail', $thumbnail );
 	$prefix = parse_url($thumbnail);
-	$domain = $prefix["host"];
+	$host = $prefix["host"];
 	$trust_domain = wp_miniprogram_option('trust_domain');
 	$domains = array();
 	foreach( $trust_domain as $domain ) {
 		$domains[] = str_replace( "http://", "", str_replace( "https://", "", $domain ) );
 	}
-	if( in_array($domain,$domains) ) { 
+	if( in_array($host,$domains) ) { 
 		$cover = $thumbnail;
 	}
 	return $cover;

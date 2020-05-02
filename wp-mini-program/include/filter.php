@@ -230,9 +230,9 @@ add_filter( 'rest_posts', function( $posts, $request ) {
 		}
 		$_data["title"]["rendered"]  = html_entity_decode($post_title);
 		if ($post_excerpt) {
-			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( $post_excerpt, 100, '...' ));
+			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( wp_strip_all_tags( $post_excerpt ), 100, '...' ));
 		} else {
-			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( $post_content, 100, '...' ));
+			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ));
 		}
 		if ( wp_miniprogram_option("post_content") ) { 
 			$_data["content"]["rendered"] = apply_filters( 'the_content', $post_content );
@@ -293,7 +293,7 @@ add_filter( 'security_msgSecCheck', function($content) {
     $header = array(
         "Content-Type: application/json;charset=UTF-8"
     );
-	$msg = wp_delete_html_code( $content );
+	$msg = wp_strip_all_tags( $content );
 	$body = json_encode( array( "content" => $msg ) );
 	$args = array(
 		'method'  => 'POST',

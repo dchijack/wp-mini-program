@@ -14,14 +14,7 @@ function wp_miniprogram_post_formats() {
 if( wp_miniprogram_post_formats() ) {
     add_theme_support( 'post-formats', wp_miniprogram_post_formats() );
 }
-// 描述清理HTML标签
-if( !function_exists('wp_delete_html_code') ) {
-    function wp_delete_html_code($description) {
-        $description = trim($description);
-        $description = strip_tags($description,"");
-        return ($description);
-    }
-}
+
 // 统计文章字符
 function mp_count_post_content_text_length( $content ) {
     if( !empty($content) ) {

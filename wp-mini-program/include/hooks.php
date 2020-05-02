@@ -70,7 +70,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		}
 		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 		$_data["meta"]["views"] = $post_views;
-		$_data["meta"]["count"] = mp_count_post_content_text_length( $post->post_content );
+		$_data["meta"]["count"] = mp_count_post_content_text_length( $post_content );
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
@@ -92,7 +92,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 			}
 		}
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
-		$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( $post_excerpt ) ) );
+		$_data["excerpt"]["rendered"] = html_entity_decode( triwp_strip_all_tagsm( $post_excerpt ) );
 		if ( wp_miniprogram_option('mediaon') ) {
 			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover' ,true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
 			$_data["media"]['author'] = get_post_meta( $post_id, 'author' ,true );
@@ -214,7 +214,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
 		if( !$post_excerpt ) {
-			$_data["excerpt"]["rendered"] = html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
+			$_data["excerpt"]["rendered"] = html_entity_decode( wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ) ); 
 		}
 		if ( !isset( $request['id'] ) ) {
 			if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
@@ -230,7 +230,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 				}
 				$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
 				$_data["smartprogram"]["keywords"] = $custom_keywords;
-				$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( strip_tags( trim( wp_trim_words( $post_content, 100, '...' ) ) ) ); 
+				$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ) ); 
 				$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
 				$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
 				$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
@@ -367,7 +367,7 @@ add_filter( 'the_content',function ($content) {
 	return $content;
 });
 
-add_filter('category_description', 'wp_delete_html_code');
+add_filter('category_description', 'wp_strip_all_tags');
 
 add_filter( 'user_contactmethods',function($userInfo) {
 	$userInfo['gender'] 				= __( '性别' );

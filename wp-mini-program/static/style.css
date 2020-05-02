@@ -291,5 +291,46 @@ a.course-post span{display: table-cell; height: 50px; vertical-align: middle;}
 .el-col > h1 {
     font-size: 34px;
     color: #67c23a;
-     margin: 10px;
+    margin: 10px;
+}
+.card-box {
+    position: relative;
+    margin-top: 20px;
+    padding: .7em 2em 1em;
+    min-width: 255px;
+    max-width: 520px;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    box-sizing: border-box;
+}
+.card-box a {
+    text-decoration: none;
+}
+.card-box .card-img {
+    width: auto;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    margin: 10px auto;
+}
+.card-list {
+    float: left;
+    width: auto;
+    max-width: 360px;
+}
+.miniprogram-table-box {
+    float: left;
+    width: 520px;
+    margin-top:20px;
+    margin-right: 20px;
+}
+table#miniprogram_list th {
+    padding-left: 2em;
+}
+table#miniprogram_list td {
+    padding-right: 2em;
+}
+table#miniprogram_list th p, table#miniprogram_list td p {
+    margin: 6px 0;
 }

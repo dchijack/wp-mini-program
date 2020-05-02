@@ -74,7 +74,7 @@ function we_miniprogram_comment_audit_message( $comment ) {
     }
     $data = array(
         "phrase1"	=> array( "value" => '评论已通过' ),
-		"thing2"	=> array( "value" => html_entity_decode( strip_tags( trim( $thingData ) ) ) ),
+		"thing2"	=> array( "value" => html_entity_decode( wp_strip_all_tags( $thingData ) ) ),
 		"date4"	    => array( "value" => $date )
     );
 	$contents = array(
@@ -244,14 +244,14 @@ if( wp_miniprogram_option('update') ) {
 function we_miniprogram_posts_update_notice( $post_id ) {
     $post = get_post($post_id);
     if($post->post_title) {
-        $title = wp_trim_words( wp_delete_html_code( $post->post_title ), 12, '...' );
+        $title = wp_trim_words( wp_strip_all_tags( $post->post_title ), 12, '...' );
     } else {
-        $title = wp_trim_words( wp_delete_html_code( $post->post_content ), 12, '...' );
+        $title = wp_trim_words( wp_strip_all_tags( $post->post_content ), 12, '...' );
     }
     if($post->post_excerpt) {
-        $content = wp_trim_words( wp_delete_html_code( $post->post_excerpt ), 12, '...' );
+        $content = wp_trim_words( wp_strip_all_tags( $post->post_excerpt ), 12, '...' );
     } else {
-        $content = wp_trim_words( wp_delete_html_code( $post->post_content ), 12, '...' );
+        $content = wp_trim_words( wp_strip_all_tags( $post->post_content ), 12, '...' );
     }
     $page = "/pages/detail/detail?id=".$post_id;
 	$template = wp_miniprogram_option('update_tpl_id');

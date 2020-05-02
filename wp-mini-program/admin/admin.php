@@ -17,11 +17,11 @@ add_action( 'admin_menu', function() {
 	mp_install_subscribe_message_table();
 });
 add_action( 'admin_enqueue_scripts', function () {
-	wp_enqueue_style('miniprogram', MINI_PROGRAM_API_URL.'static/style.css', array(), '1.0' );
+	wp_enqueue_style('miniprogram', MINI_PROGRAM_API_URL.'static/style.css', array(), get_bloginfo('version') );
 } );
 add_action( 'admin_enqueue_scripts', function () {
-	wp_enqueue_script( 'miniprogram', MINI_PROGRAM_API_URL.'static/script.js', array( 'jquery' ), '1.0' );
-	wp_enqueue_script( 'mini-adv', MINI_PROGRAM_API_URL.'static/mini.adv.js', array( 'jquery' ), '1.0' );
+	wp_enqueue_script( 'miniprogram', MINI_PROGRAM_API_URL.'static/script.js', array( 'jquery' ), get_bloginfo('version') );
+	wp_enqueue_script( 'mini-adv', MINI_PROGRAM_API_URL.'static/mini.adv.js', array( 'jquery' ), get_bloginfo('version') );
 	if ( function_exists( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}

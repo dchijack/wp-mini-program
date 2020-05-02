@@ -165,19 +165,12 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 				if( !empty($access_token) ) {
 					//接口A小程序码,总数10万个（永久有效，扫码进入path对应的动态页面）
 					$api = 'https://api.weixin.qq.com/wxa/getwxacode?access_token='.$access_token;
-					//接口B小程序码,不限制数量（永久有效，将统一打开首页，可根据scene跟踪推广人员或场景）
-					//$url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=".$ACCESS_TOKEN;
-					//接口C小程序二维码,总数10万个（永久有效，扫码进入path对应的动态页面）
-					//$url = 'http://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token='.$ACCESS_TOKEN;
-					//header('content-type:image/png');
 					$color = array(
 						"r" => "0",  //这个颜色码自己到Photoshop里设
 						"g" => "0",  //这个颜色码自己到Photoshop里设
 						"b" => "0",  //这个颜色码自己到Photoshop里设
 					);
 					$data = array(
-						//$data['scene'] = "scene"; //自定义信息，可以填写诸如识别用户身份的字段，注意用中文时的情况
-						//$data['page'] = "pages/index/index"; //扫码后对应的path，只能是固定页面
 						'path' => $path, // 前端传过来的页面path,不能为空，最大长度 128 字节
 						'width' => intval(100), // 设置二维码尺寸,二维码的宽度
 						'auto_color' => false, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调

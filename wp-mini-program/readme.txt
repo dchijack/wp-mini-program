@@ -2,10 +2,10 @@
 Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api
-Requires at least: 4.9.5
-Tested up to: 5.4
+Requires at least: 4.9.8
+Tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 1.2.9
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,13 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.0 =
+
+1. 更新使用指南信息
+2. 更新优化海报封面图地址
+3. 更新优化文章数据输出字段
+4. 更新优化字符串标签清理功能
 
 = 1.2.9 =
 
