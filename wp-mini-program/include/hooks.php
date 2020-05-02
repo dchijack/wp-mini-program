@@ -92,7 +92,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 			}
 		}
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
-		$_data["excerpt"]["rendered"] = html_entity_decode( triwp_strip_all_tagsm( $post_excerpt ) );
+		$_data["excerpt"]["rendered"] = html_entity_decode( wp_strip_all_tags( $post_excerpt ) );
 		if ( wp_miniprogram_option('mediaon') ) {
 			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover' ,true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
 			$_data["media"]['author'] = get_post_meta( $post_id, 'author' ,true );
