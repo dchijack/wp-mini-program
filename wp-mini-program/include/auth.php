@@ -154,7 +154,11 @@ class MP_Auth {
             $user_query = new WP_User_Query( array( 'meta_key' => 'session_key', 'meta_value' => $session ) );
 		    $users = $user_query->get_results();
             if( ! empty( $users ) ) {
-                return $users[0];
+                if( count( $users ) == 1 ) {
+                    return $users[0];
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }

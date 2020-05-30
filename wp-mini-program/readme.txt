@@ -5,7 +5,7 @@ Tags: rest api, api
 Requires at least: 4.9.8
 Tested up to: 5.4.1
 Requires PHP: 5.6
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.1 =
+
+1. 更新移除旧版广告功能
+2. 更新自定义字段数据保存
+3. 更新强化授权登录查询用户
+4. 更新用户信息解密错误提示
+5. 更新百度智能小程序 API 提交
 
 = 1.3.0 =
 

@@ -87,10 +87,13 @@ abstract class WP_Custom_Meta_Box {
 					} else {
 						$data = sanitize_text_field( $_POST[$key] );
 					}
-					if ( get_post_meta($post_id, $key, FALSE) ) {
-						update_post_meta($post_id, $key, $data);
+					if ( get_post_meta( $post_id, $key, false ) ) {
+						update_post_meta( $post_id, $key, $data );
 					} else {
-						add_post_meta($post_id, $key, $data, true);
+						add_post_meta( $post_id, $key, $data, true );
+					}
+					if ( !$data ) {
+						delete_post_meta( $post_id, $key );
 					}
 				}
 			}

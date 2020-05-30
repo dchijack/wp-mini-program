@@ -163,7 +163,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' =>  $auth ) );
 		}
 		
 		$user_data = json_decode( $data, true );
@@ -293,6 +293,9 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$user_id = 0;
 		$decrypt_data = MP_Auth::decrypt(urldecode($encryptedData), urldecode($iv), $appkey, $session_key);
+		if( !$decrypt_data ) {
+        	return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' =>  $decrypt_data ) );
+        }
 		$user_data = json_decode( $decrypt_data, true );
 
 		if( !username_exists($openId) ) {
@@ -403,7 +406,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data);
 		if( $auth != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' => $auth ) );
 		}
 		
 		$user_data = json_decode( $data, true );

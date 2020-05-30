@@ -69,35 +69,6 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 	}
 
 	if (wp_miniprogram_option('advert')) {
-		$options['adsense-setting'] = [
-			'title'=>'广告功能',
-			'summary'=>'<p>旧版小程序广告功能，后续更新即将弃用，请及时更新小程序</p>',
-			'fields'=> [
-				'ad_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
-				'ad_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_i_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
-				'ad_i_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-				'ad_i_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
-				
-				'ad_t_open'			=>['title'=>'列表广告','type'=>'checkbox','description'=>'是否开启列表页广告'],
-				'ad_t_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_t_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
-				'ad_t_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-				'ad_t_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
-				
-				'ad_d_open'			=>['title'=>'详情广告','type'=>'checkbox','description'=>'是否开启详情页广告'],
-				'ad_d_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_d_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
-				'ad_d_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-				'ad_d_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
-				
-				'ad_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
-				'ad_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
-				'ad_p_platform'		=>['title'=>'投放平台','type'=>'mu-check','options'=>['weapp'=>'微信小程序','qq'=>'QQ 小程序','baidu'=>'百度智能小程序']],
-				'ad_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-				'ad_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
-			],
-		];
 		$options['weadvert-setting'] = [
 			'title'=>'微信广告功能',
 			'summary'=>'<p>微信小程序广告功能设置,注意填写正确参数</p>',

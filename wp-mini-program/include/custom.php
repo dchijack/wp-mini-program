@@ -94,7 +94,12 @@ if( wp_miniprogram_option("we_submit") ) {
 	},11,1);
 }
 function we_miniprogram_posts_submit_pages( $post_id ) {
-	return apply_filters( 'mp_we_submit_pages', $post_id );
+	$submit = array( );
+	$submit['wechat'] = apply_filters( 'mp_we_submit_pages', $post_id );
+	if (wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret')) {
+		$submit['baidu'] = apply_filters( 'mp_bd_submit_pages', $post_id );
+	}
+	return $submit;
 }
 
 add_filter('miniprogram_prefix_thumbnail', function($post_id) {

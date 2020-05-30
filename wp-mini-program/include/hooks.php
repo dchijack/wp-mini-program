@@ -94,11 +94,11 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
 		$_data["excerpt"]["rendered"] = html_entity_decode( wp_strip_all_tags( $post_excerpt ) );
 		if ( wp_miniprogram_option('mediaon') ) {
-			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover' ,true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
-			$_data["media"]['author'] = get_post_meta( $post_id, 'author' ,true );
-			$_data["media"]['title'] = get_post_meta( $post_id, 'title' ,true );
-			$_data["media"]['video'] = get_post_meta( $post_id, 'video' ,true );
-			$_data["media"]['audio'] = get_post_meta( $post_id, 'audio' ,true );
+			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover', true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
+			$_data["media"]['author'] = get_post_meta( $post_id, 'author', true );
+			$_data["media"]['title'] = get_post_meta( $post_id, 'title', true );
+			$_data["media"]['video'] = get_post_meta( $post_id, 'video', true );
+			$_data["media"]['audio'] = get_post_meta( $post_id, 'audio', true );
 		}
 		if ( isset( $request['id'] ) ) {
 			if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
@@ -339,12 +339,12 @@ add_filter( 'the_content',function ($content) {
 			$cover_url = apply_filters( 'post_thumbnail', $post_id );
 		}
 		if (get_post_meta( $post_id, 'author' ,true )){
-			$media_author = 'name="'.get_post_meta( $post_id, 'author' ,true ).'" ';
+			$media_author = 'author="'.get_post_meta( $post_id, 'author' ,true ).'" ';
 		} else {
 			$media_author = '';
 		}
 		if (get_post_meta( $post_id, 'title' ,true )){
-			$media_title = 'title="'.get_post_meta( $post_id, 'title' ,true ).'" ';
+			$media_title = ' title="'.get_post_meta( $post_id, 'title' ,true ).'" ';
 		} else {
 			$media_title = '';
 		}

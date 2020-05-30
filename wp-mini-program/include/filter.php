@@ -308,28 +308,72 @@ add_filter( 'security_msgSecCheck', function($content) {
 
 add_filter( 'mp_we_submit_pages', function($post_id) {
 	$post_type = get_post_type( $post_id );
-		$session = MP_Auth::we_miniprogram_access_token( );
-		$access_token = isset($session['access_token']) ? $session['access_token'] : '';
-		if( $access_token ) {
-			$url = 'https://api.weixin.qq.com/wxa/search/wxaapi_submitpages?access_token='.$access_token;
-			if( $post_type == 'post' ) {
-				$path = 'pages/detail/detail';
-			} else if( $post_type == 'page' ) {
-				$path = 'pages/page/page';
-			} else {
-				$path = '';
-			}
-			if( $path ) {
-				$pages = array( 'path' => $path, 'query' => 'id='.$post_id );
-				$args = array( 'body' => json_encode( array('pages' => array( $pages ) ) ) );
-				$response = wp_remote_post( $url, $args );
-				if ( is_wp_error( $response ) ) {
-					return array( "status" => 404, "code" => "error", "message" => "数据请求错误" );
-				} else {
-					return json_decode( $response['body'], true );
-				}
-			} else {
-				return array( "status" => 404, "code" => "error", "message" => "页面路径错误" );
-			}
+	$session = MP_Auth::we_miniprogram_access_token( );
+	$access_token = isset($session['access_token']) ? $session['access_token'] : '';
+	if( $access_token ) {
+		$url = 'https://api.weixin.qq.com/wxa/search/wxaapi_submitpages?access_token='.$access_token;
+		if( $post_type == 'post' ) {
+			$path = 'pages/detail/detail';
+		} else if( $post_type == 'page' ) {
+			$path = 'pages/page/page';
+		} else {
+			$path = '';
 		}
+		if( $path ) {
+			$pages = array( 'path' => $path, 'query' => 'id='.$post_id );
+			$args = array( 'body' => json_encode( array('pages' => array( $pages ) ) ) );
+			$response = wp_remote_post( $url, $args );
+			if ( is_wp_error( $response ) ) {
+				return array( "status" => 404, "code" => "error", "message" => "数据请求错误" );
+			} else {
+				return json_decode( $response['body'], true );
+			}
+		} else {
+			return array( "status" => 404, "code" => "error", "message" => "页面路径错误" );
+		}
+	}
 } );
+
+add_filter( 'mp_bd_submit_pages', function($post_id) {
+	$post_type = get_post_type( $post_id );
+	$session = MP_Auth::bd_miniprogram_access_token( );
+	$access_token = isset($session['access_token']) ? $session['access_token'] : '';
+	if( $access_token ) {
+        $url = 'https://openapi.baidu.com/rest/2.0/smartapp/access/submitsitemap/api?access_token='.$access_token;
+        if( $post_type == 'post' ) {
+            $path = 'pages/detail/detail?id='.$post_id;
+        } else if( $post_type == 'page' ) {
+            $path = 'pages/page/page?id='.$post_id;
+        } else {
+            $path = '';
+        }
+        if( $path ) {
+            $header = array(
+                "Content-Type" => "application/x-www-form-urlencoded"
+            );
+            $body = array(
+                "type" => 0,
+                "url_list" => $path
+            );
+            $args = array(
+                'method'  => 'POST',
+                'headers' => $header,
+                'body' 	  => http_build_query( $body )
+            );
+            $response = wp_remote_post( $url, $args );
+            if ( is_wp_error( $response ) ) {
+                return array( "status" => 400, "code" => "error", "message" => "数据请求错误" );
+            } else {
+                $res = json_decode( $response['body'], true );
+                if( $res['errno'] === 0 ) {
+                    if( !update_post_meta( $post_id, '_api_submited', 'success' ) ) {
+                        add_post_meta($post_id, '_api_submited', 'success', true); 
+                    }
+                }
+                return $res;
+            }
+        } else {
+            return array( "status" => 400, "code" => "error", "message" => "页面路径错误" );
+        }
+    }
+});
