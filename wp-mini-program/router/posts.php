@@ -132,6 +132,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			$sticky = get_option( 'sticky_posts' );
 			$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'date', 'post__in'  => $sticky );
 		}
+		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
 
@@ -150,6 +151,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
 		$offset = ($page * $per_page) - $per_page;
 		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'rand', 'date_query' => array( array( 'after' => '1 year ago' ) ) );
+		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
 		if($posts) {
@@ -166,6 +168,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$offset = ($page * $per_page) - $per_page;
 		$meta = isset($request["meta"])?$request["meta"]:'views';
 		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'meta_key' => $meta, 'orderby' => 'meta_value_num', 'order' => 'DESC', 'date_query' => array( array( 'after' => '1 year ago' )), 'update_post_meta_cache' => false, 'cache_results' => false );
+		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
 		if($posts) {
@@ -189,6 +192,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 			}
 			$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'orderby' => 'date', 'order' => 'DESC', 'post__not_in' => array( $post_id ), 'tag__in' => $post_tag, 'date_query' => array( array( 'after' 	=> '1 year ago' ) ) );
 		}
+		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
 		if($posts) {
@@ -248,6 +252,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		}
 		$offset = ($page * $per_page) - $per_page;
 		$args = array( 'posts_per_page' => $per_page, 'offset' => $offset, 'meta_key' => $meta_key, 'meta_value' => $meta_value, 'update_post_meta_cache' => false, 'cache_results' => false );
+		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
 		if($posts) {

@@ -53,8 +53,9 @@ function miniprogram_api_guide(){ ?>
 		</div>
 		<div class="card-box">
 		<h2>服务器推荐</h2>
-		<p>如果你需要购买腾讯云服务器，希望你能使用我的推荐链接：<a href="https://cloud.tencent.com/act/cps/redirect?redirect=1040&cps_key=350ffc16783f58518e37a08a5b5625aa&from=console" target="_blank">腾讯云优惠</a></p>
-		<p>如果你需要购买阿里云服务器，希望你能使用我的推荐链接：<a href="https://promotion.aliyun.com/ntms/act/qwbk.html?userCode=5qpjfxzk" target="_blank">阿里云优惠</a> 。</p>
+		<p>如果你需要购买华为云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/huawei.html" target="_blank">华为云优惠</a></p>
+		<p>如果你需要购买腾讯云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/tencent.html" target="_blank">腾讯云优惠</a></p>
+		<p>如果你需要购买阿里云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/aliyun.html" target="_blank">阿里云优惠</a></p>
 		<p>如果你需要免备案云主机服务，希望你能使用我的推荐链接：<a href="https://www.vultr.com/?ref=7222201" target="_blank">Vultr Cloud Servers</a></p>
 		<p>如果你需要 CDN 云加速服务，希望你能使用我的推荐链接：<a href="https://portal.qiniu.com/signup?code=1hktor67ejj2q" target="_blank">免费注册七牛云</a></p>
 		</div>

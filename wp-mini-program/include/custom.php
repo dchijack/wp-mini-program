@@ -82,7 +82,7 @@ add_filter('admin_comment_types_dropdown', function($comment_types) {
 add_action('parse_comment_query', function($comment_query) {
 	if(is_singular()) {
 		if(isset($comment_query->query_vars['parent']) && $comment_query->query_vars['parent'] == 0) {
-			$comment_query->query_vars['type']	= 'comment';
+			$comment_query->query_vars['type']	= array('','comment');
 		}	
 	}
 });
