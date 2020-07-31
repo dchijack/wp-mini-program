@@ -27,7 +27,6 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 	 */
 	public function __construct( ) {
 		$this->namespace     = 'mp/v1';
-        $this->resource_name = '/';
 	}
 	
 	/**
@@ -40,7 +39,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 	 */
 	public function register_routes() {
 
-		register_rest_route( $this->namespace, $this->resource_name.'tencent/login', array(
+		register_rest_route( $this->namespace, '/tencent/login', array(
 			array(
 				'methods'             	=> WP_REST_Server::CREATABLE,
 				'callback'            	=> array( $this, 'wp_qq_user_auth_login' ),
@@ -49,7 +48,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			)
 		));
 
-		register_rest_route( $this->namespace, $this->resource_name.'baidu/login', array(
+		register_rest_route( $this->namespace, '/baidu/login', array(
 			array(
 				'methods'             	=> WP_REST_Server::CREATABLE,
 				'callback'            	=> array( $this, 'wp_baidu_user_auth_login' ),
@@ -58,7 +57,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			)
 		));
 
-		register_rest_route( $this->namespace, $this->resource_name.'toutiao/login', array(
+		register_rest_route( $this->namespace, '/toutiao/login', array(
 			array(
 				'methods'             	=> WP_REST_Server::CREATABLE,
 				'callback'            	=> array( $this, 'wp_toutiao_user_auth_login' ),

@@ -6,11 +6,13 @@
 
 > 开源小程序：[点击这里访问](https://github.com/dchijack/Travel-Mini-Program) ( 分别有微信小程序、QQ 小程序、百度智能小程序、今日头条小程序 )
 
+> WordPress 小程序免费开源版下载网站：[点击这里访问 WPSTORM.CN](https://www.wpstorm.cn/)
+
 ## 插件下载
 
 1. 访问 WordPress 插件下载页：[点击这里访问页面](https://wordpress.org/plugins/wp-mini-program/)
 
-2. 关注 GitHub好物荐 公众号，回复：**9527** 直接获取插件安装包
+2. 关注 艾码汇 公众号，回复：**9527** 直接获取插件安装包
 
 3. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
 
@@ -20,7 +22,7 @@
 
 1. 可以直接通过 WordPress 网站后台 插件 - 安装插件 - 搜索：Mini Program API 获取插件安装启用
 
-2. 关注 GitHub好物荐 公众号回复：**9527** 下载的是插件安装包，可以直接上传网站后台的插件安装启用
+2. 关注 艾码汇 公众号回复：**9527** 下载的是插件安装包，可以直接上传网站后台的插件安装启用
 
 3. 通过 GitHub 下载的压缩包不是插件安装包，需要解压再选择 wp-mini-program 目录上传安装，[查看安装指南](https://github.com/dchijack/wp-mini-program/wiki/Guide)
 
@@ -37,6 +39,12 @@
 ![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-5.png)
 
 ## 更新日志
+
+2020.07.31 Ver 1.3.3
+
+> 1. 更新核心框架设置项
+> 2. 更新优化授权登录接口
+> 3. 更新优化用户信息平台选项判断
 
 2020.06.30 Ver 1.3.2
 

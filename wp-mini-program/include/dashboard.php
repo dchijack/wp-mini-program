@@ -67,7 +67,7 @@ function imahui_applets_dashboard_widget() {
 	<a href="https://www.weitimes.com/" target="_blank">丸子小程序 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="https://static.weitimes.com/go/aliyun.html" target="_blank">阿里云 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
 	<a href="https://static.weitimes.com/go/tencent.html" target="_blank">腾讯云 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> | 
-	<a href="https://static.weitimes.com/go/huawei.html" target="_blank">华为云 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> 
+	<a href="https://static.weitimes.com/go/huawei.html" target="_blank">云主机 <span aria-hidden="true" class="dashicons dashicons-external"></span></a> 
 	</p>';
 	$html .= '</div>';
 	echo $html;

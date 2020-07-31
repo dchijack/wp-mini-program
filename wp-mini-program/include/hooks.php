@@ -400,11 +400,11 @@ function add_miniprogam_platform_source( $user ) { ?>
         <td>
             <?php $selected = get_the_author_meta( 'platform', $user->ID ); ?>
             <select name="platform" id="platform">
-				<option value="website" <?php echo ($selected == "website")?  'selected="selected"' : ''; ?>>网站注册</option>
-                <option value="wechat" <?php echo ($selected == "wechat")?  'selected="selected"' : ''; ?>>微信小程序</option>
-				<option value="tencent" <?php echo ($selected == "tencent")?  'selected="selected"' : ''; ?>>QQ 小程序</option>
-				<option value="baidu" <?php echo ($selected == "baidu")?  'selected="selected"' : ''; ?>>百度小程序</option>
-				<option value="toutiao" <?php echo ($selected == "toutiao")?  'selected="selected"' : ''; ?>>头条小程序</option>
+				<option value="website" <?php selected( $selected, 'website', true ) ?>>网站注册</option>
+                <option value="wechat" <?php selected( $selected, 'wechat', true ) ?>>微信小程序</option>
+				<option value="tencent" <?php selected( $selected, 'tencent', true ) ?>>QQ 小程序</option>
+				<option value="baidu" <?php selected( $selected, 'baidu', true ) ?>>百度小程序</option>
+				<option value="toutiao" <?php selected( $selected, 'toutiao', true ) ?>>头条小程序</option>
             </select>
             <span class="description">用户注册来源所属平台</span>
         </td>
@@ -475,7 +475,7 @@ if (wp_miniprogram_option('reupload')) {
 	});
 }
 
-if( wp_miniprogram_option('gutenberg') ) {
+if( wp_miniprogram_option('gutenberg') || is_debug() ) {
 	add_filter('use_block_editor_for_post_type', '__return_false');
 }
 

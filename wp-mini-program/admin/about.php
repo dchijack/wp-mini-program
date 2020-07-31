@@ -53,7 +53,7 @@ function miniprogram_api_guide(){ ?>
 		</div>
 		<div class="card-box">
 		<h2>服务器推荐</h2>
-		<p>如果你需要购买华为云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/huawei.html" target="_blank">华为云优惠</a></p>
+		<p>如果你需要购买优惠云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/huawei.html" target="_blank">服务器优惠</a></p>
 		<p>如果你需要购买腾讯云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/tencent.html" target="_blank">腾讯云优惠</a></p>
 		<p>如果你需要购买阿里云服务器，希望你能使用我的推荐链接：<a href="https://static.weitimes.com/go/aliyun.html" target="_blank">阿里云优惠</a></p>
 		<p>如果你需要免备案云主机服务，希望你能使用我的推荐链接：<a href="https://www.vultr.com/?ref=7222201" target="_blank">Vultr Cloud Servers</a></p>

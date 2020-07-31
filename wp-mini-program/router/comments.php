@@ -54,10 +54,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				'callback'            	=> array( $this, 'wp_post_comments' ),
 				'permission_callback' 	=> array( $this, 'wp_comment_permissions_check' ),
 				'args'                	=> $this->wp_comment_collection_params()
-			)
-		));
-		
-		register_rest_route( $this->namespace,  '/' . $this->resource_name, array(
+			),
 			array(
 				'methods'             	=> WP_REST_Server::CREATABLE,
 				'callback'            	=> array( $this, 'insert_wp_posts_comment' ),

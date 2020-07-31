@@ -8,7 +8,6 @@
  */
 if ( !defined( 'ABSPATH' ) ) exit;
 
-
 /**
  * Core class to access posts via the REST API.
  *
@@ -17,15 +16,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @see WP_REST_Controller
  */
 class WP_REST_Qrcode_Router extends WP_REST_Controller {
-	
-	/**
-	 * Post type.
-	 *
-	 * @since 4.7.0
-	 * @access protected
-	 * @var string
-	 */
-	protected $post_type;
 
 	/**
 	 * Constructor.
@@ -163,19 +153,18 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 			if( !isset($token['errcode']) || empty($token['errcode']) ) {
 				$access_token = $token['access_token'];
 				if( !empty($access_token) ) {
-					//接口A小程序码,总数10万个（永久有效，扫码进入path对应的动态页面）
 					$api = 'https://api.weixin.qq.com/wxa/getwxacode?access_token='.$access_token;
 					$color = array(
-						"r" => "0",  //这个颜色码自己到Photoshop里设
-						"g" => "0",  //这个颜色码自己到Photoshop里设
-						"b" => "0",  //这个颜色码自己到Photoshop里设
+						"r" => "0",
+						"g" => "0",
+						"b" => "0",
 					);
 					$data = array(
-						'path' => $path, // 前端传过来的页面path,不能为空，最大长度 128 字节
-						'width' => intval(100), // 设置二维码尺寸,二维码的宽度
-						'auto_color' => false, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-						'line_color' => $color, // auth_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
-						'is_hyaline' => true, // 是否需要透明底色， is_hyaline 为true时，生成透明底色的小程序码
+						'path' => $path,
+						'width' => intval(280),
+						'auto_color' => false,
+						'line_color' => $color,
+						'is_hyaline' => true,
 					);
 					$args = array(
 						'method'  => 'POST',
@@ -186,7 +175,6 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 					$remote = wp_remote_post( $api, $args );
 					$content = wp_remote_retrieve_body( $remote );
 					if( !empty( $content ) ) {
-						//输出二维码
 						file_put_contents($qrcode,$content);
 						if( is_file($qrcode) ) {
 							$result["status"]		= 200; 
