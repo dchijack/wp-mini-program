@@ -22,7 +22,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'tt_applets'	=>['title'=>'今日头条小程序','type'=>'checkbox','description'=>'是否开启今日头条小程序授权设置'],
 				'tt_appid'		=>['title'=>'头条小程序 AppId','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'头条小程序 AppId 需要到头条小程序小程序后台获取'],
 				'tt_secret'		=>['title'=>'头条小程序 AppSecret ','type'=>'text','class'=>'regular-text','rows'=>4,'placeholder'=>'头条小程序 AppSecret 需要到头条小程序小程序后台获取'],
-				'use_role'		=>['title'=>'小程序用户组','type'=>'select','options'=>['subscriber'=>'订阅组','contributor'=>'投稿组','wechat'=>'小程序','author'=>'作者组','editor'=>'编辑组']],
+				'use_role'		=>['title'=>'小程序用户组','type'=>'select','options'=>['subscriber'=>'订阅组','contributor'=>'投稿组','wechat'=>'小程序','author'=>'作者组','editor'=>'编辑组']]
 			],
 		],
 		'general-setting'=>[
@@ -39,7 +39,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],
 				'template_id'	=>['title'=>'评论回复通知','type'=>'text','class'=>'regular-text','description'=>'服务类目：在线教育 - 文章评论回复通知, 关键词：文章标题、评论内容、回复内容、回复时间'],
 				'auditing_id'	=>['title'=>'审核通过通知','type'=>'text','class'=>'regular-text','description'=>'服务类目：信息查询 - 审核通过通知, 关键词：审核结果、审核内容、提交时间'],
-				'update_tpl_id'	=>['title'=>'资讯更新提醒','type'=>'text','class'=>'regular-text','description'=>'服务类目：信息查询 - 资讯更新提醒, 关键词：新闻类型、新闻标题、新闻摘要'],
+				'update_tpl_id'	=>['title'=>'资讯更新提醒','type'=>'text','class'=>'regular-text','description'=>'服务类目：信息查询 - 资讯更新提醒, 关键词：新闻类型、新闻标题、新闻摘要']
 			],
 		],
 		'increase-setting'=>[
@@ -50,13 +50,14 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'sticky'		=>['title'=>'推荐文章功能','type'=>'checkbox','description'=>'是否开启小程序文章推荐 [注: 仅针对小程序置顶文章]'],
 				'post_content'	=>['title'=>'文章列表内容','type'=>'checkbox','description'=>'是否启用文章列表 content 标签, 默认禁用'],
 				'post_picture'	=>['title'=>'文章图像列表','type'=>'checkbox','description'=>'是否开启文章所有图片标签'],
+				'prevnext'		=>['title'=>'文章上篇下篇','type'=>'checkbox','description'=>'是否开启文章页上一篇及下一篇数据'],
 				'gutenberg'		=>['title'=>'屏蔽古腾堡','type'=>'checkbox','description'=>'是否屏蔽古腾堡编辑器'],
-				'prevnext'		=>['title'=>'文章上下篇','type'=>'checkbox','description'=>'是否开启文章输出上一篇及下一篇'],
 				'mediaon'		=>['title'=>'小程序视频/音频','type'=>'checkbox','description'=>'是否开启小程序文章视频/音频设置选项'],
 				'qvideo'		=>['title'=>'解析视频组件','type'=>'checkbox','description'=>'文章自定义字段，仅支持部分腾讯视频地址解析'],
-				'reupload'		=>['title'=>'图片重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
+				'reupload'		=>['title'=>'图片自动重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
 				'advert'		=>['title'=>'广告功能设置','type'=>'checkbox','description'=>'是否开启小程序广告功能设置'],
-				'we_submit'		=>['title'=>'页面内容接入','type'=>'checkbox','description'=>'是否开启微信小程序页面路径推送'],
+				'security'		=>['title'=>'内容安全检测','type'=>'checkbox','description'=>'是否开启微信内容安全文本检测'],
+				'we_submit'		=>['title'=>'页面内容接入','type'=>'checkbox','description'=>'是否开启微信小程序页面路径推送']
 			],
 		],
 	);
@@ -91,7 +92,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'we_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
 				'we_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
 				'we_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-				'we_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+				'we_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数']
 			],
 		];
 		if ( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
@@ -117,7 +118,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 					'qq_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
 					'qq_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
 					'qq_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-					'qq_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					'qq_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数']
 				],
 			];
 		}
@@ -144,7 +145,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 					'bd_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
 					'bd_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
 					'bd_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-					'bd_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					'bd_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数']
 				],
 			];
 		}
@@ -171,7 +172,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 					'tt_p_open'			=>['title'=>'页面广告','type'=>'checkbox','description'=>'是否开启单页广告'],
 					'tt_p_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
 					'tt_p_image'		=>['title'=>'广告图片','type'=>'upload','class'=>'regular-text'],
-					'tt_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数'],
+					'tt_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数']
 				],
 			];
 		}

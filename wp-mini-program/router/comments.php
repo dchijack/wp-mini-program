@@ -61,7 +61,18 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				'permission_callback' 	=> array( $this, 'wp_insert_comment_permissions_check' ),
 				'args'                	=> $this->wp_insert_collection_params()
 			)
-		));
+		) );
+
+		register_rest_route( $this->namespace,  '/' . $this->resource_name . '/mark', array(
+			array(
+				'methods'             	=> WP_REST_Server::CREATABLE,
+				'callback'            	=> array( $this, 'wp_mark_comments' ),
+				'permission_callback' 	=> array( $this, 'wp_insert_comment_permissions_check' ),
+				'args'                	=> array(
+					'context'	=> $this->get_context_param( array( 'default' => 'view' ) )
+				)
+			)
+		) );
 		
 	}
 	
@@ -186,6 +197,13 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			"orderby" => 'comment_date',
 			"order" => 'DESC'
 		);
+		if ( isset($request['access_token']) ) {
+			$access_token = base64_decode($request['access_token']);
+			$users = MP_Auth::login( $access_token );
+			$uid = $users ? (int)$users->ID : 0;
+		} else {
+			$uid = 0;
+		}
 		$comments = get_comments($args);
 		$data = array();
 		foreach ($comments as $comment) {
@@ -195,6 +213,8 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			$date = $comment->comment_date;
 			$content = $comment->comment_content;
 			$parent = $comment->comment_parent;
+			$likes = (int)get_comment_meta( $comment_id, 'likes', true );
+			$islike = get_comment_meta( $comment_id, '_like_comment_u_'.$uid, true );
 			if($parent == 0) {
 				$avatar = get_user_meta( $user_id, 'avatar', true );
 				$_data["id"] = $comment_id;
@@ -208,15 +228,17 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				$_data["date"] = datetime_before($date);
 				$_data["content"] = $content;
 				$_data["parent"] = $parent;
+				$_data["likes"] = $likes;
+				$_data["islike"] = $islike ? true : false;
 				$_data["reply"] = apply_filters( 'reply_comments', $post_id, $user_name, $comment_id );
-				$data[] =$_data;
+				$data[] = $_data;
 			}		
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
 	}
 	
-	public function insert_wp_posts_comment($request) {
+	public function insert_wp_posts_comment( $request ) {
 		$approved = get_option('comment_moderation');
 		$post_id = $request['id'];
 		$type = isset($request['type'])?$request['type']:'comment';
@@ -238,9 +260,11 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			if( $content == null || $content == "") {
 				return new WP_Error( 'error', '内容不能为空', array( 'status' => 403 ) );
 			}
-			$msgCheck = apply_filters( 'security_msgSecCheck', $content );
-			if( isset($msgCheck->errcode) && $msgCheck->errcode == 87014 ) {
-				return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 403 ) );
+			if( wp_miniprogram_option('security') ) {
+				$msgCheck = apply_filters( 'security_msgSecCheck', $content );
+				if( isset($msgCheck->errcode) && $msgCheck->errcode == 87014 ) {
+					return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 403 ) );
+				}
 			}
 		} else if($type == 'like') {
 			$content = "点赞《".$post_title."》文章";
@@ -269,6 +293,10 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				$flag = false;
 				if($formId != '' && $formId != 'the formId is a mock one') {
 					$flag = add_comment_meta($comment_id, 'formId', $formId, true); 
+				}
+				$likes = (int)get_comment_meta( $comment_id, 'likes', true );
+				if( !update_comment_meta($comment_id, 'likes', $likes) ) {
+					add_comment_meta($comment_id, 'likes', $likes, true);
 				}
 				$result["status"] = 200;
 				$result["id"] = $comment_id;
@@ -326,6 +354,46 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 					$result["message"] = $message."失败";
 					$result["status"] = 400;
 				}
+			}
+		}
+		$response  = rest_ensure_response( $result );
+		return $response;
+	}
+
+	public function wp_mark_comments( $request ) {
+		$comment_id = $request['id'];
+		$access_token = $request['access_token'];
+		$users = MP_Auth::login( base64_decode( $access_token ) );
+		if ( !$users ) {
+			return new WP_Error( 'error', '授权信息有误,无法查询用户' , array( 'status' => 403 ) );
+		}
+		$user_id 	= $users->ID;
+		$openid		= get_user_meta( $user_id, 'openid', true );
+		$meta_key	= '_like_comment_u_'.$user_id;
+		$meta_value = $openid ? $openid : $users->user_login;
+		$likes 		= (int)get_comment_meta( $comment_id, 'likes', true );
+		$islike 	= get_comment_meta( $comment_id, $meta_key, true );
+		if( $islike ) {
+			$status = delete_comment_meta( $comment_id, $meta_key );
+			if( $status ) {
+				$like_count = $likes ? $likes - 1 : 0;
+				if( !update_comment_meta($comment_id, 'likes', $like_count) ) {
+					add_comment_meta($comment_id, 'likes', $like_count, true);
+				}
+				$result = array( "status" => 202, "code" => "success", "success" => "取消点赞" );
+			} else {
+				$result = array( "status" => 400, "code" => "fail", "success" => "取消失败" );
+			}
+		} else {
+			$status = add_comment_meta($comment_id, $meta_key, $meta_value, true);
+			if( $status ) {
+				$like_count = $likes ? $likes + 1 : 1;
+				if( !update_comment_meta($comment_id, 'likes', $like_count) ) {
+					add_comment_meta($comment_id, 'likes', $like_count, true);
+				}
+				$result = array( "status" => 200, "code" => "success", "success" => "点赞成功" );
+			} else {
+				$result = array( "status" => 400, "code" => "fail", "success" => "点赞失败" );
 			}
 		}
 		$response  = rest_ensure_response( $result );

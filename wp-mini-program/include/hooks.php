@@ -70,7 +70,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		}
 		$_data["meta"]["thumbnail"] = apply_filters( 'post_thumbnail', $post_id );
 		$_data["meta"]["views"] = $post_views;
-		$_data["meta"]["count"] = mp_count_post_content_text_length( $post_content );
+		$_data["meta"]["count"] = mp_count_post_content_text_length( wp_strip_all_tags( $post_content ) );
 		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
 		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
@@ -78,7 +78,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
 		if ($taxonomies) {
 			foreach ( $taxonomies as $taxonomy ){
-				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
+				$terms = wp_get_post_terms($post_id, $taxonomy);
 				foreach($terms as $term) {
 					$tax = array();
 					$term_cover = get_term_meta($term->term_id,'cover',true);
@@ -172,13 +172,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		unset($_data['sticky']);    
 		unset($_data['_links']);
 	}
-	wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
-	$cache_post = wp_cache_get('post_id_'.$post_id,'post_id_'.$post_id.'_group');
-	if( $cache_post === false ) {
-		$cache_post = $_data;
-		wp_cache_set('post_id_'.$post_id,$_data,'post_id_'.$post_id.'_group',3600);
-	}
-    $data->data = $cache_post;
+    $data->data = $_data;
 	return $data;
 }, 10, 3 );
 
@@ -260,13 +254,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 		unset($_data['sticky']);    
 		unset($_data['_links']);
 	}
-	wp_cache_set('page_id_'.$post_id,$_data,'page_id_'.$post_id.'_group',3600);
-	$_page = wp_cache_get('page_id_'.$post_id,'page_id_'.$post_id.'_group');
-	if( $_page === false ){
-		$_page = $_data;
-		wp_cache_set('page_id_'.$post_id,$_data,'page_id_'.$post_id.'_group',3600);
-	}
-    $data->data = $_page;
+    $data->data = $_data;
 	return $data;
 }, 10, 3 );
 

@@ -110,33 +110,24 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 		}
 		$path = isset($request['path']) && $request['path'] ? $request['path'] : $post_path;
 		$wp_upload = wp_upload_dir();
-		$upload_path = get_option('upload_path');
-		
-		if( is_multisite() ) {
-			$blog_id = get_current_blog_id();
-			$blog_url = get_site_url( 1 );
-			if( $blog_id === 1 ) {
-				$qrcode_path = $wp_upload['basedir'] .'/qrcode/';
-				$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path : trailingslashit($blog_url).'wp-content/uploads';
-			} else {
-				$qrcode_path = $wp_upload['basedir'] .'/sites/'.$blog_id.'/qrcode/';
-				$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path.'/sites/'.$blog_id : trailingslashit($blog_url).'wp-content/uploads/sites/'.$blog_id;
-			}
-		} else {
-			$blog_url = get_bloginfo('url');
-			$qrcode_path = $wp_upload['basedir'] .'/qrcode/';
-			$upload_url = $upload_path ? trailingslashit($blog_url).$upload_path : trailingslashit($blog_url).'wp-content/uploads';
+		$blog_url = get_bloginfo('url');
+		$qrcode_path = $wp_upload['basedir'] .'/qrcode/';
+		$qrcode_urls = $wp_upload['baseurl'] .'/qrcode/';
+		$parse_blog_url = wp_parse_url( $blog_url );
+		$parse_qrcode_url = wp_parse_url( $qrcode_urls );
+		if( $parse_blog_url['host'] != $parse_qrcode_url['host'] ) {
+			$qrcode_urls = str_replace( $parse_qrcode_url['host'], $parse_blog_url['host'], $qrcode_urls );
 		}
 
 		if( $qrcode_type && $post_id ) {
 			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_id.".png";
-			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/".$qrcode_type."-qrcode-".$post_id.".png";
+			$qrcode_link = trailingslashit( str_replace( "http://", "https://", $qrcode_urls ) ).$qrcode_type."-qrcode-".$post_id.".png";
 		} else if( $qrcode_type && !$post_id ) {
 			$qrcode 	 = $qrcode_path.$qrcode_type."-qrcode-".$post_type.".png";
-			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/".$qrcode_type."-qrcode-".$post_type.".png";
+			$qrcode_link = trailingslashit( str_replace( "http://", "https://", $qrcode_urls ) ).$qrcode_type."-qrcode-".$post_type.".png";
 		} else {
 			$qrcode 	 = $qrcode_path.'qrcode-'.$post_id.'.png';
-			$qrcode_link = str_replace("http://","https://",$upload_url)."/qrcode/qrcode-".$post_id.".png";
+			$qrcode_link = trailingslashit( str_replace( "http://", "https://", $qrcode_urls ) )."qrcode-".$post_id.".png";
 		}
 
 		$cover_link = apply_filters( 'miniprogram_prefix_thumbnail', $post_id );

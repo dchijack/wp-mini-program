@@ -157,7 +157,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		
 		$session = json_decode( $body, true );
 		if( $session['errcode'] != 0 ) {
-			return new WP_Error( 'error', $session['errmsg'], array( 'status' => 403 ) );
+			return new WP_Error( 'error', '获取用户信息错误,请检查设置', array( 'status' => 403, 'message' => $session ) );
 		}
 
 		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data );

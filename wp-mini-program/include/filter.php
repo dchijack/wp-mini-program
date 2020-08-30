@@ -55,9 +55,7 @@ add_filter( 'post_images', function($post_id) {
 	if($matches && isset($matches[1])) {
 		$_images=$matches[1]; 
 		for($i=0; $i<count($matches[1]);$i++) {
-			$image_url['id'] = $i;
-			$image_url['link'] = $matches[1][$i];
-			$images[] = $image_url;
+			$images[] = $matches[1][$i];
 		}
 	}
 	return $images;
@@ -284,9 +282,9 @@ add_filter( 'reply_comments', function( $post_id, $reply, $parent ) {
 }, 10, 3 );
 
 add_filter( 'security_msgSecCheck', function($content) {
-	$access_token = MP_Auth::we_miniprogram_access_token( );
-	$token = isset($token['access_token']) ? $token['access_token'] : '';
-	if( !$token ) {
+	$token = MP_Auth::we_miniprogram_access_token( );
+	$access_token = isset($token['access_token']) ? $token['access_token'] : '';
+	if( !$access_token ) {
 		return new WP_Error( 'error', 'access token 错误' , array( 'status' => 403 ) );
 	}
 	$url = 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token='.$access_token;
@@ -294,10 +292,10 @@ add_filter( 'security_msgSecCheck', function($content) {
         "Content-Type: application/json;charset=UTF-8"
     );
 	$msg = wp_strip_all_tags( $content );
-	$body = json_encode( array( "content" => $msg ) );
+	$body = '{"content":"'.$msg.'"}';
 	$args = array(
 		'method'  => 'POST',
-		'body' 	  => ''.$body.'',
+		'body' 	  => $body,
 		'headers' => $header,
 		'cookies' => array( )
 	);

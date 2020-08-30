@@ -3,9 +3,9 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api
 Requires at least: 4.9.8
-Tested up to: 5.4.2
+Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.4 =
+
+1. 更新微信内容安全检测
+2. 更新文章评论点赞功能
+3. 更新小程序二维码接口
+4. 更新 API 文章列表图片
+5. 更新 API 数据缓存方式
+6. 更新 QQ 小程序授权登录错误提示
 
 = 1.3.3 =
 
