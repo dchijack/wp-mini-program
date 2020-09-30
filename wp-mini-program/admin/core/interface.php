@@ -64,12 +64,13 @@ function miniprogram_table_options_container( $option_name, $fields ) {
 					break;
 						
 				case 'select':
+					$value = isset($settings[$var])?$settings[$var]:'';
 					$output .= '<tr id="'.$var.'_select">
 								<th><label for="'.$var.'">'.$field["title"].'</label></th>
 								<td>
 								<select name="' .esc_attr( $option_name . '[' . $var. ']' ). '" id="' . esc_attr( $var ) . '">';
 								foreach ($field['options'] as $key => $option ) {
-									$output .= '<option'. selected( $settings[$var], $key, false ) .' value="' . esc_attr( $key ) . '">' . esc_html( $option ) . '</option>';
+									$output .= '<option'. selected( $value, $key, false ) .' value="' . esc_attr( $key ) . '">' . esc_html( $option ) . '</option>';
 								}
 								$output .= '</select>';
 								if(isset($field['description']) && !empty($field['description'])) { $output .= '<span class="desc description">'.$field['description'].'</span>'; }

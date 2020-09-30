@@ -3,11 +3,11 @@
 Plugin Name: Mini Program API
 Plugin URI: https://www.imahui.com/minapp/1044.html
 Description: 由 丸子小程序团队 基于 WordPress REST 创建小程序应用 API 数据接口。免费开源，实现 WordPress 连接小程序应用数据。<a href="https://developer.wordpress.org/rest-api/" taraget="_blank">WP REST API 使用帮助</a>。
-Version: 1.3.4
+Version: 1.3.5
 Author:  艾码汇
 Author URI: https://www.imahui.com/about.html
 requires at least: 4.9.8
-tested up to: 5.5
+tested up to: 5.5.1
 */
 
 define('MINI_PROGRAM_REST_API', plugin_dir_path(__FILE__));
@@ -23,7 +23,7 @@ add_filter( 'plugin_action_links', function( $links, $file ) {
 	if ( plugin_basename( __FILE__ ) !== $file ) {
 		return $links;
 	}
-	$settings_link = '<a href="'.get_admin_url().'admin.php?page=miniprogram">' . esc_html__( '设置', 'imahui' ) . '</a>';
+	$settings_link = '<a href="'.add_query_arg( array('page' => 'miniprogram'), admin_url('admin.php') ).'">' . esc_html__( '设置', 'imahui' ) . '</a>';
 	array_unshift( $links, $settings_link );
 	return $links;
 }, 10, 2 );
@@ -40,11 +40,11 @@ add_filter( 'plugin_row_meta', function( $links, $file ) {
 		esc_html( '丸子小程序' )
 	);
 	$mtheme_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
-		esc_url( 'http://www.mzhuti.com' ),
+		esc_url( 'https://www.wpstorm.cn' ),
 		esc_attr( "_blank" ),
-		esc_attr( '更多关于 M 主题小程序站 的信息' ),
-		esc_attr( 'M 主题小程序站' ),
-		esc_html( ' M 主题' )
+		esc_attr( '更多关于 WordPress 小程序主题下载 的信息' ),
+		esc_attr( 'WordPress 小程序主题下载' ),
+		esc_html( ' WordPress 小程序' )
 	);
 	$wptoo_link = sprintf( '<a href="%s" target="%s" aria-label="%s" data-title="%s">%s</a>',
 		esc_url( 'https://www.wptoo.com' ),

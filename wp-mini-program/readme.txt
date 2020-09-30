@@ -1,11 +1,11 @@
 === Mini Program API ===
 Contributors: imahui
 Donate link: https://www.imahui.com/about.html
-Tags: rest api, api
+Tags: rest api, api, 小程序
 Requires at least: 4.9.8
-Tested up to: 5.5
+Tested up to: 5.5.1
 Requires PHP: 5.6
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.5 =
+
+1. 更新仪表盘 WordPress 小程序信息
+2. 更新修复小程序设置广告功能警告信息
 
 = 1.3.4 =
 
