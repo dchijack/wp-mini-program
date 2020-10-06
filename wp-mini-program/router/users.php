@@ -193,7 +193,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
 			update_user_meta( $user_id, 'session_key', $token['session_key'] );
-			add_user_meta( $user_id, 'platform', 'wechat');
+			update_user_meta( $user_id, 'platform', 'wechat');
 		}
 		
 		wp_set_current_user( $user_id, $openId );
