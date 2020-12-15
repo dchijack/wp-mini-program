@@ -1,44 +1,14 @@
 <?php
-/**
- * REST API: WP_REST_Posts_Controller class
- *
- * @package WordPress
- * @subpackage REST_API
- * @since 4.7.0
- */
+
 if ( !defined( 'ABSPATH' ) ) exit;
 
-
-/**
- * Core class to access posts via the REST API.
- *
- * @since 4.7.0
- *
- * @see WP_REST_Controller
- */
 class WP_REST_Posts_Router extends WP_REST_Controller {
 
-	/**
-	 * Constructor.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param string $post_type Post type.
-	 */
 	public function __construct( ) {
 		$this->namespace     = 'mp/v1';
         $this->resource_name = 'posts';
 	}
-	
-	/**
-	 * Registers the routes for the objects of the controller.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @see register_rest_route()
-	 */
+
 	public function register_routes() {
 
 		register_rest_route( $this->namespace, '/' . $this->resource_name.'/sticky', array(
@@ -96,29 +66,11 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		));
 
 	}
-	
-	/**
-	 * Checks if a given request has access to read posts.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 */
+
 	public function get_wp_posts_permissions_check( $request ) {
 		return true;
 	}
-	
-	/**
-	 * Retrieves a collection of posts.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 */
+
 	public function get_sticky_posts( $request ) {
 		$data = array();
 		$page = isset($request["page"])?$request["page"]:1;
@@ -262,13 +214,6 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		return $response;
 	}
 
-	/**
-	 * Retrieves the query params for the posts collection.
-	 *
-	 * @since 4.7.0
-	 *
-	 * @return array Collection parameters.
-	 */
 	public function default_posts_collection_params() {
 		$params = array();
 		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );

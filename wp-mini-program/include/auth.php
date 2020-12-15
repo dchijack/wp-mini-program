@@ -107,7 +107,7 @@ class MP_Auth {
         if( $appid && $secret ) {
             $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
             $body = wp_remote_get($url);
-            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
+            if( is_wp_error( $body ) ) {	
                 return false;
             }
             $access_token = json_decode( $body['body'], true );
@@ -123,7 +123,7 @@ class MP_Auth {
         if( $appid && $secret ) {
             $url = 'https://api.q.qq.com/api/getToken?grant_type=client_credential&appid='.$appid.'&secret='.$secret;
             $body = wp_remote_get($url);
-            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
+            if( is_wp_error( $body ) ) {	
                 return false;
             }
             $access_token = json_decode( $body['body'], true );
@@ -139,7 +139,7 @@ class MP_Auth {
         if( $appkey && $secret ) {
             $url = 'https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id='.$appkey.'&client_secret='.$secret.'&scope=smartapp_snsapi_base';
             $body = wp_remote_get($url);
-            if( !is_array( $body ) || is_wp_error( $body ) || $body['response']['code'] != '200' ) {	
+            if( is_wp_error( $body ) ) {	
                 return false;
             }
             $access_token = json_decode( $body['body'], true );

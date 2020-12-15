@@ -57,19 +57,22 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'reupload'		=>['title'=>'图片自动重命名','type'=>'checkbox','description'=>'是否开启上传图片重命名,注意主题是否有冲突'],
 				'advert'		=>['title'=>'广告功能设置','type'=>'checkbox','description'=>'是否开启小程序广告功能设置'],
 				'security'		=>['title'=>'内容安全检测','type'=>'checkbox','description'=>'是否开启微信内容安全文本检测'],
-				'we_submit'		=>['title'=>'页面内容接入','type'=>'checkbox','description'=>'是否开启微信小程序页面路径推送']
+				'we_submit'		=>['title'=>'页面内容接入','type'=>'checkbox','description'=>'是否开启微信小程序页面路径推送'],
+				'bd_submit'		=>['title'=>'小程序 API 提交','type'=>'checkbox','description'=>'是否开启百度智能小程序 API 提交 [注: 仅支持后台发布文章时提交]']
 			],
 		],
 	);
 
-	if ( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
-		$options['general-setting']['fields']['qq_reply_tpl'] = ['title'=>'QQ 评论通知','type'=>'text','class'=>'regular-text','description'=>'选择评论回复消息模板 ID ,参数：回复者,回复内容,回复时间'];
+	if( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
+		$options['general-setting']['fields']['qq_audit_tpl'] = ['title'=>'QQ 审核通知','type'=>'text','class'=>'regular-text','description'=>'搜索一次性订阅消息模板：审核通过提醒 ，关键词及排序：审核结果、备注、通过时间'];
+		$options['general-setting']['fields']['qq_reply_tpl'] = ['title'=>'QQ 评论通知','type'=>'text','class'=>'regular-text','description'=>'搜索一次性订阅消息模板：评论回复通知 ，关键词及排序：评论内容、回复内容、回复者'];
+		$options['general-setting']['fields']['qq_update_tpl'] = ['title'=>'QQ 更新通知','type'=>'text','class'=>'regular-text','description'=>'搜索一次性订阅消息模板：资讯更新提醒 ，关键词及排序：资讯标题、内容摘要、发布时间、温馨提示'];
 	}
-	if ( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+	if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
 		$options['general-setting']['fields']['bd_reply_tpl'] = ['title'=>'百度评论通知','type'=>'text','class'=>'regular-text','description'=>'选择评论回复消息模板 ID ,参数：回复者,回复内容,回复时间'];
 	}
 
-	if (wp_miniprogram_option('advert')) {
+	if( wp_miniprogram_option('advert') ) {
 		$options['weadvert-setting'] = [
 			'title'=>'微信广告功能',
 			'summary'=>'<p>微信小程序广告功能设置,注意填写正确参数</p>',
@@ -95,7 +98,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'we_p_args'			=>['title'=>'广告参数','type'=>'text','class'=>'regular-text','rows'=>4,'description'=>'填写对应的广告类型参数']
 			],
 		];
-		if ( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
+		if( wp_miniprogram_option('qq_appid') && wp_miniprogram_option('qq_secret') ) {
 			$options['qqadvert-setting'] = [
 				'title'=>'QQ 广告功能',
 				'summary'=>'<p>QQ 小程序广告功能设置,注意填写正确参数</p>',
@@ -122,7 +125,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				],
 			];
 		}
-		if ( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
+		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
 			$options['bdadvert-setting'] = [
 				'title'=>'百度广告功能',
 				'summary'=>'<p>QQ 小程序广告功能设置,注意填写正确参数</p>',
@@ -149,7 +152,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				],
 			];
 		}
-		if ( wp_miniprogram_option('tt_appid') && wp_miniprogram_option('tt_secret') ) {
+		if( wp_miniprogram_option('tt_appid') && wp_miniprogram_option('tt_secret') ) {
 			$options['ttadvert-setting'] = [
 				'title'=>'头条广告功能',
 				'summary'=>'<p>头条小程序广告功能设置,注意填写正确参数</p>',

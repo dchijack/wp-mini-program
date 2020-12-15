@@ -39,7 +39,7 @@ if(is_admin()) {
 		$submenu[] = ['page_title' => '小程序订阅消息统计','menu_title' => '订阅统计', 'option_name' => 'miniprogram','slug' => 'subscribe', 'function' => 'miniprogram_subscribe_message_count'];
 		$submenu[] = ['page_title' => '小程序历史推送任务','menu_title' => '任务列表', 'option_name' => 'miniprogram','slug' => 'task', 'function' => 'miniprogram_subscribe_message_task_table'];
 		$submenu[] = ['page_title' => 'Mini Program API 使用指南','menu_title' => '使用指南', 'option_name' => 'miniprogram','slug' => 'guide', 'function' => 'miniprogram_api_guide'];
-		$admin_menu = array(
+		$admin_menu[] = array(
 			'menu' => [
 				'page_title' => '小程序设置','menu_title' => '小程序', 'option_name' => 'miniprogram', 'function' => 'miniprogram_options_manage_page', 'icon' => 'dashicons-editor-code', 'position' => 2
 			],

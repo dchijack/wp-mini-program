@@ -3,7 +3,7 @@
  * WordPress Custom API Data Hooks
  */
  
-if ( !defined( 'ABSPATH' ) ) exit;
+if( !defined( 'ABSPATH' ) ) exit;
 
 // 屏蔽不常用 REST
 if(wp_miniprogram_option('gutenberg')) {
@@ -29,6 +29,22 @@ if(wp_miniprogram_option('gutenberg')) {
 	});
 }
 
+add_action( 'rest_api_init', function () {
+	$controller = array();
+	$controller[] = new WP_REST_Setting_Router();
+	$controller[] = new WP_REST_Posts_Router();
+	$controller[] = new WP_REST_Comments_Router();
+	$controller[] = new WP_REST_Qrcode_Router();
+	$controller[] = new WP_REST_Users_Router();
+	$controller[] = new WP_REST_Auth_Router();
+	$controller[] = new WP_REST_Subscribe_Router();
+	$controller[] = new WP_REST_Advert_Router();
+	$controller[] = new WP_REST_Menu_Router();
+	foreach ( $controller as $control ) {
+		$control->register_routes();
+	}
+} );
+
 add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 	$_data = $data->data;
 	$post_id = $post->ID;
@@ -45,7 +61,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		if( $session ) {
 			$access_token = base64_decode( $session );
 			$users = MP_Auth::login( $access_token );
-			if ( $users ) {
+			if( $users ) {
 				$user_id = $users->ID;
 			} else {
 				$user_id = 0;
@@ -59,7 +75,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		unset($_data['author']);
 		$_data["author"]["id"] = $author_id;
 		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
-		if ($author_avatar) {
+		if($author_avatar) {
 			$_data["author"]["avatar"] = $author_avatar;
 		} else {
 			$_data["author"]["avatar"] = get_avatar_url($author_id);
@@ -76,7 +92,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
 		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
 		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-		if ($taxonomies) {
+		if($taxonomies) {
 			foreach ( $taxonomies as $taxonomy ){
 				$terms = wp_get_post_terms($post_id, $taxonomy);
 				foreach($terms as $term) {
@@ -86,21 +102,21 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 					$tax["name"] = $term->name;
 					$tax["description"] = $term->description;
 					$tax["cover"] = $term_cover ? $term_cover : wp_miniprogram_option('thumbnail');
-					if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
+					if($taxonomy === 'post_tag') { $taxonomy = "tag"; }
 					$_data[$taxonomy][] = $tax;
 				}
 			}
 		}
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
 		$_data["excerpt"]["rendered"] = html_entity_decode( wp_strip_all_tags( $post_excerpt ) );
-		if ( wp_miniprogram_option('mediaon') ) {
+		if( wp_miniprogram_option('mediaon') ) {
 			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover', true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
 			$_data["media"]['author'] = get_post_meta( $post_id, 'author', true );
 			$_data["media"]['title'] = get_post_meta( $post_id, 'title', true );
 			$_data["media"]['video'] = get_post_meta( $post_id, 'video', true );
 			$_data["media"]['audio'] = get_post_meta( $post_id, 'audio', true );
 		}
-		if ( isset( $request['id'] ) ) {
+		if( isset( $request['id'] ) ) {
 			if( !update_post_meta( $post_id, 'views', ( $post_views + 1 ) ) ) {
 				add_post_meta($post_id, 'views', 1, true);  
 			}
@@ -127,17 +143,17 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 			}
 			$_data["post_favs"] = apply_filters( 'comment_type_list', $post_id, 'fav' );
 			$_data["post_likes"] = apply_filters( 'comment_type_list', $post_id, 'like' );
-			if (wp_miniprogram_option("prevnext")) {
+			if(wp_miniprogram_option("prevnext")) {
 				$category = get_the_category( $post_id );
 				$next = get_next_post($category[0]->term_id, '', 'category');
 				$previous = get_previous_post($category[0]->term_id, '', 'category');
-				if (!empty($next->ID)) {
+				if(!empty($next->ID)) {
 					$_data["next_post"]["id"] = $next->ID;
 					$_data["next_post"]["title"]["rendered"] = $next->post_title;
 					$_data["next_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $next->ID );
 					$_data["next_post"]["views"] = (int)get_post_meta( $next->ID, "views" ,true );
 				}
-				if (!empty($previous->ID)) {
+				if(!empty($previous->ID)) {
 					$_data["prev_post"]["id"] = $previous->ID;
 					$_data["prev_post"]["title"]["rendered"] = $previous->post_title;
 					$_data["prev_post"]["thumbnail"] = apply_filters( 'post_thumbnail', $previous->ID );
@@ -145,8 +161,8 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 				}
 			}
 		} else {
-			if ( !wp_miniprogram_option("post_content") ) { unset($_data['content']); }
-			if ( wp_miniprogram_option("post_picture") ) {
+			if( !wp_miniprogram_option("post_content") ) { unset($_data['content']); }
+			if( wp_miniprogram_option("post_picture") ) {
 				$_data["pictures"] = apply_filters( 'post_images', $post_id );
 			}
 		}
@@ -193,7 +209,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 		unset($_data['author']);
 		$_data["author"]["id"] = $author_id;
 		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
-		if ($author_avatar) {
+		if($author_avatar) {
 			$_data["author"]["avatar"] = $author_avatar;
 		} else {
 			$_data["author"]["avatar"] = get_avatar_url($author_id);
@@ -210,8 +226,8 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 		if( !$post_excerpt ) {
 			$_data["excerpt"]["rendered"] = html_entity_decode( wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ) ); 
 		}
-		if ( !isset( $request['id'] ) ) {
-			if (wp_miniprogram_option("post_content")) { unset($_data['content']); }
+		if( !isset( $request['id'] ) ) {
+			if(wp_miniprogram_option("post_content")) { unset($_data['content']); }
 		} else {
 			if( is_smart_miniprogram() ) {
 				$custom_keywords = get_post_meta( $post_id, "keywords", true );
@@ -263,7 +279,7 @@ add_filter( 'rest_prepare_category',function($data, $item, $request) {
 	$term_id = $item->term_id;
 	$args = array('category'=>$term_id,'numberposts' => 1);
 	$posts = get_posts($args);
-	if (!empty($posts)) {
+	if(!empty($posts)) {
 		$recent_date = $posts[0]->post_date;
 	} else {
 		$recent_date = '无更新';
@@ -320,25 +336,25 @@ add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
 
 add_filter( 'the_content',function ($content) {
 	$post_id = get_the_ID();
-	if (wp_miniprogram_option('mediaon')) {
-		if (get_post_meta( $post_id, 'cover' ,true )) {
+	if(wp_miniprogram_option('mediaon')) {
+		if(get_post_meta( $post_id, 'cover' ,true )) {
 			$cover_url = get_post_meta( $post_id, 'cover' ,true );
 		} else {
 			$cover_url = apply_filters( 'post_thumbnail', $post_id );
 		}
-		if (get_post_meta( $post_id, 'author' ,true )){
+		if(get_post_meta( $post_id, 'author' ,true )){
 			$media_author = 'author="'.get_post_meta( $post_id, 'author' ,true ).'" ';
 		} else {
 			$media_author = '';
 		}
-		if (get_post_meta( $post_id, 'title' ,true )){
+		if(get_post_meta( $post_id, 'title' ,true )){
 			$media_title = ' title="'.get_post_meta( $post_id, 'title' ,true ).'" ';
 		} else {
 			$media_title = '';
 		}
 		$video_id = get_post_meta($post_id,'video',true);
 		$audio_id = get_post_meta($post_id,'audio',true);
-		if (!empty($video_id) && wp_miniprogram_option('qvideo')) {
+		if(!empty($video_id) && wp_miniprogram_option('qvideo')) {
 			$video = apply_filters( 'tencent_video', $video_id );
 			if($video) {
 				$video_code = '<p><video '.$media_author.$media_title.' controls="controls" poster="'.$cover_url.'" src="'.$video.'" width="100%"></video></p>';
@@ -347,7 +363,7 @@ add_filter( 'the_content',function ($content) {
 			}
 			$content = $video_code.$content;
 		}
-		if (!empty($audio_id)) {
+		if(!empty($audio_id)) {
 			$audio_code = '<p><audio '.$media_author.$media_title.' controls="controls" src="'.$audio_id.'" width="100%"></audio></p>';
 			$content = $audio_code.$content;
 		}
@@ -373,7 +389,7 @@ add_action( 'personal_options_update', 'update_miniprogam_platform' );
 add_action( 'edit_user_profile_update', 'update_miniprogam_platform' );
 
 function update_miniprogam_platform( $user_id ) {
-	if ( !current_user_can( 'edit_user', $user_id ) )
+	if( !current_user_can( 'edit_user', $user_id ) )
     	return false;
 	update_user_meta( $user_id, 'platform', $_POST['platform'] );
 }
@@ -407,9 +423,9 @@ add_filter( 'manage_users_columns', function ( $columns ){
 });
 add_action( 'manage_users_custom_column', function ( $value, $column_name, $user_id ) {
 	$user = get_userdata( $user_id );
-	if ('registered' == $column_name){
+	if('registered' == $column_name){
 		$value = get_date_from_gmt($user->user_registered);
-	} else if ('platform' == $column_name){
+	} else if('platform' == $column_name){
 		$platform = get_user_meta($user->ID, 'platform', true);
 		if($platform == 'wechat') {
 			$value = '微信小程序';
@@ -455,7 +471,7 @@ add_action( 'manage_comments_custom_column',function  ( $column_name, $comment_i
 	}
 }, 10, 2 );
 
-if (wp_miniprogram_option('reupload')) {
+if(wp_miniprogram_option('reupload')) {
 	add_filter('wp_handle_upload_prefilter',function ($file) {
 		$time = date("YmdHis");
 		$file['name'] = $time . "" . mt_rand(1, 100) . "." . pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -491,7 +507,7 @@ add_shortcode('qvideo', function ($attr) {
 });
 
 add_action( 'admin_print_footer_scripts', function () {
-    if (wp_script_is('quicktags')){
+	if( wp_script_is('quicktags') ) {
 ?>
     <script type="text/javascript">
     QTags.addButton( 'qvideo', '腾讯视频', '[qvideo vid="腾讯视频 vid 或 url"]','' );

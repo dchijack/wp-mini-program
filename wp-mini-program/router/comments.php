@@ -1,51 +1,17 @@
 <?php
-/**
- * REST API: WP_REST_Comments_Controller class
- *
- * @package WordPress
- * @subpackage REST_API
- * @since 4.7.0
- */
+
 if ( !defined( 'ABSPATH' ) ) exit;
 
-/**
- * Core controller used to access comments via the REST API.
- *
- * @since 4.7.0
- *
- * @see WP_REST_Controller
- */
 class WP_REST_Comments_Router extends WP_REST_Controller {
-	
-	/**
-	 * Instance of a comment meta fields object.
-	 *
-	 * @since 4.7.0
-	 * @access protected
-	 * @var WP_REST_Comment_Meta_Fields
-	 */
+
 	protected $meta;
 
-	/**
-	 * Constructor.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param string $post_type Post type.
-	 */
 	public function __construct( ) {
 		$this->namespace     = 'mp/v1';
         $this->resource_name = 'comments';
 		$this->meta = new WP_REST_Comment_Meta_Fields();
 	}
-	
-	/**
-	 * Registers the routes for the objects of the controller.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 */
+
 	public function register_routes() {
 		
 		register_rest_route( $this->namespace,  '/' . $this->resource_name, array(
@@ -75,16 +41,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		) );
 		
 	}
-	
-	/**
-	 * Checks if a given request has access to read posts.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 */
+
 	public function wp_comment_permissions_check( $request ) {
 		return true;
 	}
@@ -100,14 +57,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		}
 		return true;
 	}
-	
-	/**
-	 * Retrieves the query params for the posts collection.
-	 *
-	 * @since 4.7.0
-	 *
-	 * @return array Collection parameters.
-	 */
+
 	public function wp_comment_collection_params() {
 		$params = array();
 		$params['context'] = $this->get_context_param( array( 'default' => 'view' ) );
@@ -170,16 +120,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		);
 		return $params;
 	}
-	
-	/**
-	 * Retrieves a collection of posts.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 */
+
 	public function wp_post_comments( $request ) {
 		$post_id = $request["id"];
 		$page = $request["page"];

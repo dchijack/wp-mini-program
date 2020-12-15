@@ -3,9 +3,9 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api, 小程序
 Requires at least: 4.9.8
-Tested up to: 5.5.1
+Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.6 =
+
+1. 更新优化判断小程序客户端
+2. 更新优化小程序菜单路由接口
+3. 更新广告功能设置及路由接口
+4. 更新优化获取小程序设置数据
+5. 更新百度智能小程序 API 提交设置
+6. 更新订阅消息相关函数功能及路由接口
 
 = 1.3.5 =
 

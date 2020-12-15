@@ -1,42 +1,13 @@
 <?php
-/**
- * REST API: WP_REST_Users_Controller class
- *
- * @package WordPress
- * @subpackage REST_API
- * @since 4.7.0
- */
+
 if ( !defined( 'ABSPATH' ) ) exit;
 
-/**
- * Core class to access posts via the REST API.
- *
- * @since 4.7.0
- *
- * @see WP_REST_Controller
- */
 class WP_REST_Auth_Router extends WP_REST_Controller {
-	
-	/**
-	 * Constructor.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param string $post_type Post type.
-	 */
+
 	public function __construct( ) {
 		$this->namespace     = 'mp/v1';
 	}
-	
-	/**
-	 * Registers the routes for the objects of the controller.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @see register_rest_route()
-	 */
+
 	public function register_routes() {
 
 		register_rest_route( $this->namespace, '/tencent/login', array(
@@ -67,29 +38,13 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		));
 
 	}
-	
-	/**
-	 * Checks if a given request has access to read posts.
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
-	 */
+
 	public function wp_login_permissions_check( $request ) {
 
 		return true;
 		
 	}
 
-	/**
-	 * Retrieves the query params for the posts collection.
-	 *
-	 * @since 4.7.0
-	 *
-	 * @return array Collection parameters.
-	 */
 	public function wp_user_login_collection_params() {
 		$params = array();
 		$params['iv'] = array(
@@ -112,15 +67,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		);
 		return $params;
 	}
-	
-	/**
-	 *
-	 * @since 4.7.0
-	 * @access public
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 */
+
 	public function wp_qq_user_auth_login( $request ) {
 
 		date_default_timezone_set(get_option('timezone_string'));
