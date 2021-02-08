@@ -76,7 +76,7 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 			$qrcode_link = trailingslashit( str_replace( "http://", "https://", $qrcode_urls ) )."qrcode-".$post_id.".png";
 		}
 
-		$cover_link = apply_filters( 'miniprogram_prefix_thumbnail', $post_id );
+		$cover_link = apply_filters( 'post_thumbnail', $post_id );
 		if( empty($cover_link) ) {
 			$cover_link = str_replace("http://","https://",wp_miniprogram_option('thumbnail'));
 		}
@@ -118,7 +118,7 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 							$result["code"]			= "success";
 							$result["message"]		= "qrcode creat success";
 							$result["qrcode"]		= $qrcode_link;
-							$result["cover"] 		= $cover_link;
+							$result["cover"] 		= apply_filters( 'mp_cover_url', $cover_link );
 						} else {
 							$result["status"]		= 400; 
 							$result["code"]			= "error";
@@ -146,7 +146,7 @@ class WP_REST_Qrcode_Router extends WP_REST_Controller {
 			$result["code"]			= "success";
 			$result["message"]		= "qrcode creat success"; 
 			$result["qrcode"]		= $qrcode_link;
-			$result["cover"] 		= $cover_link;
+			$result["cover"] 		= apply_filters( 'mp_cover_url', $cover_link );
 		}
 		$response = rest_ensure_response( $result );
 		return $response;

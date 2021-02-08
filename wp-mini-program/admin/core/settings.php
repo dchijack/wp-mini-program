@@ -2,7 +2,6 @@
 	global $pagenow;
 	if( isset( $_REQUEST['settings-updated'] ) ) {
 		wp_cache_flush();
-		echo '<div id="settings_updated" class="updated notice is-dismissible">'."\n".'<p><strong>设置已更新保存。</strong></p>'."\n".'<button type="button" class="notice-dismiss"><span class="screen-reader-text">忽略此通知。</span></button>'."\n".'</div>'; 
 	}
 ?>
 <div class="wrap">

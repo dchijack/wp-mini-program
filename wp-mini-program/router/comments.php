@@ -122,6 +122,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 	}
 
 	public function wp_post_comments( $request ) {
+		$uid = 0;
 		$post_id = $request["id"];
 		$page = $request["page"];
 		$type = $request["type"];
@@ -138,12 +139,10 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 			"orderby" => 'comment_date',
 			"order" => 'DESC'
 		);
-		if ( isset($request['access_token']) ) {
+		if( isset($request['access_token']) ) {
 			$access_token = base64_decode($request['access_token']);
 			$users = MP_Auth::login( $access_token );
 			$uid = $users ? (int)$users->ID : 0;
-		} else {
-			$uid = 0;
 		}
 		$comments = get_comments($args);
 		$data = array();
@@ -191,7 +190,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		if ( !$users ) {
 			return new WP_Error( 'error', '授权信息有误' , array( 'status' => 403 ) );
 		}
-		$user_id = $users->ID;
+		$user_id = (int)$users->ID;
 		$user = get_user_by( 'ID', $user_id );
 		$user_name = $user->display_name;
 		$user_email = $user->user_email;
@@ -207,10 +206,10 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 					return new WP_Error( 'error', '内容含有违规关键词' , array( 'status' => 403 ) );
 				}
 			}
-		} else if($type == 'like') {
-			$content = "点赞《".$post_title."》文章";
-		} else if($type == 'fav') {
-			$content = "收藏《".$post_title."》文章";
+		} else {
+			$comment_action = wp_miniprogram_comment_type( $type );
+			$comment_posts = wp_miniprogram_comment_post( $post_id );
+			$content = $comment_action."《".$post_title."》".$comment_posts;
 		}
 		if($type == 'comment') {
 			$commentarr = array(
@@ -252,12 +251,7 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		} else {
 			$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'parent' => 0, 'status' => 'approve', 'orderby' => 'comment_date', 'order' => 'DESC');
 			$custom_comment = get_comments( $args );
-			if($type == 'like') {
-				$message = '点赞';
-			}
-			if($type == 'fav') {
-				$message = '收藏';
-			}
+			$message = wp_miniprogram_comment_type( $type );
 			if($custom_comment) {
 				foreach ( $custom_comment as $comment ) {
 					$comment_id = $comment->comment_ID;

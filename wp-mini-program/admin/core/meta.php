@@ -3,7 +3,7 @@
  * WordPress Custom API Data Hooks
  */
  
-if ( !defined( 'ABSPATH' ) ) exit;
+if( !defined( 'ABSPATH' ) ) exit;
 
 /**
  * Calls the class on the post edit screen.
@@ -44,14 +44,14 @@ abstract class WP_Custom_Meta_Box {
          */
  
         // Check if our nonce is set.
-        if ( ! isset( $_POST['add_meta_custom_box_nonce'] ) ) {
+        if( ! isset( $_POST['add_meta_custom_box_nonce'] ) ) {
             return $post_id;
         }
  
         $nonce = $_POST['add_meta_custom_box_nonce'];
  
         // Verify that the nonce is valid.
-        if ( ! wp_verify_nonce( $nonce, 'add_meta_inner_custom_box' ) ) {
+        if( ! wp_verify_nonce( $nonce, 'add_meta_inner_custom_box' ) ) {
             return $post_id;
         }
  
@@ -59,17 +59,17 @@ abstract class WP_Custom_Meta_Box {
          * If this is an autosave, our form has not been submitted,
          * so we don't want to do anything.
          */
-        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return $post_id;
         }
  
         // Check the user's permissions.
-        if ( 'page' == $_POST['post_type'] ) {
-            if ( ! current_user_can( 'edit_page', $post_id ) ) {
+        if( 'page' == $_POST['post_type'] ) {
+            if( ! current_user_can( 'edit_page', $post_id ) ) {
                 return $post_id;
             }
         } else {
-            if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            if( ! current_user_can( 'edit_post', $post_id ) ) {
                 return $post_id;
             }
         }
@@ -87,12 +87,12 @@ abstract class WP_Custom_Meta_Box {
 					} else {
 						$data = sanitize_text_field( $_POST[$key] );
 					}
-					if ( get_post_meta( $post_id, $key, false ) ) {
+					if( get_post_meta( $post_id, $key, false ) ) {
 						update_post_meta( $post_id, $key, $data );
 					} else {
 						add_post_meta( $post_id, $key, $data, true );
 					}
-					if ( !$data ) {
+					if( !$data ) {
 						delete_post_meta( $post_id, $key );
 					}
 				}
@@ -125,8 +125,8 @@ abstract class WP_Custom_Meta_Box {
 						$value = get_post_meta( $post->ID, $key, true );
 						switch ( $field['type'] ) {
 							case 'textarea':
-								$rows = isset($field["rows"])?$field["rows"]:5;
-								$cols = isset($field["cols"])?$field["cols"]:4;
+								$rows = isset($field["rows"])?$field["rows"]:4;
+								$cols = isset($field["cols"])?$field["cols"]:40;
 								$class = isset($field["class"])?'class="'.$field["class"].'"':'';
 								$output .= '<tr id="'.$key.'_textarea">
 											<th><label for="'.$key.'">'.$field["title"].'</label></th>

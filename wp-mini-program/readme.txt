@@ -5,7 +5,7 @@ Tags: rest api, api, 小程序
 Requires at least: 4.9.8
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.7 =
+
+1. 更新自定义置顶接口请求参数
+2. 更新自定义接口返回数据钩子
+3. 更新扩展评论自定义类型接口
+4. 更新文章缩略图/海报封面过滤器钩子
+5. 更新优化媒体字段信息及优化通知信息
 
 = 1.3.6 =
 

@@ -97,11 +97,11 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 				$terms = wp_get_post_terms($post_id, $taxonomy);
 				foreach($terms as $term) {
 					$tax = array();
-					$term_cover = get_term_meta($term->term_id,'cover',true);
+					$term_cover = get_term_meta($term->term_id,'cover',true) ? get_term_meta($term->term_id,'cover',true) : wp_miniprogram_option('thumbnail');
 					$tax["id"] = $term->term_id;
 					$tax["name"] = $term->name;
 					$tax["description"] = $term->description;
-					$tax["cover"] = $term_cover ? $term_cover : wp_miniprogram_option('thumbnail');
+					$tax["cover"] = apply_filters( 'mp_thumbnail_url', $term_cover );
 					if($taxonomy === 'post_tag') { $taxonomy = "tag"; }
 					$_data[$taxonomy][] = $tax;
 				}
@@ -109,7 +109,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		}
 		$_data["title"]["rendered"] = html_entity_decode( $post_title );
 		$_data["excerpt"]["rendered"] = html_entity_decode( wp_strip_all_tags( $post_excerpt ) );
-		if( wp_miniprogram_option('mediaon') ) {
+		if( wp_miniprogram_option('mediaon') && ( get_post_meta( $post_id, 'video', true ) || get_post_meta( $post_id, 'audio', true ) ) ) {
 			$_data["media"]['cover'] = get_post_meta( $post_id, 'cover', true ) ? get_post_meta( $post_id, 'cover' ,true ) : apply_filters( 'post_thumbnail', $post_id );
 			$_data["media"]['author'] = get_post_meta( $post_id, 'author', true );
 			$_data["media"]['title'] = get_post_meta( $post_id, 'title', true );
@@ -132,7 +132,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 				$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
 				$_data["smartprogram"]["keywords"] = $custom_keywords;
 				$_data["smartprogram"]["description"] = $_data["excerpt"]["rendered"];
-				$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+				$_data["smartprogram"]["image"] = apply_filters( 'posts_gallery', $post_id );
 				$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
 				$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
 				$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
@@ -163,7 +163,7 @@ add_filter( 'rest_prepare_post',function ($data, $post, $request) {
 		} else {
 			if( !wp_miniprogram_option("post_content") ) { unset($_data['content']); }
 			if( wp_miniprogram_option("post_picture") ) {
-				$_data["pictures"] = apply_filters( 'post_images', $post_id );
+				$_data["pictures"] = apply_filters( 'posts_gallery', $post_id );
 			}
 		}
 	}
@@ -241,7 +241,7 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 				$_data["smartprogram"]["title"] = $_data["title"]["rendered"] .'-'.get_bloginfo('name');
 				$_data["smartprogram"]["keywords"] = $custom_keywords;
 				$_data["smartprogram"]["description"] = $post_excerpt ? $post_excerpt : html_entity_decode( wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ) ); 
-				$_data["smartprogram"]["image"] = apply_filters( 'post_images', $post_id );
+				$_data["smartprogram"]["image"] = apply_filters( 'posts_gallery', $post_id );
 				$_data["smartprogram"]["visit"] = array( 'pv' => $post_views );
 				$_data["smartprogram"]["comments"] =  apply_filters( 'comment_type_count', $post_id, 'comment' );
 				$_data["smartprogram"]["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
@@ -275,7 +275,6 @@ add_filter( 'rest_prepare_page',function ($data, $post, $request) {
 }, 10, 3 );
 
 add_filter( 'rest_prepare_category',function($data, $item, $request) {
-	$cover = '';
 	$term_id = $item->term_id;
 	$args = array('category'=>$term_id,'numberposts' => 1);
 	$posts = get_posts($args);
@@ -302,14 +301,13 @@ add_filter( 'rest_prepare_category',function($data, $item, $request) {
 			$data->data['smartprogram'] = $smartprogram;
 		}
 	}
-	$data->data['cover'] = $cover;
+	$data->data['cover'] = apply_filters( 'mp_thumbnail_url', $cover );
 	$data->data['date'] = $recent_date;
 	$data->data['except'] = $except;
 	return $data;
 }, 10, 3 );
 
 add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
-	$cover = '';
 	$term_id = $item->term_id;
     if(get_term_meta($item->term_id,'cover',true)) {
         $cover = get_term_meta($item->term_id,'cover',true);
@@ -321,7 +319,7 @@ add_filter( 'rest_prepare_post_tag', function($data, $item, $request) {
 	} else {
 		$except = true;
 	}
-	$data->data['cover'] = $cover;
+	$data->data['cover'] = apply_filters( 'mp_thumbnail_url', $cover );
 	$data->data['except'] = $except;
 	if( isset($request['id']) ) {
 		if( is_smart_miniprogram() ) {

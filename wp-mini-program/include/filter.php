@@ -8,22 +8,22 @@ if ( !defined( 'ABSPATH' ) ) exit;
 add_filter( 'post_thumbnail', function($post_id) {
 	$thumbnails = get_post_meta($post_id, 'thumbnail', true); // 获取自定义缩略图
 	if(!empty($thumbnails)) {
-		return $thumbnails;
+		return apply_filters( 'mp_thumbnail_url', $thumbnails );
 	} else if(has_post_thumbnail($post_id)) {
 		$thumbnail_id = get_post_thumbnail_id($post_id); // 获取特色图像 ID
 		if($thumbnail_id) {
 			$attachment = wp_get_attachment_image_src($thumbnail_id, 'full');
 			$thumbnails = $attachment[0];
-			return $thumbnails;
+			return apply_filters( 'mp_thumbnail_url', $thumbnails );
 		} else {
 			$thumbnail_code = get_the_post_thumbnail( $post_id, 'full' ); // 获取特色图像 HTML 代码
 			$thumbnail_src = '/src=\"(.*?)\"/';
             if (preg_match($thumbnail_src, $thumbnail_code, $thumbnail)) {
 				$thumbnails = $thumbnail[1];
-				return $thumbnails;
+				return apply_filters( 'mp_thumbnail_url', $thumbnails );
             } else {
 				$thumbnails = wp_miniprogram_option('thumbnail'); // 指定默认链接
-				return $thumbnails;
+				return apply_filters( 'mp_thumbnail_url', $thumbnails );
 			}
 		}
 	} else {
@@ -36,16 +36,16 @@ add_filter( 'post_thumbnail', function($post_id) {
 		}
 			
 		if(!empty($thumbnails)) {
-			return $thumbnails;
+			return apply_filters( 'mp_thumbnail_url', $thumbnails );
 		} else {
 			$thumbnails = wp_miniprogram_option('thumbnail'); // 指定默认链接
-			return $thumbnails;
+			return apply_filters( 'mp_thumbnail_url', $thumbnails );
 		}
 			
 	}
 });
 
-add_filter( 'post_images', function($post_id) {
+add_filter( 'posts_gallery', function($post_id) {
 	if($post_id){
 		$the_post       	= get_post($post_id);
 		$post_content   	= $the_post->post_content;
@@ -58,7 +58,7 @@ add_filter( 'post_images', function($post_id) {
 			$images[] = $matches[1][$i];
 		}
 	}
-	return $images;
+	return apply_filters( 'mp_posts_gallery', $images );
 });
 
 add_filter( 'tencent_video', function($url) {
@@ -154,93 +154,6 @@ add_filter( 'comment_type_list', function( $post_id, $type ) {
 		$authors[] = $_data;
 	}
 	return $authors;
-}, 10, 2 );
-
-add_filter( 'rest_posts', function( $posts, $request ) {
-	$data = array();
-	foreach ( $posts as $post ) {
-		$_data = array();
-		$post_id = $post->ID;
-		$post_date = $post->post_date;
-		$author_id = $post->post_author;
-		$post_type = $post->post_type;
-		$post_format = get_post_format( $post_id );
-		$author_avatar = get_user_meta( $author_id, 'avatar', true );
-		$taxonomies = get_object_taxonomies( $post_type );
-		$thumbnail = apply_filters( 'post_thumbnail', $post_id );
-		$post_title = $post->post_title;
-		$post_excerpt = $post->post_excerpt;
-		$post_content = $post->post_content;
-		$session = isset($request['access_token'])?$request['access_token']:'';
-		if( $session ) {
-			$access_token = base64_decode( $session );
-			$users = MP_Auth::login( $access_token );
-			if ( $users ) {
-				$user_id = $users->ID;
-			} else {
-				$user_id = 0;
-			}
-		} else {
-			$user_id = 0;
-		}
-		$_data["id"]  = $post_id;
-		$_data["date"] = $post_date;
-		$_data["week"] = get_wp_post_week($post_date);
-		$_data["format"] = $post_format?$post_format:'standard'; 
-		$_data["type"] = $post_type;
-		if( get_post_meta( $post_id, "source" ,true ) ) {
-			$_data["meta"]["source"] = get_post_meta( $post_id, "source" ,true );
-		}
-		$_data["meta"]["thumbnail"] = $thumbnail;
-		$_data["meta"]["views"] = (int)get_post_meta( $post_id, "views" ,true );
-		$meta = apply_filters( 'custom_meta', $meta = array() );
-		if ($meta) {
-			foreach ( $meta as $meta_key ) {
-				$_data["meta"][$meta_key] = get_post_meta( $post_id, $meta_key ,true );
-			}
-		}
-		$_data["comments"] = apply_filters( 'comment_type_count', $post_id, 'comment' );
-		$_data["isfav"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'fav' );
-		$_data["favs"] = apply_filters( 'comment_type_count', $post_id, 'fav' );
-		$_data["islike"] = apply_filters( 'miniprogram_commented', $post_id, $user_id, 'like' );
-		$_data["likes"] = apply_filters( 'comment_type_count', $post_id, 'like' );
-		$_data["author"]["id"] = $author_id;
-		$_data["author"]["name"] = get_the_author_meta('nickname',$author_id);
-		if ($author_avatar) {
-			$_data["author"]["avatar"] = $author_avatar;
-		} else {
-			$_data["author"]["avatar"] = get_avatar_url($author_id);
-		}
-		$_data["author"]["description"] = get_the_author_meta('description',$author_id);
-		if ($taxonomies) {
-			foreach ( $taxonomies as $taxonomy ){
-				$terms = wp_get_post_terms($post_id, $taxonomy, array('orderby' => 'term_id', 'order' => 'ASC', 'fields' => 'all'));
-				foreach($terms as $term) {
-					$tax = array();
-					$tax["id"] = $term->term_id;
-					$tax["name"] = $term->name;
-					$tax["description"] = $term->description;
-					$tax["cover"] = get_term_meta($term->term_id,'cover',true);
-					if ($taxonomy === 'post_tag') { $taxonomy = "tag"; }
-					$_data[$taxonomy][] = $tax;
-				}
-			}
-		}
-		$_data["title"]["rendered"]  = html_entity_decode($post_title);
-		if ($post_excerpt) {
-			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( wp_strip_all_tags( $post_excerpt ), 100, '...' ));
-		} else {
-			$_data["excerpt"]["rendered"] = html_entity_decode(wp_trim_words( wp_strip_all_tags( $post_content ), 100, '...' ));
-		}
-		if ( wp_miniprogram_option("post_content") ) { 
-			$_data["content"]["rendered"] = apply_filters( 'the_content', $post_content );
-		 }
-		if ( wp_miniprogram_option("post_picture") ) {
-			$_data["pictures"] = apply_filters( 'post_images', $post_id );
-		}
-		$data[] = $_data;
-	}
-	return $data;
 }, 10, 2 );
 
 add_filter( 'reply_comments', function( $post_id, $reply, $parent ) {

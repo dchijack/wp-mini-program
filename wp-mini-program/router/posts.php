@@ -75,7 +75,6 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$data = array();
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;
-		$access_token = isset($request['access_token'])?$request['access_token']:'';
 		$offset = ($page * $per_page) - $per_page;
 		$is_sticky = wp_miniprogram_option('sticky');
 		if($is_sticky) {
@@ -87,13 +86,10 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
-
-		if($posts) {
-			$data = apply_filters( 'rest_posts', $posts, $request );
+		foreach ( $posts as $post ) {
+			$data[] = wp_miniprogram_rest_post( $post, $request );
 		}
-		
 		$response  = rest_ensure_response( $data );
-
 		return $response;
 
 	}
@@ -106,8 +102,8 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
-		if($posts) {
-			$data = apply_filters( 'rest_posts', $posts, $request );
+		foreach ( $posts as $post ) {
+			$data[] = wp_miniprogram_rest_post( $post, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -123,8 +119,8 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
-		if($posts) {
-			$data = apply_filters( 'rest_posts', $posts, $request );
+		foreach ( $posts as $post ) {
+			$data[] = wp_miniprogram_rest_post( $post, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -147,8 +143,8 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
-		if($posts) {
-			$data = apply_filters( 'rest_posts', $posts, $request );
+		foreach ( $posts as $post ) {
+			$data[] = wp_miniprogram_rest_post( $post, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
@@ -176,7 +172,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 				'offset' => $offset 
 			);
 			$comments = get_comments($user_comments_arr);
-			if($comments) {
+			if( $comments ) {
 				$posts = array();
 				foreach ( $comments as $comment ) {
 					$posts[] = $comment->comment_post_ID;
@@ -184,12 +180,11 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 				$posts = array_values(array_flip(array_flip($posts)));
 				foreach ( $posts as $post_id ) {
 					$post = get_post( $post_id );
-					$data[] = $post;
+					$data[] = wp_miniprogram_rest_post( $post, $request );
 				}
 			}
 		}
-		$result = apply_filters( 'rest_posts', $data, $access_token );
-		$response  = rest_ensure_response( $result );
+		$response  = rest_ensure_response( $data );
 		return $response;
 	}
 
@@ -207,8 +202,8 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 		$args = apply_filters( "rest_post_query", $args, $request );
 		$query  = new WP_Query();
 		$posts = $query->query( $args );
-		if($posts) {
-			$data = apply_filters( 'rest_posts', $posts, $request );
+		foreach ( $posts as $post ) {
+			$data[] = wp_miniprogram_rest_post( $post, $request );
 		}
 		$response  = rest_ensure_response( $data );
 		return $response;
