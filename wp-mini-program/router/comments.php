@@ -213,16 +213,16 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		}
 		if($type == 'comment') {
 			$commentarr = array(
-				'comment_post_ID' => $post_id, // to which post the comment will show up
-				'comment_author' => ucfirst($user_name), //fixed value - can be dynamic 
-				'comment_author_email' => $user_email, //fixed value - can be dynamic 
-				'comment_author_url' => $user_url, //fixed value - can be dynamic 
-				'comment_content' => $content, //fixed value - can be dynamic
+				'comment_post_ID' => $post_id,
+				'comment_author' => ucfirst($user_name),
+				'comment_author_email' => $user_email,
+				'comment_author_url' => $user_url,
+				'comment_content' => $content,
 				'comment_author_IP' => '',
-				'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
-				'comment_parent' => $parent_id, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
-				'comment_approved' => $approved?0:1, // Whether the comment has been approved
-				'user_id' => $user_id, //passing current user ID or any predefined as per the demand
+				'comment_type' => '',
+				'comment_parent' => $parent_id,
+				'comment_approved' => $approved ? 0 : 1,
+				'user_id' => $user_id
 			);
 			$comment_id = wp_insert_comment( $commentarr );
 			if($comment_id) {
