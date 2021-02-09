@@ -116,6 +116,14 @@ add_filter('mp_cover_url', function( $thumbnail ) {
 	return wp_miniprogram_option('thumbnail');
 });
 
+add_filter('custom_comment_type_eliminate', function( $type ) {
+	$option = array( "like" => "点赞", "fav" => "收藏" );
+	if( array_key_exists( $type, $option ) ) {
+		return true;
+	}
+	return false;
+});
+
 function wp_miniprogram_comment_type( $type ) {
 	$option = array( "like" => "点赞", "fav" => "收藏" );
 	$title = apply_filters( 'custom_comment_type_text', $option );
