@@ -128,7 +128,7 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 		if( wp_miniprogram_option('bd_appkey') && wp_miniprogram_option('bd_secret') ) {
 			$options['bdadvert-setting'] = [
 				'title'=>'百度广告功能',
-				'summary'=>'<p>QQ 小程序广告功能设置,注意填写正确参数</p>',
+				'summary'=>'<p>百度智能小程序广告功能设置,注意填写正确参数</p>',
 				'fields'=> [
 					'bd_i_open'			=>['title'=>'首页广告','type'=>'checkbox','description'=>'是否开启首页广告'],
 					'bd_i_type'			=>['title'=>'广告类型','type'=>'select','options'=>['unit'=>'流量主','app'=>'小程序','picture'=>'活动广告','site'=>'网站链接','taobao'=>'淘宝口令']],
