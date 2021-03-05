@@ -3,7 +3,7 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api, 小程序
 Requires at least: 4.9.8
-Tested up to: 5.6
+Tested up to: 5.6.1
 Requires PHP: 5.6
 Stable tag: 1.3.7
 License: GPLv2 or later

@@ -100,11 +100,15 @@ add_filter( 'the_video_content', function($content) {
 		$thumbnails = 'poster="'.$thumbnails.'" ';
 	}
 	if($qvideo || $tencent) {
-		$url = $qvideo?$qvideo[0]:$tencent?$tencent[0]:'';
+		$url = '';
+		$video = '';
+		if( $qvideo ) {
+			$url = $qvideo[0];
+		} else if( $tencent ) {
+			$url = $tencent[0];
+		}
 		if($url) {
 			$video = apply_filters( 'tencent_video', $url );
-		} else {
-			$video = '';
 		}
 		if($video) {
 			$contents = preg_replace('~<video (.*?)></video>~s','<video '.$thumbnails.'src="'.$video.'" controls="controls" width="100%"></video>',$content);

@@ -213,16 +213,16 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 		}
 		if($type == 'comment') {
 			$commentarr = array(
-				'comment_post_ID' => $post_id, // to which post the comment will show up
-				'comment_author' => ucfirst($user_name), //fixed value - can be dynamic 
-				'comment_author_email' => $user_email, //fixed value - can be dynamic 
-				'comment_author_url' => $user_url, //fixed value - can be dynamic 
-				'comment_content' => $content, //fixed value - can be dynamic
+				'comment_post_ID' => $post_id,
+				'comment_author' => ucfirst($user_name),
+				'comment_author_email' => $user_email,
+				'comment_author_url' => $user_url,
+				'comment_content' => $content,
 				'comment_author_IP' => '',
-				'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
-				'comment_parent' => $parent_id, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
-				'comment_approved' => $approved?0:1, // Whether the comment has been approved
-				'user_id' => $user_id, //passing current user ID or any predefined as per the demand
+				'comment_type' => '',
+				'comment_parent' => $parent_id,
+				'comment_approved' => $approved ? 0 : 1,
+				'user_id' => $user_id
 			);
 			$comment_id = wp_insert_comment( $commentarr );
 			if($comment_id) {
@@ -249,35 +249,71 @@ class WP_REST_Comments_Router extends WP_REST_Controller {
 				$result["status"] = 400;                   
 			}
 		} else {
-			$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'parent' => 0, 'status' => 'approve', 'orderby' => 'comment_date', 'order' => 'DESC');
-			$custom_comment = get_comments( $args );
 			$message = wp_miniprogram_comment_type( $type );
-			if($custom_comment) {
-				foreach ( $custom_comment as $comment ) {
-					$comment_id = $comment->comment_ID;
+			$eliminate = apply_filters( 'custom_comment_type_eliminate', $type );
+			if( $eliminate ) {
+				if( $parent_id != 0 ) {
+					return new WP_Error( 'error', '父类 ID 错误, ID 必须为 0', array( 'status' => 403 ) );
 				}
-				$comment_status = wp_delete_comment($comment_id,true);
-				if ($comment_status) {
-					$result["code"] = "success";
-					$result["message"] = "取消".$message."成功";
-					$result["status"] = 202; 
+				$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'parent' => 0, 'status' => 'approve', 'orderby' => 'comment_date', 'order' => 'DESC');
+				$custom_comment = get_comments( $args );
+				if( $custom_comment ) {
+					foreach ( $custom_comment as $comment ) {
+						$comment_id = $comment->comment_ID;
+					}
+					$comment_status = wp_delete_comment($comment_id, true);
+					if ($comment_status) {
+						$result["code"] = "success";
+						$result["message"] = "取消".$message."成功";
+						$result["status"] = 202; 
+					} else {
+						$result["code"] = "success";
+						$result["message"] = "取消".$message."失败";
+						$result["status"] = 400; 
+					}
 				} else {
-					$result["code"] = "success";
-					$result["message"] = "取消".$message."失败";
-					$result["status"] = 400; 
+					$customarr = array(
+						'comment_post_ID' => $post_id,
+						'comment_author' => ucfirst($user_name),
+						'comment_author_email' => $user_email,
+						'comment_author_url' => $user_url,
+						'comment_content' => $content,
+						'comment_author_IP' => '',
+						'comment_type' => $type,
+						'comment_parent' => $parent_id,
+						'comment_approved' => 1,
+						'user_id' => $user_id
+					);
+					$comment_id = wp_insert_comment( $customarr );
+					if($comment_id) {
+						$result["code"] = "success";
+						$result["message"] = $message."成功";
+						$result["status"] = 200;
+					} else {
+						$result["code"] = "success";
+						$result["message"] = $message."失败";
+						$result["status"] = 400;
+					}
 				}
 			} else {
+				$args = array('post_id' => $post_id, 'type__in' => array( $type ), 'user_id' => $user_id, 'parent' => $parent_id, 'status' => 'approve', 'orderby' => 'comment_date', 'order' => 'DESC');
+				$custom_comment = get_comments( $args );
+				if( $custom_comment ) {
+					foreach ( $custom_comment as $comment ) {
+						$parent_id = (int)$comment->comment_ID;
+					}
+				}
 				$customarr = array(
-					'comment_post_ID' => $post_id, // to which post the comment will show up
-					'comment_author' => ucfirst($user_name), //fixed value - can be dynamic 
-					'comment_author_email' => $user_email, //fixed value - can be dynamic 
-					'comment_author_url' => $user_url, //fixed value - can be dynamic 
-					'comment_content' => $content, //fixed value - can be dynamic
+					'comment_post_ID' => $post_id,
+					'comment_author' => ucfirst($user_name),
+					'comment_author_email' => $user_email,
+					'comment_author_url' => $user_url,
+					'comment_content' => $content,
 					'comment_author_IP' => '',
-					'comment_type' => $type, //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
-					'comment_parent' => $parent_id, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
-					'comment_approved' => 1, // Whether the comment has been approved
-					'user_id' => $user_id, //passing current user ID or any predefined as per the demand
+					'comment_type' => $type,
+					'comment_parent' => $parent_id,
+					'comment_approved' => 1,
+					'user_id' => $user_id
 				);
 				$comment_id = wp_insert_comment( $customarr );
 				if($comment_id) {

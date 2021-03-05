@@ -7,7 +7,7 @@ Version: 1.3.7
 Author:  艾码汇
 Author URI: https://www.imahui.com/about.html
 requires at least: 4.9.8
-tested up to: 5.6
+tested up to: 5.6.1
 */
 
 define('MINI_PROGRAM_REST_API', plugin_dir_path(__FILE__));
