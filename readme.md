@@ -16,8 +16,6 @@
 
 3. 可以点击右上角绿色 Clone or download 的小三角下拉选择 Donwload ZIP 下载
 
-4. 可以[点击这里](https://github.com/dchijack/wp-mini-program/releases)选择版本下载源码压缩包
-
 ## 安装指南
 
 1. 可以直接通过 WordPress 网站后台 插件 - 安装插件 - 搜索：Mini Program API 获取插件安装启用
@@ -39,6 +37,8 @@
 ![插件截图](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/screenshot-5.png)
 
 ## 更新日志
+
+> 由于 GitHub 访问时常无法连接，因此，GitHub 仓库版本将不定时更新。如果想要获取最新版本，请访问 WordPress 插件应用中心或者关注 WordPressTalk / 艾码汇 公众号回复**9527**获取插件安装包。
 
 2021.02.08 Ver 1.3.7
 
@@ -279,7 +279,7 @@
 
 ![微信公众号二维码](https://github.com/dchijack/WP-REST-API/blob/master/qrcode.jpg)
 
-> 欢迎关注 GitHub好物荐 微信公众号
+> 欢迎关注 艾码汇 微信公众号
 
 ![微信公众号二维码](https://github.com/dchijack/wp-mini-program/blob/master/screenshot/GitHubMiniProgram.jpg)
 
