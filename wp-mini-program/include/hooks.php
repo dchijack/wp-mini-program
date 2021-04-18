@@ -40,6 +40,7 @@ add_action( 'rest_api_init', function () {
 	$controller[] = new WP_REST_Subscribe_Router();
 	$controller[] = new WP_REST_Advert_Router();
 	$controller[] = new WP_REST_Menu_Router();
+	$controller[] = new WP_REST_Security_Router();
 	foreach ( $controller as $control ) {
 		$control->register_routes();
 	}

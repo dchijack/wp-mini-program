@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) exit;
+if( !defined( 'ABSPATH' ) ) exit;
 
 class WP_REST_Auth_Router extends WP_REST_Controller {
 
@@ -70,12 +70,12 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 	public function wp_qq_user_auth_login( $request ) {
 
-		date_default_timezone_set(get_option('timezone_string'));
+		date_default_timezone_set( datetime_timezone() );
 
 		$iv = isset($request['iv'])?$request['iv']:'';
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
-		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
+		if( empty($iv) || empty($code) || empty($encryptedData) ) {
 			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 		
@@ -96,7 +96,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 		
 		$remote = wp_remote_get( $urls );
 
-		if( !is_array( $remote ) || is_wp_error($remote) || $remote['response']['code'] != '200' ) {
+		if( !is_array( $remote ) || is_wp_error($remote) ) {
 			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 403, 'message' => $remote ) );
 		}
 
@@ -112,13 +112,13 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' =>  $auth ) );
 		}
 		
-		$user_data = json_decode( $data, true );
-		
 		$user_id = 0;
-		
+		$user_data = json_decode( $data, true );
 		$openId = $session['openid'];
-		$expire = date('Y-m-d H:i:s',time()+7200);
-		$user_pass = wp_generate_password(16,false);
+		$token = MP_Auth::generate_session();
+		$user_pass = wp_generate_password(16, false);
+		$expire = isset($token['expire_in']) ? $token['expire_in'] : date('Y-m-d H:i:s', time()+86400);
+		$session_id = isset($token['session_key']) ? $token['session_key'] : $session['session_key'];
 		
 		if( !username_exists($openId) ) {
 			$userdata = array(
@@ -140,10 +140,10 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'expire_in'				=> $expire
             );
 			$user_id = wp_insert_user( $userdata );			
-			if ( is_wp_error( $user_id ) ) {
+			if( is_wp_error( $user_id ) ) {
 				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
-			add_user_meta( $user_id, 'session_key', $session['session_key'] );
+			add_user_meta( $user_id, 'session_key', $session_id );
 			add_user_meta( $user_id, 'platform', 'tencent');
 		} else {
 			$user = get_user_by( 'login', $openId );
@@ -167,7 +167,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			if(is_wp_error($user_id)) {
 				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
-			update_user_meta( $user_id, 'session_key', $session['session_key'] );
+			update_user_meta( $user_id, 'session_key', $session_id );
 			update_user_meta( $user_id, 'platform', 'tencent');
 		}
 		
@@ -197,8 +197,8 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'platform'		=> 'tencent',
 				"description"	=> $current_user->description
 			),
-			"access_token" => base64_encode( $session['session_key'] ),
-			"expired_in" => $expire
+			"access_token" => base64_encode( $session_id ),
+			"expired_in" => strtotime( $expire ) * 1000
 			
 		);
 		$response = rest_ensure_response( $user );
@@ -208,41 +208,46 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 	public function wp_baidu_user_auth_login( $request ) {
 
-		date_default_timezone_set(get_option('timezone_string'));
+		date_default_timezone_set( datetime_timezone() );
 
 		$iv = isset($request['iv'])?$request['iv']:'';
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
-		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
+		if( empty($iv) || empty($code) || empty($encryptedData) ) {
 			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 
 		$appkey 		= wp_miniprogram_option('bd_appkey');
 		$appsecret 		= wp_miniprogram_option('bd_secret');
 		$role 			= wp_miniprogram_option('use_role');
-		$expire 		= date('Y-m-d H:i:s',time()+7200);
-		$user_pass 		= wp_generate_password(16,false);
 
 		$args = array(
 			'client_id' => $appkey,
 			'sk' => $appsecret,
 			'code' => $code
 		);
+
 		$url = 'https://spapi.baidu.com/oauth/jscode2sessionkey';
 		$urls = add_query_arg( $args, $url );
-		$bd_session = wp_remote_request( $urls, array( 'method' => 'POST' ) );
-		$bd_session = wp_remote_retrieve_body($bd_session);
+		$remote = wp_remote_request( $urls, array( 'method' => 'POST' ) );
+		if( !is_array( $remote ) || is_wp_error($remote) ) {
+			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 403, 'message' => $remote ) );
+		}
 
-		$session = json_decode( $bd_session, true );
-		$openId = $session['openid'];
-		$session_key = $session['session_key'];
-
-		$user_id = 0;
-		$decrypt_data = MP_Auth::decrypt(urldecode($encryptedData), urldecode($iv), $appkey, $session_key);
+		$body = wp_remote_retrieve_body( $remote );
+		$session = json_decode( $body, true );
+		$decrypt_data = MP_Auth::decrypt(urldecode($encryptedData), urldecode($iv), $appkey, $session['session_key']);
 		if( !$decrypt_data ) {
         	return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' =>  $decrypt_data ) );
         }
+
+		$user_id = 0;
 		$user_data = json_decode( $decrypt_data, true );
+		$openId = $session['openid'];
+		$token = MP_Auth::generate_session();
+		$user_pass = wp_generate_password(16, false);
+		$expire = isset($token['expire_in']) ? $token['expire_in'] : date('Y-m-d H:i:s', time()+86400);
+		$session_id = isset($token['session_key']) ? $token['session_key'] : $session['session_key'];
 
 		if( !username_exists($openId) ) {
 			$userdata = array(
@@ -260,10 +265,10 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'expire_in'				=> $expire
             );
 			$user_id = wp_insert_user( $userdata );			
-			if ( is_wp_error( $user_id ) ) {
+			if( is_wp_error( $user_id ) ) {
 				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
-			add_user_meta( $user_id, 'session_key', $session_key);
+			add_user_meta( $user_id, 'session_key', $session_id);
 			add_user_meta( $user_id, 'platform', 'baidu');
 		} else {
 			$user = get_user_by( 'login', $openId );
@@ -283,7 +288,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			if(is_wp_error($user_id)) {
 				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
-			update_user_meta( $user_id, 'session_key', $session_key );
+			update_user_meta( $user_id, 'session_key', $session_id );
 			update_user_meta( $user_id, 'platform', 'baidu');
 		}
 
@@ -309,8 +314,8 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'platform'		=> 'baidu',
 				"description"	=> $current_user->description
 			),
-			"access_token" => base64_encode( $session['session_key'] ),
-			"expired_in" => $expire
+			"access_token" => base64_encode( $session_id ),
+			"expired_in" => strtotime( $expire ) * 1000
 			
 		);
 
@@ -321,41 +326,47 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 
 	public function wp_toutiao_user_auth_login( $request ) {
 
-		date_default_timezone_set(get_option('timezone_string'));
+		date_default_timezone_set( datetime_timezone() );
 
 		$iv = isset($request['iv'])?$request['iv']:'';
 		$code = isset($request['code'])?$request['code']:'';
 		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:'';
-		if ( empty($iv) || empty($code) || empty($encryptedData) ) {
+		if( empty($iv) || empty($code) || empty($encryptedData) ) {
 			return new WP_Error( 'error', '授权登录参数错误', array( 'status' => 403 ) );
 		}
 
 		$appid 			= wp_miniprogram_option('tt_appid');
 		$secret 		= wp_miniprogram_option('tt_secret');
 		$role 			= wp_miniprogram_option('use_role');
-		$expire 		= date('Y-m-d H:i:s',time()+7200);
-		$user_pass 		= wp_generate_password(16,false);
-		$user_id = 0;
+		
 		$args = array(
 			'appid' => $appid,
 			'secret' => $secret,
 			'code' => $code
 		);
+
 		$url = 'https://developer.toutiao.com/api/apps/jscode2session';
 		$urls = add_query_arg( $args, $url );
 		$remote = wp_remote_get( $urls );
-		$tt_session = wp_remote_retrieve_body($remote);
+		if( !is_array( $remote ) || is_wp_error($remote) ) {
+			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 403, 'message' => $remote ) );
+		}
 
-		$session = json_decode( $tt_session, true );
-		$openId = $session['openid'];
-		$session_key = $session['session_key'];
-
-		$auth = MP_Auth::decryptData($appid, $session_key, urldecode($encryptedData), urldecode($iv), $data);
+		$body = wp_remote_retrieve_body( $remote );
+		$session = json_decode( $body, true );
+		
+		$auth = MP_Auth::decryptData($appid, $session['session_key'], urldecode($encryptedData), urldecode($iv), $data);
 		if( $auth != 0 ) {
 			return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'errmsg' => $auth ) );
 		}
 		
+		$user_id = 0;
 		$user_data = json_decode( $data, true );
+		$openId = $session['openid'];
+		$token = MP_Auth::generate_session();
+		$user_pass = wp_generate_password(16, false);
+		$expire = isset($token['expire_in']) ? $token['expire_in'] : date('Y-m-d H:i:s', time()+86400);
+		$session_id = isset($token['session_key']) ? $token['session_key'] : $session['session_key'];
 		
 		if( !username_exists($openId) ) {
 			$userdata = array(
@@ -377,10 +388,10 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'expire_in'				=> $expire
             );
 			$user_id = wp_insert_user( $userdata );			
-			if ( is_wp_error( $user_id ) ) {
+			if( is_wp_error( $user_id ) ) {
 				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
-			add_user_meta( $user_id, 'session_key', $session_key );
+			add_user_meta( $user_id, 'session_key', $session_id );
 			add_user_meta( $user_id, 'platform', 'toutiao');
 		} else {
 			$user = get_user_by( 'login', $openId );
@@ -404,7 +415,7 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 			if(is_wp_error($user_id)) {
 				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
-			update_user_meta( $user_id, 'session_key', $session_key );
+			update_user_meta( $user_id, 'session_key', $session_id );
 			update_user_meta( $user_id, 'platform', 'toutiao');
 		}
 		
@@ -434,8 +445,8 @@ class WP_REST_Auth_Router extends WP_REST_Controller {
 				'platform'		=> 'toutiao',
 				"description"	=> $current_user->description
 			),
-			"access_token" => base64_encode( $session_key ),
-			"expired_in" => $expire
+			"access_token" => base64_encode( $session_id ),
+			"expired_in" => strtotime( $expire ) * 1000
 			
 		);
 		$response = rest_ensure_response( $user );

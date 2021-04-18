@@ -46,7 +46,7 @@ if(is_admin()) {
 			'submenu'	=> $submenu
 		);
 		return $admin_menu;
-	});
+	} );
 }
 // Pages
 function miniprogram_options_manage_page( ) {
@@ -61,6 +61,7 @@ function miniprogram_options_manage_page( ) {
 
 add_action( 'admin_notices', function () {
 	if( isset($_GET['page']) && trim($_GET['page']) == 'miniprogram' && isset($_REQUEST['settings-updated']) ) {
+		wp_cache_flush( );
 		$class = 'notice notice-success is-dismissible';
 		$message = __( '设置已更新保存!', 'imahui' );
 		printf( '<div class="%1$s"><p><strong>%2$s</strong></p></div>', esc_attr( $class ), esc_html( $message ) );

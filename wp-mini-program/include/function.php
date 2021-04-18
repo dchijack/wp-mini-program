@@ -2,17 +2,14 @@
 
 if ( !defined( 'ABSPATH' ) ) exit;
 
-// 文章格式类型
-function wp_miniprogram_post_formats() {
-    $settings = wp_miniprogram_option('formats');
-    $formats = array();
-    if( is_array( $settings ) ) {
-        $formats = array_keys( $settings );
+// 时区
+function datetime_timezone() {
+    $timezone = get_option('timezone_string');
+    if( strpos($timezone, '/') !== false ){
+        return substr( strstr($timezone, "/"), 1 );
+    } else {
+        return $timezone;
     }
-    return $formats;
-}
-if( wp_miniprogram_post_formats() ) {
-    add_theme_support( 'post-formats', wp_miniprogram_post_formats() );
 }
 
 // 统计文章字符

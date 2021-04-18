@@ -205,7 +205,8 @@ function qq_miniprogram_comment_audit_message( $comment_id ) {
     return $status;
 }
 
-function mp_qq_subscribe_comments_reply_notice( $comment ) {
+function qq_miniprogram_comments_reply_action( $comment_id ) {
+	$comment = get_comment( $comment_id );
 	$post_id = $comment->comment_post_ID;
     $parent_id = $comment->comment_parent;
     $reply_name = $comment->comment_author;

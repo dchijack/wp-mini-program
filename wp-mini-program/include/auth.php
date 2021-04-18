@@ -93,7 +93,7 @@ class MP_Auth {
 	public static function generate_session() {
         $session_str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $session_key = substr( str_shuffle($session_str), mt_rand( 0, strlen($session_str) - 17 ), 16 );
-        $expire_in = date('Y-m-d H:i:s',time()+7200);
+        $expire_in = date('Y-m-d H:i:s', time()+86400);
         $session = array(
             'session_key' => $session_key,
             'expire_in' => $expire_in
@@ -112,9 +112,8 @@ class MP_Auth {
             }
             $access_token = json_decode( $body['body'], true );
             return $access_token;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public static function qq_miniprogram_access_token() {
@@ -128,9 +127,8 @@ class MP_Auth {
             }
             $access_token = json_decode( $body['body'], true );
             return $access_token;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public static function bd_miniprogram_access_token( ) {
@@ -144,9 +142,8 @@ class MP_Auth {
             }
             $access_token = json_decode( $body['body'], true );
             return $access_token;
-        } else {
-            return false;
         }
+        return false;
     }
     
 	public static function login( $session ) {

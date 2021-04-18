@@ -5,17 +5,23 @@
  
 if( !defined( 'ABSPATH' ) ) exit;
 
-add_filter('term_options',function ($options){
+add_filter('mp_category_term_options',function ($options){
 	$options['cover'] = array(
-		'taxonomies' => array('category','post_tag'),
 		'title' => '封面', 
 		'type' => 'upload'
 	);
 	return $options;
 });
 
-// Meta
-add_filter( 'meta_options',function ($options) {
+add_filter('mp_post_tag_term_options',function ($options){
+	$options['cover'] = array(
+		'title' => '封面', 
+		'type' => 'upload'
+	);
+	return $options;
+});
+
+add_filter( 'mp_post_meta_options', function ($options) {
 	$fields = array();
 	$options['post-box']['title'] = '文章设置';
 	$options['post-box']['type'] = 'post';
@@ -35,6 +41,10 @@ add_filter( 'meta_options',function ($options) {
 		$fields['keywords'] = ['title'=>'Web 关键词', 'type'=>'text', 'class' => 'regular-text','description'=>'百度小程序 Web 化页面关键词设置, 多个关键词用英文逗号隔开'];
 	}
 	$options['post-box']['fields'] = $fields;
+	return $options;
+});
+
+add_filter( 'mp_page_meta_options', function ($options) {
 	$options['page-box'] =  [
 		'title'   => '页面设置',
 		'type'	  => 'page',

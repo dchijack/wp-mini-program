@@ -128,6 +128,7 @@ class WP_REST_Posts_Router extends WP_REST_Controller {
 
 	public function get_relate_posts( $request ) {
 		$data = array();
+		$args = array();
 		$post_id = isset($request["id"])?(int)$request["id"]:0;
 		$page = isset($request["page"])?$request["page"]:1;
 		$per_page = isset($request["per_page"])?$request["per_page"]:10;

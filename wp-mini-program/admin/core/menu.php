@@ -13,7 +13,7 @@ function register_miniprogram_manage_menu() {
 						break;
 					case 'submenu':
 						foreach ( $menu as $submenu ) {
-							add_submenu_page( $submenu['option_name'], $submenu['page_title'], $submenu['menu_title'], isset($submenu['capability'])?$submenu['capability']:'manage_options', $submenu['slug'], $submenu['function'] );
+							add_submenu_page( $submenu['option_name'], $submenu['page_title'], $submenu['menu_title'], isset($submenu['capability'])?$submenu['capability']:'manage_options', $submenu['slug'], $submenu['function'], isset($submenu['position'])?$submenu['position']:null );
 						}
 						break;
 				}

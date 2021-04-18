@@ -34,7 +34,6 @@ add_filter( 'miniprogram_setting_options', function( $options ) {
 				'version'		=>['title'=>'小程序版本','type'=>'text','rows'=>4,'placeholder'=>get_bloginfo("version"),'description'=>'小程序版本号,默认留空为 WordPress 程序版本号'],
 				'appcover'		=>['title'=>'小程序封面','type'=>'upload','class'=>'regular-text'],
 				'debug'			=>['title'=>'API调试模式','type'=>'checkbox','description'=>'是否启用 API 调试模式, 注意: 上线小程序不建议启用'],
-				'formats'		=>['title'=>'文章格式类型','type'=>'mu-check','options'=>['aside'=>'日志','gallery'=>'相册','link'=>'链接','image'=>'图像','quote'=>'引用','status'=>'状态','video'=>'视频','audio'=>'语音','chat'=>'聊天']],
 				'thumbnail'		=>['title'=>'默认缩略图','type'=>'upload','class'=>'regular-text'],
 				'trust_domain'	=>['title'=>'downloadFile合法域名','type'=>'mu-text','class'=>'regular-text','placeholder'=>'微信公众平台小程序 DownloadFile 合法域名'],
 				'template_id'	=>['title'=>'评论回复通知','type'=>'text','class'=>'regular-text','description'=>'服务类目：在线教育 - 文章评论回复通知, 关键词：文章标题、评论内容、回复内容、回复时间'],

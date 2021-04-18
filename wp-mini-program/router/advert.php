@@ -55,22 +55,23 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 
 	public function get_wechat_advert_setting( $request ) {
 		$type = isset($request["type"])?$request["type"]:'index';
-		if( $type == 'index' ) {
-			$adOpen = wp_miniprogram_option('we_i_open');
-			$adType = wp_miniprogram_option('we_i_type');
-			$adImage = wp_miniprogram_option('we_i_image');
-			$adArgs = wp_miniprogram_option('we_i_args');
-		} else if( $type == 'list' ) {
+		$adOpen = wp_miniprogram_option('we_i_open');
+		$adType = wp_miniprogram_option('we_i_type');
+		$adImage = wp_miniprogram_option('we_i_image');
+		$adArgs = wp_miniprogram_option('we_i_args');
+		if( $type == 'list' ) {
 			$adOpen = wp_miniprogram_option('we_t_open');
 			$adType = wp_miniprogram_option('we_t_type');
 			$adImage = wp_miniprogram_option('we_t_image');
 			$adArgs = wp_miniprogram_option('we_t_args');
-		} else if( $type == 'detail' ) {
+		}
+		if( $type == 'detail' ) {
 			$adOpen = wp_miniprogram_option('we_d_open');
 			$adType = wp_miniprogram_option('we_d_type');
 			$adImage = wp_miniprogram_option('we_d_image');
 			$adArgs = wp_miniprogram_option('we_d_args');
-		} else if( $type == 'page' ) {
+		}
+		if( $type == 'page' ) {
 			$adOpen = wp_miniprogram_option('we_p_open');
 			$adType = wp_miniprogram_option('we_p_type');
 			$adImage = wp_miniprogram_option('we_p_image');
@@ -117,22 +118,23 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 
 	public function get_qq_advert_setting( $request ) {
 		$type = isset($request["type"])?$request["type"]:'index';
-		if( $type == 'index' ) {
-			$adOpen = wp_miniprogram_option('qq_i_open');
-			$adType = wp_miniprogram_option('qq_i_type');
-			$adImage = wp_miniprogram_option('qq_i_image');
-			$adArgs = wp_miniprogram_option('qq_i_args');
-		} else if( $type == 'list' ) {
+		$adOpen = wp_miniprogram_option('qq_i_open');
+		$adType = wp_miniprogram_option('qq_i_type');
+		$adImage = wp_miniprogram_option('qq_i_image');
+		$adArgs = wp_miniprogram_option('qq_i_args');
+		if( $type == 'list' ) {
 			$adOpen = wp_miniprogram_option('qq_t_open');
 			$adType = wp_miniprogram_option('qq_t_type');
 			$adImage = wp_miniprogram_option('qq_t_image');
 			$adArgs = wp_miniprogram_option('qq_t_args');
-		} else if( $type == 'detail' ) {
+		}
+		if( $type == 'detail' ) {
 			$adOpen = wp_miniprogram_option('qq_d_open');
 			$adType = wp_miniprogram_option('qq_d_type');
 			$adImage = wp_miniprogram_option('qq_d_image');
 			$adArgs = wp_miniprogram_option('qq_d_args');
-		} else if( $type == 'page' ) {
+		}
+		if( $type == 'page' ) {
 			$adOpen = wp_miniprogram_option('qq_p_open');
 			$adType = wp_miniprogram_option('qq_p_type');
 			$adImage = wp_miniprogram_option('qq_p_image');
@@ -179,22 +181,23 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 
 	public function get_baidu_advert_setting( $request ) {
 		$type = isset($request["type"])?$request["type"]:'index';
-		if( $type == 'index' ) {
-			$adOpen = wp_miniprogram_option('bd_i_open');
-			$adType = wp_miniprogram_option('bd_i_type');
-			$adImage = wp_miniprogram_option('bd_i_image');
-			$adArgs = wp_miniprogram_option('bd_i_args');
-		} else if( $type == 'list' ) {
+		$adOpen = wp_miniprogram_option('bd_i_open');
+		$adType = wp_miniprogram_option('bd_i_type');
+		$adImage = wp_miniprogram_option('bd_i_image');
+		$adArgs = wp_miniprogram_option('bd_i_args');
+		if( $type == 'list' ) {
 			$adOpen = wp_miniprogram_option('bd_t_open');
 			$adType = wp_miniprogram_option('bd_t_type');
 			$adImage = wp_miniprogram_option('bd_t_image');
 			$adArgs = wp_miniprogram_option('bd_t_args');
-		} else if( $type == 'detail' ) {
+		}
+		if( $type == 'detail' ) {
 			$adOpen = wp_miniprogram_option('bd_d_open');
 			$adType = wp_miniprogram_option('bd_d_type');
 			$adImage = wp_miniprogram_option('bd_d_image');
 			$adArgs = wp_miniprogram_option('bd_d_args');
-		} else if( $type == 'page' ) {
+		}
+		if( $type == 'page' ) {
 			$adOpen = wp_miniprogram_option('bd_p_open');
 			$adType = wp_miniprogram_option('bd_p_type');
 			$adImage = wp_miniprogram_option('bd_p_image');
@@ -241,22 +244,23 @@ class WP_REST_Advert_Router extends WP_REST_Controller {
 
 	public function get_toutiao_advert_setting( $request ) {
 		$type = isset($request["type"])?$request["type"]:'index';
-		if( $type == 'index' ) {
-			$adOpen = wp_miniprogram_option('tt_i_open');
-			$adType = wp_miniprogram_option('tt_i_type');
-			$adImage = wp_miniprogram_option('tt_i_image');
-			$adArgs = wp_miniprogram_option('tt_i_args');
-		} else if( $type == 'list' ) {
+		$adOpen = wp_miniprogram_option('tt_i_open');
+		$adType = wp_miniprogram_option('tt_i_type');
+		$adImage = wp_miniprogram_option('tt_i_image');
+		$adArgs = wp_miniprogram_option('tt_i_args');
+		if( $type == 'list' ) {
 			$adOpen = wp_miniprogram_option('tt_t_open');
 			$adType = wp_miniprogram_option('tt_t_type');
 			$adImage = wp_miniprogram_option('tt_t_image');
 			$adArgs = wp_miniprogram_option('tt_t_args');
-		} else if( $type == 'detail' ) {
+		}
+		if( $type == 'detail' ) {
 			$adOpen = wp_miniprogram_option('tt_d_open');
 			$adType = wp_miniprogram_option('tt_d_type');
 			$adImage = wp_miniprogram_option('tt_d_image');
 			$adArgs = wp_miniprogram_option('tt_d_args');
-		} else if( $type == 'page' ) {
+		}
+		if( $type == 'page' ) {
 			$adOpen = wp_miniprogram_option('tt_p_open');
 			$adType = wp_miniprogram_option('tt_p_type');
 			$adImage = wp_miniprogram_option('tt_p_image');

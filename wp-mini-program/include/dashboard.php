@@ -66,3 +66,18 @@ function imahui_applets_dashboard_widget() {
 	$html .= '</div>';
 	echo $html;
 }
+
+function imahui_applets_activty_bulletin() {
+	$bulletin = get_transient( 'wp_applets_bulletin_cache' );
+	if( $bulletin === false ) {
+		$url = 'https://mp.weitimes.com/wp-json/wp/v2/miniprogram/bulletin';
+		$request = wp_remote_get( $url );
+		if( !is_wp_error( $request ) ) {
+			$bulletin = json_decode( $request['body'], true );
+			set_transient( 'wp_applets_bulletin_cache', $bulletin, 24*HOUR_IN_SECONDS );
+		}
+	}
+	if( isset($bulletin["status"]) && $bulletin["status"] == 200 ) {
+		echo '<div class="update-nag notice notice-info inline">'.$bulletin["content"].'</div>';
+	}
+}

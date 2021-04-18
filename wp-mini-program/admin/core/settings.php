@@ -1,9 +1,4 @@
-<?php
-	global $pagenow;
-	if( isset( $_REQUEST['settings-updated'] ) ) {
-		wp_cache_flush();
-	}
-?>
+<?php if( function_exists('imahui_applets_activty_bulletin') ) { imahui_applets_activty_bulletin( ); } ?>
 <div class="wrap">
 	<h2 class="mp-nav-tab-wrapper wp-clearfix">
 		<?php miniprogram_options_nav_menu( $options ); ?>

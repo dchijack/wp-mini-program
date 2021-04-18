@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) exit;
+if( !defined( 'ABSPATH' ) ) exit;
 
 class WP_REST_Users_Router extends WP_REST_Controller {
 
@@ -32,24 +32,25 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 	}
 
 	public function wp_user_login_permissions_check( $request ) {
-		$code = isset($request['code'])?$request['code']:"";
-		$encryptedData = isset($request['encryptedData'])?$request['encryptedData']:"";
-		$iv = isset($request['iv'])?$request['iv']:"";
-		if( empty($code) ) {
-			return new WP_Error( 'error', '用户登录 code 参数错误', array( 'status' => 403 ) );
-		}
 		return true;
 	}
 
 	public function wp_user_login_by_code( $request ) {
 		
-		date_default_timezone_set(get_option('timezone_string'));
+		date_default_timezone_set( datetime_timezone() );
 		
 		$appid 			= wp_miniprogram_option('appid');
 		$appsecret 		= wp_miniprogram_option('secretkey');
 		$role 			= wp_miniprogram_option('use_role');
 		
 		$params = $request->get_params();
+
+		if( empty($params['code']) ) {
+			return new WP_Error( 'error', '用户登录凭证（有效期五分钟）参数错误', array( 'status' => 403 ) );
+		}
+		if( empty($params['encryptedData']) && empty($params['iv']) ) {
+			return new WP_Error( 'error', '用户登录加密数据和加密算法的初始向量参数错误', array( 'status' => 403 ) );
+		}
 
 		$args = array(
 			'appid' => $appid,
@@ -59,43 +60,30 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 		);
 		
 		$url = 'https://api.weixin.qq.com/sns/jscode2session';
-		
 		$urls = add_query_arg($args,$url);
-		
 		$remote = wp_remote_get($urls);
-		
 		if( !is_array( $remote ) || is_wp_error($remote) ) {
-			return new WP_Error( 'error', '授权 API 错误', array( 'status' => 403, 'message' => $remote ) );
+			return new WP_Error( 'error', '获取授权 OpenID 和 Session 错误', array( 'status' => 403, 'message' => $remote ) );
 		}
 
 		$body = stripslashes( $remote['body'] );
-		
 		$session = json_decode( $body, true );
-		
-		$token = MP_Auth::generate_session();
-		
-		if( !$token ) {
-			return new WP_Error( 'error', 'Tekon Session 错误', array( 'status' => 403 ) );
+		if( $session['errcode'] != 0 ) {
+			return new WP_Error( 'error', '获取用户信息错误,请检查设置', array( 'status' => 403, 'message' => $session ) );
 		}
-		
-		if ( empty($params['encryptedData']) && empty($params['iv']) ) {
-			$response = rest_ensure_response( array( "code" => $params['code'] ) );
-			return $response;
-		}
-		
-		$auth_code = MP_Auth::decryptData($appid, $session['session_key'], urldecode($params['encryptedData']), urldecode($params['iv']), $data );
 
+		$auth_code = MP_Auth::decryptData($appid, $session['session_key'], urldecode($params['encryptedData']), urldecode($params['iv']), $data );
 		if( $auth_code != 0 ) {
-			return new WP_Error( 'error', '授权获取失败', array( 'status' => 403, 'code' => $auth_code ) );
+			return new WP_Error( 'error', '用户信息解密错误', array( 'status' => 403, 'code' => $auth_code ) );
 		}
-		
-		$user_data = json_decode( $data, true );
 		
 		$user_id = 0;
-		
+		$user_data = json_decode( $data, true );
 		$openId = $session['openid'];
-		$expire = $token['expire_in'];
-		$user_pass = wp_generate_password(16,false);
+		$token = MP_Auth::generate_session();
+		$user_pass = wp_generate_password(16, false);
+		$expire = isset($token['expire_in']) ? $token['expire_in'] : date('Y-m-d H:i:s', time()+86400);
+		$session_id = isset($token['session_key']) ? $token['session_key'] : $session['session_key'];
 		
 		if( !username_exists($openId) ) {
 			$userdata = array(
@@ -117,10 +105,11 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 				'expire_in'				=> $expire
             );
 			$user_id = wp_insert_user( $userdata );			
-			if ( is_wp_error( $user_id ) ) {
+			if( is_wp_error( $user_id ) ) {
 				return new WP_Error( 'error', '创建用户失败', array( 'status' => 400 ) );				
 			}
-			add_user_meta( $user_id, 'session_key', $token['session_key'] );
+			
+			add_user_meta( $user_id, 'session_key', $session_id );
 			add_user_meta( $user_id, 'platform', 'wechat');
 		} else {
 			$user = get_user_by( 'login', $openId );
@@ -144,7 +133,7 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 			if(is_wp_error($user_id)) {
 				return new WP_Error( 'error', '更新用户信息失败' , array( 'status' => 400 ) );
 			}
-			update_user_meta( $user_id, 'session_key', $token['session_key'] );
+			update_user_meta( $user_id, 'session_key', $session_id );
 			update_user_meta( $user_id, 'platform', 'wechat');
 		}
 		
@@ -173,8 +162,8 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 				"role"			=> $roles[0],
 				"description"	=> $current_user->description
 			),
-			"access_token" => base64_encode( $token['session_key'] ),
-			"expired_in" => $token['expire_in']
+			"access_token" => base64_encode( $session_id ),
+			"expired_in" => strtotime( $expire ) * 1000
 			
 		);
 		$response = rest_ensure_response( $user );
@@ -220,16 +209,16 @@ class WP_REST_Users_Router extends WP_REST_Controller {
 			'description'	=> "微信授权登录，包括敏感数据在内的完整用户信息的加密数据.",
 			'type'	=>	 "string"
 		);
-		$params['code'] = array(
-			'required' => true,
-			'default'	=> '',
-			'description'	=> "用户登录凭证（有效期五分钟）",
-			'type'	=>	 "string"
-		);
 		$params['iv'] = array(
 			'required' => true,
 			'default'	=> '',
 			'description'	=> "微信授权登录，加密算法的初始向量.",
+			'type'	=>	 "string"
+		);
+		$params['code'] = array(
+			'required' => true,
+			'default'	=> '',
+			'description'	=> "用户登录凭证",
 			'type'	=>	 "string"
 		);
 		return $params;

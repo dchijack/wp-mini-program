@@ -14,3 +14,4 @@ include( MINI_PROGRAM_REST_API.'router/auth.php' );
 include( MINI_PROGRAM_REST_API.'router/subscribe.php' );
 include( MINI_PROGRAM_REST_API.'router/advert.php' );
 include( MINI_PROGRAM_REST_API.'router/menu.php' );
+include( MINI_PROGRAM_REST_API.'router/security.php' );

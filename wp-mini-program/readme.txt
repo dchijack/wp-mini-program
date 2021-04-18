@@ -3,9 +3,9 @@ Contributors: imahui
 Donate link: https://www.imahui.com/about.html
 Tags: rest api, api, 小程序
 Requires at least: 4.9.8
-Tested up to: 5.6.1
+Tested up to: 5.7.1
 Requires PHP: 5.6
-Stable tag: 1.3.7
+Stable tag: 1.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -95,6 +95,17 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. 广告功能
  
 == Changelog ==
+
+= 1.3.8 =
+
+1. 更新优化授权相关功能
+2. 更新修复相关文章接口
+3. 更新优化广告接口功能
+4. 更新自定义菜单钩子位置
+5. 更新移除文章形式设置功能
+6. 更新微信内容安全文本检测路由接口
+7. 更新优化 QQ 小程序订阅消息回复通知
+8. 更新分类法自定义字段、文章自定义字段
 
 = 1.3.7 =
 
@@ -288,49 +299,46 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 = 1.0.9 =
 
-更新使用指南, 增加开源小程序下载地址及相关教程
+1. 更新使用指南, 增加开源小程序下载地址及相关教程
 
 = 1.0.8 =
 
-更新修复部分失效函数, 采用 WP 原生函数
+1. 更新修复部分失效函数, 采用 WP 原生函数
 
 = 1.0.7 =
 
-新增字节跳动小程序授权验证
+1. 新增字节跳动小程序授权验证
 
 = 1.0.6 =
 
-1.修复设置选项被隐藏选项
-2.增加百度小程序授权验证
+1. 修复设置选项被隐藏选项
+2. 增加百度小程序授权验证
 
 = 1.0.5 =
 
-修复 Rest API 部分定义错误
+1. 修复 Rest API 部分定义错误
 
 = 1.0.4 =
 
-新增 QQ 小程序授权登录 API
+1. 新增 QQ 小程序授权登录 API
 
 = 1.0.3 =
 
-更新文章当前用户是否点赞/收藏
+1. 更新文章当前用户是否点赞/收藏
  
 = 1.0.2 =
 
-更新自定义 API 获取数据错误
+1. 更新自定义 API 获取数据错误
  
 = 1.0.1 =
 
-更新授权登录信息及验证方式
+1. 更新授权登录信息及验证方式
  
 = 1.0 =
 
-初始化版本
+1. 初始化版本
 
 == Upgrade Notice ==
-
-1. 新版更新修复部分 Bug 
-2. 新版增加扩展丰富的功能
 
 == Arbitrary section ==
 
